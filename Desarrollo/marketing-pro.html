@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Marketing Musical</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(6, 17, 31, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(102, 217, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(10, 102, 255, 0.1);
+      animation: slideDown 0.6s ease-out;
+    }
+
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--blanco);
+      font-size: 28px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .navbar-back {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #66d9ff;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      padding: 10px 16px;
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .navbar-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(102, 217, 255, 0.1), rgba(10, 102, 255, 0.1));
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .navbar-back:hover::before {
+      opacity: 1;
+    }
+    
+    .navbar-back:hover {
+      color: #ffffff;
+      transform: translateX(-4px);
+      text-shadow: 0 0 10px rgba(102, 217, 255, 0.5), 0 0 20px rgba(10, 102, 255, 0.3);
+    }
+    
+    .navbar-back svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    .navbar-back:hover svg {
+      transform: translateX(-3px);
+    }
+    
+    body {
+      padding-top: 80px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="navbar-brand">ProducersGo</a>
+  <div style="display:flex;gap:25px;align-items:center;">
+    <span class="navbar-back" onclick="if (history.length > 1) { history.back(); } else { location.href='/'; }" style="cursor:pointer;color:var(--gris);font-size:14px;transition:color 0.3s;" onmouseover="this.style.color='var(--azul-claro)'" onmouseout="this.style.color='var(--gris)'">&larr; Volver</span>
+  </div>
+</nav>
+<div class="bg-anim"></div>
+<div class="moving-background"></div>
+<section class="hero">
+  <h2>Convertí tu contenido en <span>crecimiento real</span></h2>
+  <p>
+    Dejar de subir por subir. Empezar a construir una presencia estratégica,
+    entendiendo qué funciona, por qué funciona y cómo replicarlo de forma constante
+    para escalar dentro de la industria musical.
+  </p>
+  <a href="/Fontend/Contacto/contacto.html" class="btn">Escalar proyecto</a>
+</section>
+
+<section class="section">
+  <h3>El problema del contenido sin estrategia</h3>
+
+  <div class="text-block">
+    <p>
+      La mayoría de los productores sube contenido de forma constante,
+      pero sin una dirección clara. Publican beats, previews o videos,
+      esperando que alguno funcione⬦ pero sin entender realmente qué está pasando detrás.
+    </p>
+
+    <p>
+      Esto genera frustración, porque el esfuerzo no se traduce en resultados.
+      No hay crecimiento real, no hay nuevas audiencias y no hay posicionamiento.
+      Solo contenido perdido dentro del algoritmo.
+    </p>
+
+    <p>
+      Sin una estrategia, el contenido no construye marca, no genera impacto
+      y no convierte visitas en oportunidades reales dentro de la industria.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section highlight">
+  <h2 class="big-title">El crecimiento no es suerte</h2>
+  <p>
+    Es el resultado de entender el algoritmo, captar la atención del público
+    y ejecutar contenido con intención. Cuando cada publicación tiene un objetivo claro,
+    el crecimiento deja de ser aleatorio y se convierte en un proceso controlado,
+    medible y escalable.
+  </p>
+</section>
+
+<section class="section">
+  <h3>Cómo trabajamos</h3>
+
+  <div class="text-block">
+    <p>
+      Nuestro enfoque no se basa en fórmulas genéricas. Analizamos tu situación actual,
+      tu estilo, tu público y tu objetivo para construir una estrategia personalizada
+      que tenga sentido dentro del mercado real.
+    </p>
+  </div>
+</section>
+
+<section class="section grid">
+  <div class="card">
+    <h3>Análisis</h3>
+    <p>
+      Evaluamos tu contenido actual, tu rendimiento en redes y cómo estás
+      posicionándote frente a otros productores. Detectamos errores,
+      oportunidades y puntos de mejora concretos.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Estrategia</h3>
+    <p>
+      Diseñamos un plan de contenido alineado con tu identidad y enfocado
+      en crecimiento real. Definimos formatos, frecuencia, estilo y dirección
+      para que cada publicación tenga un propósito claro.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Ejecución</h3>
+    <p>
+      Aplicamos formatos que funcionan hoy dentro del algoritmo.
+      Optimizamos cada detalle: estructura del video, retención,
+      impacto visual y conexión con la audiencia.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h3>Resultado final</h3>
+
+  <div class="text-block">
+    <p>
+      Un crecimiento sostenido, medible y alineado con tu marca como productor.
+    </p>
+
+    <p>
+      Más alcance, mejor engagement y una audiencia que no solo consume tu contenido,
+      sino que empieza a reconocer tu identidad, tu sonido y tu propuesta.
+    </p>
+
+    <p>
+      Pasás de ser uno más que sube beats⬦ a construir una presencia real
+      dentro de la industria musical.
+    </p>
+  </div>
+</section>
+<footer id="contacto">
+  <div style="max-width:800px;margin:auto;text-align:center;">
+    <h2 style="margin-bottom:10px;">ProducersGo</h2>
+    <p style="margin-bottom:20px;">Sello discográfico enfocado en productores, beatmakers y DJs.</p>
+
+    <p style="margin-top:40px;font-size:14px;color:var(--gris);">
+      © 2026 ProducersGo - Todos los derechos reservados
+    </p>
+    <a href="/" style="display:inline-block;margin-top:12px;color:var(--turquesa);font-weight:700;text-decoration:none;">Volver a ProducersGo</a>
+  </div>
+</footer>
+
+</body>
+</html>
+

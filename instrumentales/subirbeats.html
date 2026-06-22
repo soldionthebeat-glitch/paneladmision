@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subir lanzamiento - Go Beats</title>
+  <link rel="stylesheet" href="cssz/subirbeats.css">
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
+</head>
+<body>
+  <nav class="topbar">
+    <a href="home.html">Explorer</a>
+    <a href="dashboard.html">Mi Panel</a>
+    <a href="subirbeats.html">Subir lanzamiento</a>
+    <a href="../distribucion/index.html" class="admin-only hidden">Distribucion</a>
+    <a href="../libreria/index.html">Libreria</a>
+    <a href="perfil-editor.html">Mi Perfil</a>
+    <a href="admin-descargas.html" class="admin-only hidden">Descargas</a>
+    <a href="admin-submissions.html" class="admin-only hidden">Submissions</a>
+    <a href="admi.html" class="admin-only hidden">Admin</a>
+    <span id="userBadge" class="user-badge">Cargando...</span>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- ===== SECTION 1: PLATAFORMAS ===== -->
+    <section class="form-card">
+      <div class="card-header">
+        <h2>Plataformas de distribucion</h2>
+        <button type="button" class="btn-ghost btn-sm" id="toggleAllServices">Seleccionar todas</button>
+      </div>
+      <p class="card-hint">Selecciona donde quieres distribuir tus beats</p>
+      <div class="service-grid" id="serviceGrid"></div>
+    </section>
+
+    <!-- ===== SECTION 2: INFO DEL LANZAMIENTO ===== -->
+    <section class="form-card">
+      <div class="card-header">
+        <h2>Informacion del lanzamiento</h2>
+      </div>
+      <div class="card-body">
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Cantidad de instrumentales</label>
+            <select id="trackCountSelect">
+              <option value="">Selecciona cantidad</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>¿Lanzado previamente?</label>
+            <select id="previouslyReleased">
+              <option value="no">No</option>
+              <option value="yes">Si</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Fecha de lanzamiento</label>
+            <input type="date" id="releaseDate">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Nombre artistico</label>
+            <input type="text" id="artistName" placeholder="Ej: Soldi On The Beat" required>
+            <p class="field-hint">No incluyas nombres de otros artistas, discograficas o emojis</p>
+          </div>
+          <div class="form-group">
+            <label>Discografica</label>
+            <input type="text" id="recordLabel" placeholder="PRODUCERS GO" value="PRODUCERS GO">
+          </div>
+          <div class="form-group">
+            <label>Idioma</label>
+            <select id="language">
+              <option value="spanish">Espanol</option>
+              <option value="english">Ingles</option>
+              <option value="portuguese">Portugues</option>
+              <option value="french">Frances</option>
+              <option value="other">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Genero primario</label>
+            <select id="primaryGenre">
+              <option value="">Elige un genero</option>
+              <option>Trap</option>
+              <option>Drill</option>
+              <option>R&B</option>
+              <option>Hip-Hop</option>
+              <option>Reggaeton</option>
+              <option>Techno</option>
+              <option>House</option>
+              <option>Lo-Fi</option>
+              <option>Pop</option>
+              <option>Electronic</option>
+              <option>Latin</option>
+              <option>Otros</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Genero secundario (opcional)</label>
+            <select id="secondaryGenre">
+              <option value="">Elige otro genero</option>
+              <option>Trap</option>
+              <option>Drill</option>
+              <option>R&B</option>
+              <option>Hip-Hop</option>
+              <option>Reggaeton</option>
+              <option>Techno</option>
+              <option>House</option>
+              <option>Lo-Fi</option>
+              <option>Pop</option>
+              <option>Electronic</option>
+              <option>Latin</option>
+              <option>Otros</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <div class="platform-presence">
+          <label class="section-label">Presencia del artista en plataformas</label>
+          <div class="presence-grid" id="presenceGrid">
+            <label class="presence-item"><input type="checkbox" checked><span>Spotify</span></label>
+            <label class="presence-item"><input type="checkbox" checked><span>Apple Music</span></label>
+            <label class="presence-item"><input type="checkbox" checked><span>YouTube Music</span></label>
+            <label class="presence-item"><input type="checkbox" checked><span>Instagram</span></label>
+            <label class="presence-item"><input type="checkbox" checked><span>Facebook</span></label>
+            <label class="presence-item"><input type="checkbox" checked><span>TikTok</span></label>
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <div class="cover-section">
+          <label class="section-label">Portada del lanzamiento</label>
+          <div class="cover-layout">
+            <div class="cover-drop" id="coverDrop">
+              <div class="cover-preview" id="coverPreview">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <span>Selecciona o arrastra</span>
+              </div>
+              <input type="file" id="coverInput" accept="image/*" hidden>
+            </div>
+            <div class="cover-info">
+              <p>Se recomiendan imagenes cuadradas en formato JPG de 3000x3000 px.</p>
+              <p>Las tiendas rechazaran imagenes con URLs, logos de streaming, pixeleadas o de baja calidad.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3: CANCIONES ===== -->
+    <section class="form-card">
+      <div class="card-header">
+        <h2>Canciones</h2>
+        <div class="card-header-actions">
+          <span class="badge" id="trackCount">0 canciones</span>
+        </div>
+      </div>
+
+      <div class="drop-zone-mini" id="audioDropZone">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <span>Arrastra audios aqui o <button type="button" class="link-btn" id="browseAudioBtn">seleccionalos</button></span>
+        <input type="file" id="audioInput" class="hidden" accept=".mp3,.wav,.flac,.aiff,.m4a,audio/*" multiple>
+      </div>
+
+      <div id="trackList" class="track-list"></div>
+    </section>
+
+    <!-- ===== SECTION 4: EXTRAS ===== -->
+    <section class="form-card">
+      <div class="card-header">
+        <h2>Extras</h2>
+        <button type="button" class="btn-ghost btn-sm" id="toggleExtras">Mostrar</button>
+      </div>
+      <div class="card-body hidden" id="extrasBody">
+        <div class="form-divider"></div>
+
+        <div class="extra-section">
+          <label class="section-label">Acuerdos legales</label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="legalOwnership">
+            <span>Certifico que grabe esta musica y estoy autorizado a distribuirla y recibir todas las regalias</span>
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="legalNoImpersonation">
+            <span>No estoy usando el nombre de otro artista sin su permiso</span>
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="legalTerms">
+            <span>Acepto los terminos del acuerdo de distribucion</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 5: REVIEW ===== -->
+    <section class="form-card review-card">
+      <div class="card-header">
+        <h2>Revisa tu lanzamiento</h2>
+      </div>
+      <div class="card-body" id="reviewBody">
+        <p class="card-hint">Agrega canciones y completa la informacion para ver el resumen.</p>
+        <div id="reviewContent"></div>
+        <button type="button" class="btn-primary btn-lg btn-full" id="submitBtn" disabled>
+          Subir lanzamiento
+        </button>
+      </div>
+    </section>
+
+    <div id="msg"></div>
+  </main>
+
+  <!-- ===== TRACK TEMPLATE ===== -->
+  <template id="trackTemplate">
+    <div class="track" data-uid="">
+      <div class="track-head">
+        <button type="button" class="track-play" title="Reproducir">
+          <svg class="play-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <svg class="pause-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+          </svg>
+        </button>
+        <span class="track-num">1</span>
+        <input type="text" class="track-title" data-field="title" placeholder="Titulo de la cancion" required>
+        <span class="track-artist-display" data-field="artist-display">Soldi On The Beat</span>
+        <span class="track-duration-display tag-sm" data-tag="duration"><span data-field="duration-display"></span></span>
+        <div class="track-head-actions">
+          <button type="button" class="btn-expand" title="Editar metadata">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <button type="button" class="btn-remove-track" title="Quitar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="track-body hidden">
+        <div class="track-panels">
+          <!-- Columna izquierda: metadata principal -->
+          <div class="track-panel">
+            <div class="form-group">
+              <label>Artista invitado, productor o remixer</label>
+              <input type="text" data-field="featuredArtist" placeholder="Ej: Duki, Bizarrap">
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Version</label>
+                <select data-field="version">
+                  <option value="normal">Normal</option>
+                  <option value="radio">Version para radio</option>
+                  <option value="other">Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Codigo ISRC</label>
+                <input type="text" data-field="isrc" placeholder="Ej: USXXX2512345" maxlength="12">
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>BPM</label>
+                <input type="number" data-field="bpm" placeholder="140" min="40" max="220">
+              </div>
+              <div class="form-group">
+                <label>Nota tonica</label>
+                <input type="text" data-field="key" placeholder="Ej: F menor">
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Genero</label>
+                <select data-field="genre">
+                  <option value="">Elige un genero</option>
+                  <option>Trap</option>
+                  <option>Drill</option>
+                  <option>R&B</option>
+                  <option>Hip-Hop</option>
+                  <option>Reggaeton</option>
+                  <option>Techno</option>
+                  <option>House</option>
+                  <option>Lo-Fi</option>
+                  <option>Pop</option>
+                  <option>Otros</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Sentimiento</label>
+                <select data-field="mood">
+                  <option value="">Selecciona</option>
+                  <option>Dark</option>
+                  <option>Sad</option>
+                  <option>Melodico</option>
+                  <option>Energetico</option>
+                  <option>Romantico</option>
+                  <option>Agresivo</option>
+                  <option>Relajante</option>
+                  <option>Motivacional</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Tags</label>
+              <input type="text" data-field="tags" placeholder="Ej: trap, dark, piano, 140bpm">
+            </div>
+            <div class="form-group">
+              <label>Descripcion</label>
+              <textarea data-field="description" placeholder="Detalles de la produccion..." rows="2"></textarea>
+            </div>
+          </div>
+
+          <!-- Columna derecha: archivo y opciones -->
+          <div class="track-panel">
+            <div class="track-file-upload" data-field="fileUpload">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <span class="file-status" data-field="fileStatus">Seleccionar archivo de audio</span>
+              <input type="file" class="hidden" accept=".mp3,.wav,.flac,.aiff,.m4a,audio/*">
+            </div>
+
+            <div class="form-divider-light"></div>
+
+            <label class="checkbox-row thin">
+              <input type="checkbox" data-field="mastering">
+              <span>Masterizar con Mixea</span>
+            </label>
+            <label class="checkbox-row thin">
+              <input type="checkbox" data-field="dolbyAtmos">
+              <span>Agregar Dolby Atmos / Audio espacial</span>
+            </label>
+
+            <div class="form-divider-light"></div>
+
+            <div class="form-group">
+              <label>Compositor(es)</label>
+              <div class="composer-row">
+                <input type="text" data-field="composerFirstName" placeholder="Nombre">
+                <input type="text" data-field="composerLastName" placeholder="Apellido">
+              </div>
+              <label class="checkbox-row thin">
+                <input type="checkbox" data-field="isCover">
+                <span>Es un cover (otro artista la escribio)</span>
+              </label>
+            </div>
+
+            <div class="form-divider-light"></div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Letras explicitas</label>
+                <select data-field="explicit">
+                  <option value="no">No</option>
+                  <option value="yes">Si</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Version para radio</label>
+                <select data-field="radioEdit">
+                  <option value="no">No, es la version normal</option>
+                  <option value="yes">Si, existe version explicita</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Instrumental</label>
+              <select data-field="instrumental">
+                <option value="yes">Si, es instrumental</option>
+                <option value="no">No, tiene letra</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Contenido generado con IA</label>
+              <select data-field="aiGenerated">
+                <option value="no">No</option>
+                <option value="yes">Si</option>
+              </select>
+            </div>
+
+            <div class="form-divider-light"></div>
+
+            <div class="form-group">
+              <label>Preview clip</label>
+              <select data-field="previewClip">
+                <option value="auto">Que los servicios decidan</option>
+                <option value="manual">Elegir inicio</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Precio (iTunes/Amazon USD)</label>
+              <select data-field="price">
+                <option value="0.99">$0.99</option>
+                <option value="1.29">$1.29</option>
+                <option value="1.49">$1.49</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Creditos -->
+        <div class="track-credits">
+          <div class="credits-header">
+            <span class="section-label-sm">Creditos</span>
+            <button type="button" class="btn-ghost btn-xs" data-field="addCredit">+ Agregar credito</button>
+          </div>
+          <div class="credits-list" data-field="creditsList">
+            <div class="credit-row">
+              <select data-field="creditRole">
+                <option value="producer">Productor</option>
+                <option value="performer">Interprete</option>
+                <option value="writer">Compositor</option>
+                <option value="engineer">Ingeniero</option>
+              </select>
+              <input type="text" data-field="creditName" placeholder="Nombre">
+            </div>
+          </div>
+          <p class="field-hint">Apple Music exige al menos un interprete y un productor</p>
+        </div>
+
+        <input type="hidden" data-field="duration">
+      </div>
+    </div>
+  </template>
+
+  <meta http-equiv="Cache-Control" content="no-store">
+  <script src="js/subirbeats.js?v=2"></script>
+</body>
+</html>

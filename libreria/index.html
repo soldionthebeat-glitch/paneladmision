@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Libreria de Sonidos - ProducersGo</title>
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06111f; --panel: rgba(10,24,48,0.85); --line: rgba(124,184,255,0.2);
+      --text: #edf6ff; --muted: #9db6d8; --blue: #0a66ff; --cyan: #66d9ff;
+      --ok: #00ff9a; --error: #ff4560; --radius: 10px;
+      --shadow: 0 22px 70px rgba(1,8,22,0.52);
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 18% 8%, rgba(10,102,255,0.34), transparent 30%),
+                  radial-gradient(circle at 80% 0%, rgba(102,217,255,0.22), transparent 26%),
+                  linear-gradient(145deg, #030b18 0%, #071b35 52%, #020712 100%);
+      color: var(--text); padding: 20px;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    .topbar {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .topbar a {
+      text-decoration: none; color: var(--cyan);
+      background: rgba(102,217,255,0.08); border: 1px solid rgba(102,217,255,0.25);
+      border-radius: 999px; padding: 8px 12px; font-size: 13px; font-weight: 700;
+    }
+    .card {
+      border: 1px solid var(--line); border-radius: 16px;
+      background: var(--panel); box-shadow: var(--shadow); overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .hero {
+      padding: 24px; border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(10,102,255,0.2), rgba(102,217,255,0.08));
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 26px; }
+    .hero p { margin: 0; color: var(--muted); font-size: 14px; }
+    .content { padding: 22px; }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .category-btn {
+      padding: 16px; border-radius: 10px;
+      border: 1px solid rgba(124,184,255,0.2);
+      background: rgba(3,18,43,0.6); color: var(--text);
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; text-align: center;
+    }
+    .category-btn:hover { border-color: var(--cyan); background: rgba(10,102,255,0.15); transform: translateY(-2px); }
+    .category-btn.active { border-color: var(--cyan); background: rgba(10,102,255,0.25); box-shadow: 0 0 0 2px rgba(102,217,255,0.2); }
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .item-card {
+      padding: 0; border-radius: 12px;
+      border: 1px solid rgba(124,184,255,0.15);
+      background: rgba(3,18,43,0.5);
+      transition: all 0.2s;
+      overflow: hidden;
+    }
+    .item-card:hover { border-color: rgba(102,217,255,0.4); }
+    .item-card .cover-wrap {
+      width: 100%; aspect-ratio: 1;
+      overflow: hidden; background: linear-gradient(135deg,#0a2050,#0f3080);
+    }
+    .item-card .cover-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .item-card:hover .cover-wrap img { transform: scale(1.05); }
+    .item-card .card-body { padding: 14px; }
+    .item-card h3 { font-size: 15px; margin-bottom: 4px; }
+    .item-card .meta { color: var(--muted); font-size: 12px; }
+    .item-card .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      background: rgba(102,217,255,0.12); color: var(--cyan);
+      font-size: 11px; font-weight: 700; margin-top: 8px;
+    }
+    .item-card .actions { margin-top: 12px; display: flex; gap: 8px; }
+    .btn-download, .btn-upload, .btn-delete-item {
+      padding: 8px 14px; border-radius: 6px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      border: none; color: white; transition: all 0.2s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .btn-download { background: linear-gradient(135deg, var(--blue), var(--cyan)); }
+    .btn-download:hover { opacity: 0.9; }
+    .btn-upload { background: linear-gradient(135deg, var(--blue), var(--cyan)); }
+    .btn-delete-item { background: rgba(255,69,96,0.2); border: 1px solid rgba(255,69,96,0.4); color: #ff4560; }
+    .upload-form {
+      display: grid; gap: 14px; padding: 20px;
+      border: 1px dashed rgba(102,217,255,0.3); border-radius: 10px;
+      background: rgba(3,18,43,0.4);
+    }
+    .upload-form label { display: grid; gap: 6px; font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+    .upload-form input, .upload-form select, .upload-form textarea {
+      width: 100%; min-height: 42px; border-radius: var(--radius);
+      border: 1px solid rgba(124,184,255,0.25);
+      background: rgba(3,18,43,0.75); color: var(--text);
+      outline: none; padding: 10px 12px; font: inherit;
+    }
+    .upload-form input:focus, .upload-form select:focus { border-color: var(--cyan); }
+    .upload-form .btn-primary {
+      min-height: 42px; border-radius: var(--radius); border: 0;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: white; font-weight: 800; cursor: pointer; padding: 10px 16px;
+    }
+    .status-box {
+      display: none; padding: 12px; border-radius: var(--radius);
+      font-weight: 700; font-size: 13px; border: 1px solid transparent;
+    }
+    .status-box.show { display: block; }
+    .status-box.ok { color: var(--ok); background: rgba(0,255,154,0.08); border-color: rgba(0,255,154,0.35); }
+    .status-box.error { color: var(--error); background: rgba(255,69,96,0.08); border-color: rgba(255,69,96,0.35); }
+    .upload-toggle {
+      display: flex; gap: 8px; margin-bottom: 16px;
+    }
+    .upload-toggle button {
+      padding: 8px 16px; border-radius: 6px;
+      border: 1px solid rgba(124,184,255,0.2);
+      background: transparent; color: var(--muted); font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .upload-toggle button.active { background: rgba(10,102,255,0.2); border-color: var(--cyan); color: var(--cyan); }
+    #uploadSection { display: none; }
+    #uploadSection.show { display: block; }
+    .admin-only { display: none; }
+    body[data-role="admin"] .admin-only { display: flex; }
+    @media (max-width: 600px) {
+      .category-grid { grid-template-columns: repeat(2, 1fr); }
+      .items-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a href="/Fontend/instrumentales/home.html">Explorer</a>
+      <a href="/Fontend/instrumentales/dashboard.html">Mi Panel</a>
+      <a href="/Fontend/instrumentales/subirbeats.html">Subir instrumental</a>
+    </div>
+
+    <section class="card">
+      <div class="hero">
+        <h1>Libreria de Sonidos</h1>
+        <p>Drum Kits, Sample Packs, Loops, One Shots, MIDI Packs y Presets para tus producciones.</p>
+      </div>
+
+      <div class="content">
+        <div class="upload-toggle">
+          <button id="browseBtn" class="active">Explorar</button>
+          <button id="uploadBtn">Subir pack</button>
+        </div>
+
+        <div id="uploadSection">
+          <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <label>
+                Nombre del pack
+                <input type="text" id="packName" required placeholder="Ej: Trap Drum Kit Vol.1">
+              </label>
+              <label>
+                Categoria
+                <select id="packCategory" required>
+                  <option value="">Selecciona categoria</option>
+                  <option>Drum Kits</option>
+                  <option>Sample Packs</option>
+                  <option>Loops</option>
+                  <option>One Shots</option>
+                  <option>MIDI Packs</option>
+                  <option>Presets</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              Descripcion
+              <textarea id="packDescription" placeholder="Describe el contenido del pack..."></textarea>
+            </label>
+            <label>
+              Tags
+              <input type="text" id="packTags" placeholder="Ej: 808, trap, dark, piano">
+            </label>
+            <label>
+              Portada 3000×3000
+              <input type="file" id="packCover" accept=".jpg,.jpeg,.png,.webp">
+              <span style="color:var(--muted);font-weight:400;text-transform:none;">Recomendado: JPG/PNG de 3000×3000px</span>
+            </label>
+            <label>
+              Archivo ZIP *
+              <input type="file" id="packFile" accept=".zip,.rar,.7z" required>
+              <span style="color:var(--muted);font-weight:400;text-transform:none;">Solo archivos ZIP, RAR o 7z</span>
+            </label>
+            <div id="uploadStatus" class="status-box"></div>
+            <button type="submit" id="submitPackBtn" class="btn-primary">Subir a la libreria</button>
+          </form>
+        </div>
+
+        <div id="browseSection">
+          <div class="category-grid" id="categoryGrid">
+            <button class="category-btn active" data-category="">Todas</button>
+            <button class="category-btn" data-category="Drum Kits">Drum Kits</button>
+            <button class="category-btn" data-category="Sample Packs">Sample Packs</button>
+            <button class="category-btn" data-category="Loops">Loops</button>
+            <button class="category-btn" data-category="One Shots">One Shots</button>
+            <button class="category-btn" data-category="MIDI Packs">MIDI Packs</button>
+            <button class="category-btn" data-category="Presets">Presets</button>
+          </div>
+
+          <div id="itemsContainer">
+            <p style="color:var(--muted);">Cargando libreria...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" 
+      ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+
+    let selectedCategory = "";
+    let usuarioActual = null;
+    let items = [];
+
+    function token() { return localStorage.getItem("token"); }
+    function authHeaders(extra = {}) { return { ...extra, Authorization: "Bearer " + token() }; }
+    function escapeHtml(v) { return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+
+    async function proteger() {
+      if (!token()) { window.location.replace("/Fontend/instrumentales/index.html"); return false; }
+      try {
+        const res = await fetch(`${API_URL}/api/me`, { headers: authHeaders() });
+        if (!res.ok) throw new Error("Sesion invalida");
+        usuarioActual = await res.json();
+        document.body.dataset.role = usuarioActual.role;
+
+        if (usuarioActual.role === "user" || usuarioActual.role === "referido") {
+          window.location.replace("/Fontend/instrumentales/home.html");
+          return false;
+        }
+        return true;
+      } catch {
+        localStorage.removeItem("token");
+        window.location.replace("/Fontend/instrumentales/index.html");
+        return false;
+      }
+    }
+
+    async function cargarItems(category) {
+      const url = category 
+        ? `${API_URL}/api/soundlibrary?category=${encodeURIComponent(category)}`
+        : `${API_URL}/api/soundlibrary`;
+      
+      try {
+        const res = await fetch(url, { headers: authHeaders() });
+        if (!res.ok) throw new Error("Error");
+        items = await res.json();
+        renderItems();
+      } catch {
+        document.getElementById("itemsContainer").innerHTML = `<p style="color:var(--muted);">Error cargando libreria.</p>`;
+      }
+    }
+
+    function renderItems() {
+      const container = document.getElementById("itemsContainer");
+      if (!items.length) {
+        container.innerHTML = `<p style="color:var(--muted);text-align:center;padding:30px;">No hay elementos en esta categoria aun.</p>`;
+        return;
+      }
+
+      container.innerHTML = `<div class="items-grid">${items.map(item => {
+        const coverSrc = item.coverUrl ? (item.coverUrl.startsWith("http") ? item.coverUrl : `${API_URL}/${item.coverUrl.replace(/^\/+/, "")}`) : "";
+        return `
+        <div class="item-card">
+          ${coverSrc ? `<div class="cover-wrap"><img src="${coverSrc}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>` : ""}
+          <div class="card-body">
+            <h3>${escapeHtml(item.name)}</h3>
+            ${item.description ? `<p style="font-size:13px;color:var(--muted);margin:4px 0;">${escapeHtml(item.description)}</p>` : ""}
+            <span class="badge">${escapeHtml(item.category)}</span>
+            <div class="meta">${item.fileSize ? (item.fileSize / (1024*1024)).toFixed(2) + " MB" : ""} ${item.tags ? "| " + escapeHtml(item.tags) : ""}</div>
+            <div class="meta">Subido por: ${escapeHtml(item.uploadedBy || "Productor")}</div>
+            <div class="actions">
+              ${item.fileUrl ? `<a href="${escapeHtml(item.fileUrl)}" class="btn-download" download>Descargar</a>` : ""}
+              ${usuarioActual?.role === "admin" ? `<button class="btn-delete-item" onclick="deleteItem('${item.id}')">Eliminar</button>` : ""}
+            </div>
+          </div>
+        </div>`;
+      }).join("")}</div>`;
+    }
+
+    async function deleteItem(id) {
+      if (!confirm("Eliminar este elemento de la libreria?")) return;
+      try {
+        const res = await fetch(`${API_URL}/api/soundlibrary/${id}`, {
+          method: "DELETE", headers: authHeaders()
+        });
+        if (!res.ok) throw new Error("Error");
+        await cargarItems(selectedCategory);
+      } catch {
+        alert("Error eliminando elemento.");
+      }
+    }
+
+    // Category filter
+    document.querySelectorAll(".category-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedCategory = btn.dataset.category;
+        cargarItems(selectedCategory);
+      });
+    });
+
+    // Upload section toggle
+    document.getElementById("browseBtn").addEventListener("click", () => {
+      document.getElementById("browseSection").style.display = "block";
+      document.getElementById("uploadSection").classList.remove("show");
+      document.getElementById("browseBtn").classList.add("active");
+      document.getElementById("uploadBtn").classList.remove("active");
+    });
+    document.getElementById("uploadBtn").addEventListener("click", () => {
+      document.getElementById("browseSection").style.display = "none";
+      document.getElementById("uploadSection").classList.add("show");
+      document.getElementById("uploadBtn").classList.add("active");
+      document.getElementById("browseBtn").classList.remove("active");
+    });
+
+    // Upload form
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = document.getElementById("packFile").files?.[0];
+      if (!file) { alert("Selecciona un archivo ZIP"); return; }
+
+      const submitBtn = document.getElementById("submitPackBtn");
+      const statusBox = document.getElementById("uploadStatus");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Subiendo...";
+
+      const coverFile = document.getElementById("packCover").files?.[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      if (coverFile) formData.append("cover", coverFile);
+      formData.append("name", document.getElementById("packName").value.trim());
+      formData.append("category", document.getElementById("packCategory").value);
+      formData.append("description", document.getElementById("packDescription").value.trim());
+      formData.append("tags", document.getElementById("packTags").value.trim());
+      if (usuarioActual?.producerName) formData.append("uploadedBy", usuarioActual.producerName);
+
+      try {
+        const res = await fetch(`${API_URL}/api/soundlibrary/upload`, {
+          method: "POST",
+          headers: authHeaders(),
+          body: formData
+        });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.message || "Error");
+
+        statusBox.textContent = "Pack subido correctamente!";
+        statusBox.className = "status-box show ok";
+        document.getElementById("uploadForm").reset();
+        if (selectedCategory) cargarItems(selectedCategory); else cargarItems("");
+      } catch (err) {
+        statusBox.textContent = err.message || "Error subiendo pack.";
+        statusBox.className = "status-box show error";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Subir a la libreria";
+      }
+    });
+
+    (async () => {
+      const ok = await proteger();
+      if (ok) {
+        cargarItems("");
+      }
+    })();
+  </script>
+</body>
+</html>

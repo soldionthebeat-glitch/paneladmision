@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Beats - Descargas</title>
+  <link rel="stylesheet" href="cssz/dashboard.css" />
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <style>
+    .downloads-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .downloads-table th,
+    .downloads-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(102, 217, 255, 0.1);
+    }
+
+    .downloads-table th {
+      background: rgba(10, 102, 255, 0.1);
+      color: #66d9ff;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .downloads-table tr:hover {
+      background: rgba(10, 102, 255, 0.05);
+    }
+
+    .beat-cell {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .beat-cell strong {
+      color: #66d9ff;
+      margin-bottom: 4px;
+    }
+
+    .beat-cell small {
+      color: #7fbbb5;
+      font-size: 12px;
+    }
+
+    .producer-pill {
+      background: rgba(10, 102, 255, 0.2);
+      color: #66d9ff;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .table-link {
+      color: #66d9ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .table-link:hover {
+      text-decoration: underline;
+      color: #8be5ff;
+    }
+
+    .danger.small {
+      background: rgba(255, 69, 96, 0.2);
+      border: 1px solid rgba(255, 69, 96, 0.5);
+      color: #ff4560;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .danger.small:hover {
+      background: rgba(255, 69, 96, 0.3);
+      border-color: #ff4560;
+    }
+
+    .table-wrap {
+      background: linear-gradient(135deg, rgba(10, 40, 70, 0.3), rgba(20, 60, 90, 0.3));
+      border: 1px solid rgba(102, 217, 255, 0.1);
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .downloads-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-box {
+      background: rgba(10, 102, 255, 0.1);
+      border: 1px solid rgba(102, 217, 255, 0.2);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 24px;
+      color: #66d9ff;
+      margin-bottom: 5px;
+    }
+
+    .stat-box span {
+      color: #7fbbb5;
+      font-size: 12px;
+    }
+
+    .filter-section {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-section input,
+    .filter-section select {
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(102, 217, 255, 0.2);
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 12px;
+    }
+
+    .filter-section input::placeholder {
+      color: rgba(160, 168, 192, 0.5);
+    }
+
+    .export-btn {
+      background: rgba(10, 102, 255, 0.2);
+      border: 1px solid rgba(102, 217, 255, 0.3);
+      color: #66d9ff;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .export-btn:hover {
+      background: rgba(10, 102, 255, 0.3);
+      border-color: #66d9ff;
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <aside class="sidebar active" id="sidebar">
+    <button id="sidebarHandle" class="sidebar-handle" type="button" aria-label="Abrir menu"></button>
+
+    <div class="brand-block">
+      <span class="brand-mark">GB</span>
+      <div>
+        <h2>Go Beats</h2>
+        <p>Admin panel</p>
+      </div>
+    </div>
+
+    <nav class="side-nav">
+      <a href="home.html"> Explorar</a>
+      <a href="dashboard.html"> Mi Panel</a>
+      <a href="subirbeats.html"> Subir instrumental</a>
+      <a href="../distribucion/index.html">Distribucion</a>
+      <a href="../libreria/index.html">Libreria</a>
+      <a href="perfil-editor.html">Mi Perfil</a>
+      <a href="admin-descargas.html" class="admin-only" style="display: none;"> Descargas</a>
+      <a href="admi.html" class="admin-only hidden">Admin</a>
+    </nav>
+
+    <div class="sidebar-note">
+      <strong>Historial</strong>
+      <span>Aqui queda registrado que productor tomo cada instrumental.</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="header">
+      <button id="toggleSidebar" type="button" aria-label="Abrir menu"></button>
+      <div>
+        <p class="eyebrow">Solo administradores</p>
+        <h1>Historial de Descargas</h1>
+      </div>
+      <div class="header-actions">
+        <span id="userBadge" class="user-badge">Cargando...</span>
+        <button id="logoutBtn" type="button">Cerrar sesion</button>
+      </div>
+    </header>
+
+    <section class="hero-panel downloads-hero">
+      <div>
+        <p class="eyebrow">Registro del sello</p>
+        <h2>Productores que descargaron beats</h2>
+        <p>Usa esta pantalla para revisar que instrumental fue descargada, por quien y en que fecha.</p>
+      </div>
+      <div class="hero-stat">
+        <strong id="downloadsCount">0</strong>
+        <span>descargas registradas</span>
+      </div>
+    </section>
+
+    <section class="beats-section downloads-panel">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Estadisticas</p>
+          <h2>Resumen de descargas</h2>
+        </div>
+        <div class="actions">
+          <button class="export-btn" id="exportBtn">Exportar descargas CSV</button>
+          <button class="export-btn" id="exportCatalogBtn">Descargar catalogos CSV</button>
+          <button class="export-btn" id="exportAllBtn">Descargar todo (ZIP)</button>
+        </div>
+      </div>
+
+      <div class="downloads-stats" id="statsContainer" style="display: none;">
+        <div class="stat-box">
+          <strong id="totalDownloads">0</strong>
+          <span>Descargas totales</span>
+        </div>
+        <div class="stat-box">
+          <strong id="uniqueProducers">0</strong>
+          <span>Productores unicos</span>
+        </div>
+        <div class="stat-box">
+          <strong id="beatDiversity">0</strong>
+          <span>Beats descargados</span>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <input type="text" id="searchInput" placeholder="Buscar por nombre de beat, productor..." />
+        <select id="filterGenre">
+          <option value="">Todos los generos</option>
+          <option value="trap">Trap</option>
+          <option value="hip-hop">Hip-Hop</option>
+          <option value="reggaeton">Reggaeton</option>
+          <option value="drill">Drill</option>
+          <option value="ambient">Ambient</option>
+          <option value="experimental">Experimental</option>
+        </select>
+      </div>
+
+      <div id="status" class="status">Cargando descargas...</div>
+      <div class="table-wrap downloads-table-wrap">
+        <table class="downloads-table">
+          <thead>
+            <tr>
+              <th>Beat</th>
+              <th>Productor Descargador</th>
+              <th>Email</th>
+              <th>Fecha de Descarga</th>
+              <th>Genero</th>
+              <th>Accion</th>
+            </tr>
+          </thead>
+          <tbody id="downloadsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+const sidebar = document.getElementById("sidebar");
+const statusBox = document.getElementById("status");
+const downloadsBody = document.getElementById("downloadsBody");
+const userBadge = document.getElementById("userBadge");
+const downloadsCount = document.getElementById("downloadsCount");
+const searchInput = document.getElementById("searchInput");
+const filterGenre = document.getElementById("filterGenre");
+const statsContainer = document.getElementById("statsContainer");
+const exportBtn = document.getElementById("exportBtn");
+const exportCatalogBtn = document.getElementById("exportCatalogBtn");
+
+let todasLasDescargas = [];
+
+document.getElementById("toggleSidebar").onclick = () => sidebar.classList.toggle("active");
+document.getElementById("sidebarHandle").onclick = () => sidebar.classList.toggle("active");
+
+function protegerAdmin() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.replace("index.html");
+    return false;
+  }
+
+  return fetch(`${API_URL}/api/me`, {
+    headers: { Authorization: "Bearer " + token }
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Sesion invalida");
+      return res.json();
+    })
+    .then((user) => {
+      if (user.role !== "admin") {
+        alert("Solo administradores");
+        window.location.replace("home.html");
+        return false;
+      }
+
+      userBadge.textContent = `Admin: ${user.email}`;
+      document.querySelectorAll(".admin-only").forEach((el) => {
+        el.style.display = "";
+      });
+      return true;
+    })
+    .catch(() => {
+      localStorage.removeItem("token");
+      window.location.replace("index.html");
+      return false;
+    });
+}
+
+async function cargarDescargas() {
+  statusBox.textContent = "Cargando descargas...";
+
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_URL}/api/admin/descargas`, {
+      headers: { Authorization: "Bearer " + token }
+    });
+    if (!res.ok) throw new Error("No se pudo cargar el historial");
+
+    const descargas = await res.json();
+    todasLasDescargas = descargas;
+
+    if (!descargas.length) {
+      statusBox.textContent = "Todavia no hay descargas registradas.";
+      downloadsBody.innerHTML = "";
+      downloadsCount.textContent = "0";
+      return;
+    }
+
+    downloadsCount.textContent = descargas.length;
+    statusBox.textContent = "";
+
+    // Calcular estadisticas
+    calcularEstadisticas(descargas);
+
+    // Renderizar tabla
+    renderizarDescargas(descargas);
+  } catch (err) {
+    console.error(err);
+    statusBox.textContent = "Error cargando descargas.";
+  }
+}
+
+function calcularEstadisticas(descargas) {
+  const uniqueProducers = new Set(descargas.map(d => d.producerName)).size;
+  const uniqueBeats = new Set(descargas.map(d => d.beatId)).size;
+
+  document.getElementById("totalDownloads").textContent = descargas.length;
+  document.getElementById("uniqueProducers").textContent = uniqueProducers;
+  document.getElementById("beatDiversity").textContent = uniqueBeats;
+  statsContainer.style.display = "grid";
+}
+
+function renderizarDescargas(descargas) {
+  const query = searchInput.value.toLowerCase();
+  const genre = String(filterGenre.value || "").toLowerCase();
+
+  const filtradas = descargas.filter(d => {
+    const matchQuery = !query || 
+      String(d.name || "").toLowerCase().includes(query) ||
+      String(d.assignedTo || "").toLowerCase().includes(query) ||
+      String(d.producer || "").toLowerCase().includes(query);
+
+    const matchGenre = !genre || String(d.genre || "").toLowerCase() === genre;
+    return matchQuery && matchGenre;
+  });
+
+  downloadsBody.innerHTML = filtradas.map((d, index) => `
+    <tr>
+      <td class="beat-cell">
+        <strong>${escapeHtml(d.name || "Beat sin nombre")}</strong>
+        <small>Productor: ${escapeHtml(d.producer || "Desconocido")}</small>
+      </td>
+      <td><span class="producer-pill">${escapeHtml(d.assignedTo || "Sin dato")}</span></td>
+      <td>${escapeHtml(d.assignedEmail || d.assignedBy || "-")}</td>
+      <td>${d.assignedAt ? new Date(d.assignedAt).toLocaleString("es-AR") : "-"}</td>
+      <td>${escapeHtml(d.genre || "-")}</td>
+      <td>${d.fileUrl ? `<a class="table-link" href="${escapeHtml(d.fileUrl)}" target="_blank" rel="noopener">Audio</a>` : "-"}</td>
+    </tr>
+  `).join("");
+
+  if (!filtradas.length) {
+    downloadsBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #7fbbb5;">No hay resultados</td></tr>';
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function exportarCSV() {
+  if (!todasLasDescargas.length) {
+    alert("No hay descargas para exportar");
+    return;
+  }
+
+  let csv = "Beat,Productor Original,Descargador,Asignado Por,Genero,Fecha\n";
+  
+  todasLasDescargas.forEach(d => {
+    csv += `"${d.name || ""}","${d.producer || ""}","${d.assignedTo || ""}","${d.assignedBy || ""}","${d.genre || ""}","${d.assignedAt ? new Date(d.assignedAt).toISOString() : ""}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `descargas_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+}
+
+async function exportarCatalogosCSV() {
+  const token = localStorage.getItem("token");
+
+  try {
+    exportCatalogBtn.disabled = true;
+    exportCatalogBtn.textContent = "Generando...";
+
+    const res = await fetch(`${API_URL}/api/admin/catalogs/export`, {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+
+    const blob = await res.blob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `catalogos_metadata_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  } catch (err) {
+    alert(err.message || "No se pudo exportar el catalogo.");
+  } finally {
+    exportCatalogBtn.disabled = false;
+    exportCatalogBtn.textContent = "Descargar catalogos CSV";
+  }
+}
+
+searchInput.addEventListener("input", () => renderizarDescargas(todasLasDescargas));
+filterGenre.addEventListener("change", () => renderizarDescargas(todasLasDescargas));
+exportBtn.addEventListener("click", exportarCSV);
+exportCatalogBtn.addEventListener("click", exportarCatalogosCSV);
+document.getElementById("exportAllBtn").addEventListener("click", () => {
+  const btn = document.getElementById("exportAllBtn");
+  btn.disabled = true;
+  btn.textContent = "Generando...";
+  fetch(`${API_URL}/api/admin/export-beats`, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } })
+    .then((res) => { if (!res.ok) throw new Error("Error"); return res.blob(); })
+    .then((blob) => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `Go_Beats_Export_${new Date().toISOString().split("T")[0]}.zip`;
+      a.click();
+    })
+    .catch((err) => alert("Error: " + err.message))
+    .finally(() => { btn.disabled = false; btn.textContent = "Descargar todo (ZIP)"; });
+});
+
+document.getElementById("logoutBtn").onclick = () => {
+  localStorage.removeItem("token");
+  window.location.replace("index.html");
+};
+
+(async () => {
+  const ok = await protegerAdmin();
+  if (ok) {
+    cargarDescargas();
+    setInterval(cargarDescargas, 12000);
+  }
+})();
+</script>
+
+</body>
+</html>
+
+
+

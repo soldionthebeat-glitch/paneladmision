@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Distribución Digital</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(6, 17, 31, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(102, 217, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(10, 102, 255, 0.1);
+      animation: slideDown 0.6s ease-out;
+    }
+
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--blanco);
+      font-size: 28px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .navbar-back {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #66d9ff;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      padding: 10px 16px;
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .navbar-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(102, 217, 255, 0.1), rgba(10, 102, 255, 0.1));
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .navbar-back:hover::before {
+      opacity: 1;
+    }
+    
+    .navbar-back:hover {
+      color: #ffffff;
+      transform: translateX(-4px);
+      text-shadow: 0 0 10px rgba(102, 217, 255, 0.5), 0 0 20px rgba(10, 102, 255, 0.3);
+    }
+    
+    .navbar-back svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    .navbar-back:hover svg {
+      transform: translateX(-3px);
+    }
+    
+    body {
+      padding-top: 80px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="navbar-brand">ProducersGo</a>
+  <div style="display:flex;gap:25px;align-items:center;">
+    <span class="navbar-back" onclick="if (history.length > 1) { history.back(); } else { location.href='/'; }" style="cursor:pointer;color:var(--gris);font-size:14px;transition:color 0.3s;" onmouseover="this.style.color='var(--azul-claro)'" onmouseout="this.style.color='var(--gris)'">&larr; Volver</span>
+  </div>
+</nav>
+<div class="bg-anim"></div>
+<div class="moving-background"></div>
+<section class="hero">
+  <h2>Tu música no necesita solo salir, necesita <span>lanzarse correctamente</span></h2>
+  <p>
+    Te ayudamos a distribuir tu música de forma profesional, entendiendo cómo funciona cada plataforma
+    y cómo posicionar tu proyecto dentro del mercado digital.
+  </p>
+  <a href="/Fontend/Contacto/contacto.html" class="btn">Quiero distribuir mi música</a>
+</section>
+
+<section class="sectionn">
+  <h3>El <span class="red">error</span> más común al lanzar música</h3>
+
+  <div class="text-block">
+    <p>
+      Hoy en día, subir música a plataformas digitales es fácil.
+      Cualquiera puede hacerlo en pocos minutos.
+      Pero justamente por eso, la mayoría de los lanzamientos pasan desapercibidos.
+    </p>
+
+    <p>
+      El problema no es la falta de talento,
+      es la falta de estructura en el lanzamiento.
+    </p>
+
+    <p>
+      Muchos artistas suben su música sin revisar detalles técnicos,
+      sin entender cómo funcionan las plataformas
+      y sin una estrategia mínima que acompañe ese lanzamiento.
+    </p>
+
+    <p>
+      Eso hace que, desde el primer momento,
+      el track pierda fuerza dentro del sistema.
+    </p>
+
+    <p>
+      Y en un entorno donde se suben miles de canciones por día,
+      esos pequeños errores hacen una gran diferencia.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section highlight">
+  <h2 class="big-title">No es solo estar en plataformas, es saber jugar dentro de ellas</h2>
+  <p>
+    Cada plataforma tiene su lógica, y entenderla cambia todo.
+  </p>
+</section>
+
+<section class="sectionn">
+  <h3>Cómo funcionan realmente las plataformas</h3>
+
+  <div class="text-block">
+    <p>
+      Cada plataforma digital tiene una forma distinta de organizar,
+      mostrar y recomendar música.
+    </p>
+
+    <p>
+      Algunas están más orientadas al descubrimiento mediante algoritmos,
+      donde el comportamiento del usuario influye directamente en la visibilidad.
+    </p>
+
+    <p>
+      Otras priorizan la estructura del catálogo,
+      donde los metadatos, los créditos y la organización del contenido
+      afectan la percepción profesional del proyecto.
+    </p>
+
+    <p>
+      También hay plataformas donde la calidad de audio,
+      la presentación visual y la coherencia del artista
+      tienen un peso mayor en cómo se posiciona la música.
+    </p>
+
+    <p>
+      Por eso no tratamos la distribución como algo automático,
+      sino como un proceso que se adapta a cada entorno.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h3>Qué hacemos internamente en cada lanzamiento</h3>
+
+  <div class="text-block">
+    <p>
+      Antes de distribuir cualquier track, realizamos una revisión completa del material.
+      Nos aseguramos de que la calidad de audio sea adecuada,
+      que el proyecto tenga coherencia
+      y que todo esté listo para salir.
+    </p>
+
+    <p>
+      Después trabajamos los metadatos,
+      que son fundamentales para cómo se interpreta tu música dentro de las plataformas.
+    </p>
+
+    <p>
+      Nombres, títulos, créditos, géneros, información del lanzamiento⬦
+      cada uno de estos elementos influye en la forma en la que tu música se clasifica.
+    </p>
+
+    <p>
+      También analizamos el contexto del lanzamiento:
+      cuándo conviene salir, cómo organizarlo
+      y qué enfoque acompañar para que tenga mayor impacto.
+    </p>
+
+    <p>
+      No es lo mismo subir un tema sin estructura
+      que lanzarlo con una base pensada desde el inicio.
+    </p>
+  </div>
+</section>
+
+<section class="sectionn">
+  <h3>La importancia de la coherencia en tu catálogo</h3>
+
+  <div class="text-block">
+    <p>
+      No se trata solo de un lanzamiento aislado.
+      Cada track forma parte de tu proyecto.
+    </p>
+
+    <p>
+      Cuando tu catálogo está bien organizado,
+      con una identidad clara y una estructura coherente,
+      tu perfil se percibe mucho más profesional.
+    </p>
+
+    <p>
+      Esto influye tanto en oyentes como en posibles oportunidades dentro de la industria.
+    </p>
+
+    <p>
+      La distribución también es parte de tu imagen como artista.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h3>Cómo te acompañamos en el proceso</h3>
+
+  <div class="text-block">
+    <p>
+      No solo distribuimos tu música,
+      te acompañamos en cada etapa del proceso.
+    </p>
+
+    <p>
+      Podés consultar, ajustar y entender cada decisión que se toma.
+      La idea no es que dependas de nosotros,
+      sino que aprendas cómo funciona todo.
+    </p>
+
+    <p>
+      Estamos para ayudarte a evitar errores,
+      optimizar tus lanzamientos
+      y construir una base sólida para tu crecimiento.
+    </p>
+
+    <p>
+      Porque distribuir bien no es un detalle,
+      es una parte clave de tu carrera.
+    </p>
+  </div>
+</section>
+
+<section class="sectionn">
+  <h3>Qué cambia cuando lo hacés bien</h3>
+
+  <div class="text-block">
+    <p>
+      Tu música empieza a tener más claridad dentro de las plataformas.
+      Se posiciona mejor, se percibe mejor
+      y tiene más posibilidades de crecer.
+    </p>
+
+    <p>
+      Tu perfil se ve más profesional,
+      tu catálogo tiene coherencia
+      y tu proyecto empieza a tomar forma.
+    </p>
+
+    <p>
+      Dejás de subir música al azar
+      y empezás a construir una carrera con estructura.
+    </p>
+
+    <p>
+      Y eso es lo que realmente marca la diferencia a largo plazo.
+    </p>
+  </div>
+</section>
+
+<section class="section highlight">
+  <h2 class="big-title">No es solo lanzar música, es construir tu presencia</h2>
+  <p>
+    Y nosotros estamos para acompañarte en ese proceso.
+  </p>
+</section>
+
+<section class="ctaa">
+  <h2>¿Listo para lanzar tu música correctamente?</h2>
+  <a href="#" class="btn">Distribuir ahora</a>
+</section>
+<footer id="contacto">
+  <div style="max-width:800px;margin:auto;text-align:center;">
+    <h2 style="margin-bottom:10px;">ProducersGo</h2>
+    <p style="margin-bottom:20px;">Sello discográfico enfocado en productores, beatmakers y DJs.</p>
+
+    <p style="margin-top:40px;font-size:14px;color:var(--gris);">
+      © 2026 ProducersGo - Todos los derechos reservados
+    </p>
+    <a href="/" style="display:inline-block;margin-top:12px;color:var(--turquesa);font-weight:700;text-decoration:none;">Volver a ProducersGo</a>
+  </div>
+</footer>
+
+</body>
+</html>
+

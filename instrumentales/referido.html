@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beats disponibles - Go Beats</title>
+  <link rel="stylesheet" href="cssz/dashboard.css">
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <style>
+    .referral-producer-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .referral-producer-tag img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(3,18,43,0.6);
+    }
+  </style>
+</head>
+<body class="go-public">
+  <main class="main">
+    <header class="header">
+      <div>
+        <p class="eyebrow">Go Beats</p>
+        <h1>Catalogo completo de instrumentales</h1>
+        <p style="color:var(--muted);font-size:14px;">Todas las instrumentales disponibles en Go Beats. Solo para escuchar.</p>
+      </div>
+      <a href="index.html" class="ghost-button">Iniciar sesion</a>
+    </header>
+
+    <section class="beats-section">
+      <div id="status" class="status">Cargando beats...</div>
+      <div id="beatsContainer" class="beats-grid explorer-grid"></div>
+    </section>
+  </main>
+
+  <script>
+    const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+    const params = new URLSearchParams(window.location.search);
+    const referralCode = params.get("code") || "";
+    const beatsContainer = document.getElementById("beatsContainer");
+    const statusBox = document.getElementById("status");
+    const players = new Map();
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function buildAssetUrl(path) {
+      if (!path) return "";
+      let value = String(path).replaceAll("\\", "/");
+      try { value = decodeURIComponent(value); } catch {}
+      if (value.startsWith("data:") || value.startsWith("blob:")) return value;
+      value = value.replace(/uploadsaudio[\u0000-\u001f\u007f]*/i, "uploads/audio/");
+      value = value.replace(/uploadsimages[\u0000-\u001f\u007f]*/i, "uploads/images/");
+      return value.startsWith("http") ? value : `${API_URL}/${value.replace(/^\/+/, "")}`;
+    }
+
+    function defaultPhoto() {
+      return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='300' height='300' fill='%230a1830'/%3E%3Ctext x='50%25' y='50%25' fill='%2366d9ff' font-family='Arial' font-size='52' text-anchor='middle' dominant-baseline='middle'%3EGB%3C/text%3E%3C/svg%3E";
+    }
+
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds)) return "0:00";
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60).toString().padStart(2, "0");
+      return `${min}:${sec}`;
+    }
+
+    function getPlayer(id) {
+      const root = document.querySelector(`[data-player-id="${CSS.escape(String(id))}"]`);
+      if (!root) return null;
+      const audioUrl = root.dataset.audio || "";
+      if (!audioUrl) return null;
+      if (!players.has(id)) {
+        const audio = new Audio(audioUrl);
+        players.set(id, { audio, root });
+        audio.addEventListener("timeupdate", () => updatePlayer(id));
+        audio.addEventListener("loadedmetadata", () => updatePlayer(id));
+        audio.addEventListener("ended", () => {
+          const btn = root.querySelector(".play-preview-btn");
+          if (btn) btn.textContent = "Reproducir";
+          updatePlayer(id);
+        });
+      }
+      return players.get(id);
+    }
+
+    function updatePlayer(id) {
+      const player = players.get(id);
+      const root = document.querySelector(`[data-player-id="${CSS.escape(String(id))}"]`);
+      if (!player || !root) return;
+      const range = root.querySelector(".beat-progress");
+      const time = root.querySelector(".beat-time");
+      const duration = player.audio.duration || 0;
+      const current = player.audio.currentTime || 0;
+      if (range) { range.max = duration || 0; range.value = current || 0; }
+      if (time) time.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+    }
+
+    function pauseOthers(id) {
+      players.forEach((player, key) => {
+        if (String(key) === String(id)) return;
+        player.audio.pause();
+        const btn = document.querySelector(`[data-player-id="${CSS.escape(String(key))}"] .play-preview-btn`);
+        if (btn) btn.textContent = "Reproducir";
+      });
+    }
+
+    function togglePlayer(id, btn) {
+      const player = getPlayer(id);
+      if (!player) return;
+      if (!player.audio.paused) { player.audio.pause(); btn.textContent = "Reproducir"; return; }
+      pauseOthers(id);
+      player.audio.play().then(() => { btn.textContent = "Pausar"; }).catch(() => { btn.textContent = "Reproducir"; });
+    }
+
+    function seekBeat(id, seconds) {
+      const player = getPlayer(id);
+      if (!player) return;
+      player.audio.currentTime = Math.max(0, Math.min(player.audio.duration || 0, player.audio.currentTime + seconds));
+      updatePlayer(id);
+    }
+
+    function scrubBeat(id, value) {
+      const player = getPlayer(id);
+      if (!player) return;
+      player.audio.currentTime = Number(value || 0);
+      updatePlayer(id);
+    }
+
+    function renderBeats(beats) {
+      if (!beats.length) {
+        beatsContainer.innerHTML = "";
+        statusBox.textContent = "No hay instrumentales disponibles en este momento.";
+        return;
+      }
+      statusBox.textContent = "";
+      beatsContainer.innerHTML = beats.map((beat) => {
+        const cover = buildAssetUrl(beat.coverUrl);
+        const audio = buildAssetUrl(beat.fileUrl);
+        const prodPhoto = beat.user?.profilePhotoUrl ? buildAssetUrl(beat.user.profilePhotoUrl) : "";
+        const playerId = String(beat.id || beat.name || Math.random()).replace(/[^a-zA-Z0-9_-]/g, "-");
+        return `
+          <article class="beat-card explorer-card">
+            <div class="beat-cover explorer-cover">
+              ${cover ? `<img src="${cover}" alt="Portada de ${escapeHtml(beat.name)}" onerror="this.style.display='none'">` : ""}
+              <span class="taken-badge available">Disponible</span>
+            </div>
+            <div class="beat-info explorer-info">
+              <div class="beat-heading">
+                <h3>${escapeHtml(beat.name || "Beat sin nombre")}</h3>
+                <span>${escapeHtml(beat.genre || "Beat")}</span>
+              </div>
+              <div class="beat-meta">
+                <span>${beat.bpm ? escapeHtml(beat.bpm) + " BPM" : "BPM libre"}</span>
+                <span>${escapeHtml(beat.key || "Sin nota")}</span>
+                <span>${escapeHtml(beat.mood || "Sin mood")}</span>
+              </div>
+              <div class="referral-producer-tag">
+                ${prodPhoto ? `<img src="${prodPhoto}" alt="">` : ""}
+                <span>${escapeHtml(beat.producer || beat.user?.producerName || "Productor")}</span>
+              </div>
+              ${audio ? `<div class="beat-player-pro" data-player-id="${escapeHtml(playerId)}" data-audio="${escapeHtml(audio)}"><div class="player-buttons"><button type="button" onclick="seekBeat('${escapeHtml(playerId)}', -10)">-10s</button><button type="button" class="play-preview-btn" onclick="togglePlayer('${escapeHtml(playerId)}', this)">Reproducir</button><button type="button" onclick="seekBeat('${escapeHtml(playerId)}', 10)">+10s</button></div><input class="beat-progress" type="range" min="0" value="0" step="0.1" oninput="scrubBeat('${escapeHtml(playerId)}', this.value)"><span class="beat-time">0:00 / 0:00</span></div>` : `<p class="status">Audio no disponible</p>`}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function loadReferral() {
+      if (!referralCode) {
+        statusBox.textContent = "Falta el codigo de referido.";
+        return;
+      }
+      try {
+        const res = await fetch(`${API_URL}/api/referrals/${encodeURIComponent(referralCode)}/beats`);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || "No se pudo cargar el catalogo");
+        renderBeats(data.beats || []);
+      } catch (err) {
+        statusBox.textContent = err.message || "No se pudo cargar el catalogo.";
+      }
+    }
+
+    window.togglePlayer = togglePlayer;
+    window.seekBeat = seekBeat;
+    window.scrubBeat = scrubBeat;
+    loadReferral();
+  </script>
+</body>
+</html>

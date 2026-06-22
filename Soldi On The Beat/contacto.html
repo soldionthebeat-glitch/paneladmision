@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contacto - Soldi On The Beat</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="contacto.css" />
+<link rel="icon" type="image/x-icon" href="/Fontend/img/Logos de Soldi On The Beat.png" />
+</head>
+<body>
+
+<header class="nav">
+  <h1 class="logo">Soldi On The Beat</h1>
+  <nav aria-label="Navegación principal">
+    <ul class="nav-links">
+      <li><a href="soldi.html">Inicio</a></li>
+      <li><a href="trabajos.html">Trabajos</a></li>
+      <li><a href="sobre.html">Sobre Mi</a></li>
+      <li><a href="colaboraciones.html">Colaboraciones</a></li>
+      <li><a href="contacto.html" aria-current="page">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="container">
+  <section class="section contacto-intro">
+    <h1>Contacto</h1>
+    <p>
+      Si estás buscando llevar tu música a un nivel más profesional,
+      podés contactarme para trabajar juntos.
+    </p>
+  </section>
+
+  <section class="section que-podes-solicitar">
+    <h2>¿Qué podés solicitar?</h2>
+    <ul>
+      <li>Producción de beats exclusivos</li>
+      <li>Mezcla y mejora de sonido</li>
+      <li>Desarrollo de identidad sonora</li>
+    </ul>
+  </section>
+
+  <section class="section form-section">
+    <form class="form" id="formulario" novalidate>
+      <div class="grid-form">
+        <div class="input-group">
+          <label>Nombre</label>
+          <input type="text" name="nombre" placeholder="Tu nombre" required />
+        </div>
+
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="Tu email" required />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>¿Qué tipo de perfil sos?</label>
+        <select name="perfil" required>
+          <option value="">Seleccionar</option>
+          <option>Productor</option>
+          <option>Artista</option>
+          <option>Sello Discográfico</option>
+          <option>Tercero / Marca</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>¿En qué aspecto estás interesado?</label>
+        <select name="servicio" required>
+          <option value="">Seleccionar</option>
+          <option>Mix & Master</option>
+          <option>Producción Musical</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Contanos sobre vos</label>
+        <textarea name="mensaje" placeholder="Qué hacés, tu nivel, qué buscás lograr..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn" id="btnEnviar">Enviar solicitud</button>
+
+      <p id="msg" class="msg-success" style="display:none;">
+        Mensaje enviado correctamente 🚀
+      </p>
+    </form>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    emailjs.init("6eWG2SK48quvIIAg_");
+
+    const form = document.getElementById("formulario");
+    const btn = document.getElementById("btnEnviar");
+    const msg = document.getElementById("msg");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      btn.innerText = "Enviando...";
+      btn.disabled = true;
+
+      const data = {
+        nombre: form.nombre.value,
+        email: form.email.value,
+        perfil: form.perfil.value,
+        servicio: form.servicio.value,
+        mensaje: form.mensaje.value
+      };
+
+      emailjs.send("service_x491gbm", "template_6oi2z9l", data)
+        .then(function() {
+          msg.style.display = "block";
+          form.reset();
+          btn.innerText = "Enviar solicitud";
+          btn.disabled = false;
+        }, function(error) {
+          alert("Error al enviar 😓");
+          console.error(error);
+          btn.innerText = "Enviar solicitud";
+          btn.disabled = false;
+        });
+    });
+  });
+</script>
+
+</body>
+</html>

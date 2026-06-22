@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mix & Feedback Profesional</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(6, 17, 31, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(102, 217, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(10, 102, 255, 0.1);
+      animation: slideDown 0.6s ease-out;
+    }
+
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--blanco);
+      font-size: 28px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .navbar-back {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #66d9ff;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      padding: 10px 16px;
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .navbar-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(102, 217, 255, 0.1), rgba(10, 102, 255, 0.1));
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .navbar-back:hover::before {
+      opacity: 1;
+    }
+    
+    .navbar-back:hover {
+      color: #ffffff;
+      transform: translateX(-4px);
+      text-shadow: 0 0 10px rgba(102, 217, 255, 0.5), 0 0 20px rgba(10, 102, 255, 0.3);
+    }
+    
+    .navbar-back svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    .navbar-back:hover svg {
+      transform: translateX(-3px);
+    }
+    
+    body {
+      padding-top: 80px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="navbar-brand">ProducersGo</a>
+  <div style="display:flex;gap:25px;align-items:center;">
+    <span class="navbar-back" onclick="if (history.length > 1) { history.back(); } else { location.href='/'; }" style="cursor:pointer;color:var(--gris);font-size:14px;transition:color 0.3s;" onmouseover="this.style.color='var(--azul-claro)'" onmouseout="this.style.color='var(--gris)'">&larr; Volver</span>
+  </div>
+</nav>
+<div class="bg-anim"></div>
+<div class="moving-background"></div>
+<section class="hero">
+  <h2>Tu música puede sonar profesional <span>si entendés qué está fallando</span></h2>
+  <p>
+    Analizamos tu mezcla, detectamos errores y te acompañamos para que mejores tu sonido paso a paso.
+  </p>
+  <a href="/Fontend/Contacto/contacto.html" class="btn">Quiero mejorar mi mix</a>
+</section>
+
+<section class="sectionn">
+  <h3>¿Por qué tu track no suena como referencia?</h3>
+
+  <div class="text-block">
+    <p>
+      Es una de las frustraciones más comunes dentro de la producción musical:
+      creás un beat que te gusta, lo escuchás en tu proyecto y suena bien,
+      pero cuando lo comparás con un track profesional,
+      la diferencia es evidente.
+    </p>
+
+    <p>
+      Esa diferencia no suele estar en un solo punto.
+      No es únicamente el kick, ni el 808, ni el volumen general.
+      Es la suma de muchas pequeñas decisiones que afectan el resultado final.
+    </p>
+
+    <p>
+      El balance entre elementos, el manejo de frecuencias,
+      el uso de compresión, la imagen estéreo,
+      la profundidad del sonido⬦ todo influye.
+    </p>
+
+    <p>
+      Y cuando trabajás solo, es muy fácil acostumbrarte a errores
+      sin darte cuenta de que están ahí.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section highlight">
+  <h2 class="big-title">No es falta de talento, es falta de referencia externa</h2>
+  <p>
+    Un buen feedback puede cambiar completamente cómo entendés tu sonido.
+  </p>
+</section>
+
+<section class="sectionn">
+  <h3>Qué analizamos dentro de tu mezcla</h3>
+
+  <div class="text-block">
+    <p>
+      Nuestro enfoque es claro: no buscamos complicarte,
+      buscamos darte claridad sobre lo que está pasando en tu track.
+    </p>
+
+    <p>
+      Revisamos el balance general para asegurarnos de que cada elemento
+      tenga su espacio sin competir innecesariamente con otros sonidos.
+    </p>
+
+    <p>
+      Analizamos las frecuencias para detectar acumulaciones,
+      choques entre instrumentos o zonas donde el sonido necesita limpieza.
+    </p>
+
+    <p>
+      Observamos cómo estás utilizando la compresión,
+      viendo si realmente está controlando la dinámica
+      o si está afectando negativamente la energía del track.
+    </p>
+
+    <p>
+      También evaluamos la imagen estéreo,
+      la profundidad y la sensación espacial,
+      buscando que el track tenga dimensión
+      y no suene plano o cerrado.
+    </p>
+
+    <p>
+      Y algo clave: vemos cómo se traduce tu mezcla
+      en distintos sistemas de escucha.
+      Porque un buen mix no depende de un solo equipo.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h3>Cómo trabajamos el feedback con vos</h3>
+
+  <div class="text-block">
+    <p>
+      No se trata solo de decirte qué está mal.
+      Se trata de explicarte por qué pasa y cómo solucionarlo.
+    </p>
+
+    <p>
+      Te damos un feedback claro, directo y aplicable,
+      para que puedas mejorar tu track sin perder tiempo.
+    </p>
+
+    <p>
+      Pero además, estamos presentes durante el proceso.
+      Podés volver, consultar, ajustar y seguir mejorando
+      con nuestra guía.
+    </p>
+
+    <p>
+      No es un análisis aislado,
+      es un acompañamiento pensado para que avances de verdad.
+    </p>
+  </div>
+</section>
+
+<section class="sectionn">
+  <h3>Mix y master como un solo proceso</h3>
+
+  <div class="text-block">
+    <p>
+      Muchas veces se piensa que el master va a �Sarreglar⬝ el track,
+      pero la realidad es que todo empieza en la mezcla.
+    </p>
+
+    <p>
+      Si la base no está bien construida,
+      ningún proceso final va a lograr un resultado profesional.
+    </p>
+
+    <p>
+      Por eso trabajamos el mix y el master como partes de un mismo objetivo:
+      lograr un sonido claro, equilibrado y competitivo.
+    </p>
+
+    <p>
+      Te guiamos en ambos procesos,
+      para que cada decisión tenga sentido dentro del resultado final.
+    </p>
+
+    <p>
+      Y siempre con algo clave:
+      no estás solo en ningún momento.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h3>Qué cambia después de trabajar tu sonido</h3>
+
+  <div class="text-block">
+    <p>
+      Empezás a escuchar diferente.
+      Detectás errores que antes pasaban desapercibidos.
+    </p>
+
+    <p>
+      Tus mezclas empiezan a tener más claridad,
+      mejor balance y una sensación más profesional.
+    </p>
+
+    <p>
+      Dejás de depender del azar
+      y empezás a tomar decisiones con criterio.
+    </p>
+
+    <p>
+      Y eso cambia completamente tu forma de producir.
+    </p>
+  </div>
+</section>
+
+<section class="section highlight">
+  <h2 class="big-title">No se trata de mezclar mejor, se trata de entender el sonido</h2>
+  <p>
+    Y nosotros estamos para ayudarte en ese proceso.
+  </p>
+</section>
+
+<section class="ctaa">
+  <h2>¿Listo para llevar tu sonido a otro nivel?</h2>
+  <a href="#" class="btn">Trabajar mi mix</a>
+</section>
+<footer id="contacto">
+  <div style="max-width:800px;margin:auto;text-align:center;">
+    <h2 style="margin-bottom:10px;">ProducersGo</h2>
+    <p style="margin-bottom:20px;">Sello discográfico enfocado en productores, beatmakers y DJs.</p>
+
+    <p style="margin-top:40px;font-size:14px;color:var(--gris);">
+      © 2026 ProducersGo - Todos los derechos reservados
+    </p>
+    <a href="/" style="display:inline-block;margin-top:12px;color:var(--turquesa);font-weight:700;text-decoration:none;">Volver a ProducersGo</a>
+  </div>
+</footer>
+</body>
+</html>
+

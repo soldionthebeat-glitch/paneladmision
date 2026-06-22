@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Próximamente</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #1a0000, #000);
+      color: white;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 4rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #ff1a1a;
+      text-shadow: 
+        0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 40px #990000;
+      animation: glow 2s infinite alternate;
+    }
+
+    p {
+      margin-top: 15px;
+      font-size: 1.2rem;
+      color: #ff6666;
+      opacity: 0.8;
+    }
+
+    .line {
+      margin: 30px auto;
+      width: 120px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #ff0000, transparent);
+      animation: move 2s infinite;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 
+          0 0 10px #ff0000,
+          0 0 20px #cc0000;
+      }
+      to {
+        text-shadow: 
+          0 0 20px #ff3333,
+          0 0 40px #ff0000,
+          0 0 60px #990000;
+      }
+    }
+
+    @keyframes move {
+      0% {
+        transform: scaleX(0.5);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scaleX(1.5);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Próximamente</h1>
+    <div class="line"></div>
+    <p>Algo grande está por llegar...</p>
+    <a href="/" style="display:inline-block;margin-top:24px;color:#e94560;font-weight:700;text-decoration:none;">Volver a ProducersGo</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Branding para Productores</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(6, 17, 31, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(102, 217, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(10, 102, 255, 0.1);
+      animation: slideDown 0.6s ease-out;
+    }
+
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--blanco);
+      font-size: 28px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .navbar-back {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #66d9ff;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      padding: 10px 16px;
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .navbar-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(102, 217, 255, 0.1), rgba(10, 102, 255, 0.1));
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .navbar-back:hover::before {
+      opacity: 1;
+    }
+    
+    .navbar-back:hover {
+      color: #ffffff;
+      transform: translateX(-4px);
+      text-shadow: 0 0 10px rgba(102, 217, 255, 0.5), 0 0 20px rgba(10, 102, 255, 0.3);
+    }
+    
+    .navbar-back svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    .navbar-back:hover svg {
+      transform: translateX(-3px);
+    }
+    
+    body {
+      padding-top: 80px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="navbar-brand">ProducersGo</a>
+  <div style="display:flex;gap:25px;align-items:center;">
+    <span class="navbar-back" onclick="if (history.length > 1) { history.back(); } else { location.href='/'; }" style="cursor:pointer;color:var(--gris);font-size:14px;transition:color 0.3s;" onmouseover="this.style.color='var(--azul-claro)'" onmouseout="this.style.color='var(--gris)'">&larr; Volver</span>
+  </div>
+</nav>
+
+  <main>
+    <section class="hero" aria-label="Presentación principal">
+      <h2 class="cinematic-glow">
+        Construimos productores que se convierten en <span>marcas de alto nivel</span>
+      </h2>
+      <p>
+        La diferencia entre un beatmaker más y un productor respetado está en cómo se percibe su identidad.
+      </p>
+      <a href="/Fontend/Contacto/contacto.html" class="btn btn-glow" role="button" aria-label="Empezar mi branding">
+        Empezar mi branding
+      </a>
+    </section>
+    
+    <div class="moving-background"></div>
+
+
+    <section class="sectiond text-block" aria-labelledby="problema-resolvemos">
+      <h3 id="problema-resolvemos">El problema que resolvemos</h3>
+      <p>
+        La mayoría de los productores tienen buen sonido, pero no logran diferenciarse. Suben contenido sin dirección,
+        cambian de estilo constantemente y no transmiten una identidad clara. Esto genera que el público no los recuerde,
+        no los asocie con un sonido específico y no los perciba como profesionales dentro del mercado.
+      </p>
+      <p>
+        Sin una identidad sólida, todo esfuerzo en marketing, contenido o distribución pierde fuerza. Por eso trabajamos
+        desde la raíz: la construcción de una marca artística coherente, estratégica y pensada para destacar.
+      </p>
+    </section>
+    
+
+    <section class="section text-block" aria-labelledby="como-trabajamos">
+      <h3 id="como-trabajamos">Cómo trabajamos internamente</h3>
+      <p>
+        Nuestro proceso de branding está diseñado para construir una identidad real, no superficial. No usamos plantillas,
+        trabajamos sobre cada productor como un proyecto único.
+      </p>
+    </section>
+
+    <section class="section grid" aria-label="Proceso de trabajo">
+      <article class="card cinematic-card" tabindex="0">
+        <h3>Diagnóstico profundo</h3>
+        <p>
+          Analizamos tu música, referencias, influencias, objetivos y estado actual. Detectamos qué te diferencia y qué
+          está frenando tu crecimiento. Este paso es clave porque define toda la estrategia.
+        </p>
+      </article>
+
+      <article class="card cinematic-card" tabindex="0">
+        <h3>Dirección conceptual</h3>
+        <p>
+          Construimos el concepto central de tu marca: qué transmitís, qué emociones generás y cómo te posicionás.
+          Esto incluye narrativa, identidad artística y enfoque creativo.
+        </p>
+      </article>
+
+      <article class="card cinematic-card" tabindex="0">
+        <h3>Identidad visual</h3>
+        <p>
+          Definimos estética, colores, estilo visual y coherencia gráfica. Todo alineado a tu sonido y al público al que apuntás.
+        </p>
+      </article>
+
+      <article class="card cinematic-card" tabindex="0">
+        <h3>Aplicación real</h3>
+        <p>
+          Bajamos todo a la práctica: redes sociales, portadas, contenido y presencia digital. No queda en teoría.
+        </p>
+      </article>
+    </section>
+
+    <section class="section" aria-labelledby="problema-real">
+      <h3 id="problema-real">El problema real que nadie te explica</h3>
+      <div class="text-block">
+        <p>
+          La mayoría de los productores tienen talento, pero no logran posicionarse.
+          No porque suenen mal, sino porque no tienen dirección.
+        </p>
+        <p>
+          Suben contenido sin estrategia, cambian de estilo constantemente
+          y no generan una identidad clara.
+        </p>
+      </div>
+    </section>
+
+    <div class="divider" role="separator"></div>
+
+    <section class="section highlight" aria-label="Nuestra propuesta">
+      <h2 class="big-title1">Ahí es donde entramos nosotros</h2>
+      <p>
+        No trabajamos con fórmulas genéricas. Construimos una estructura real
+        para que tu proyecto tenga identidad, dirección y crecimiento.
+      </p>
+    </section>
+  </main>
+
+  <footer id="contacto" role="contentinfo">
+    <div style="max-width:800px;margin:auto;text-align:center;">
+      <h2 style="margin-bottom:10px;">ProducersGo</h2>
+      <p style="margin-bottom:20px;">Sello discográfico enfocado en productores, beatmakers y DJs.</p>
+
+      <p style="margin-top:40px;font-size:14px;color:var(--gris);">
+        © 2026 ProducersGo - Todos los derechos reservados
+      </p>
+      <a href="/" style="display:inline-block;margin-top:12px;color:var(--turquesa);font-weight:700;text-decoration:none;">Volver a ProducersGo</a>
+    </div>
+  </footer>
+</body>
+</html>
+
+

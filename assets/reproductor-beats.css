@@ -1,0 +1,231 @@
+/* Reproductor de Beats */
+.reproductor-beats {
+  background: linear-gradient(135deg, rgba(10, 40, 70, 0.6), rgba(20, 60, 90, 0.6));
+  border: 1px solid rgba(77, 163, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.reproductor-beats .beat-info {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.reproductor-beats .beat-cover {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(77, 163, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.reproductor-beats .beat-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reproductor-beats .beat-details {
+  flex: 1;
+}
+
+.reproductor-beats .beat-title {
+  color: #4da3ff;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.reproductor-beats .beat-producer {
+  color: #a0a8c0;
+  font-size: 12px;
+  margin: 4px 0 0 0;
+}
+
+.reproductor-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tiempo-actual,
+.tiempo-total {
+  color: #7fbbb5;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 35px;
+}
+
+.progress-bar {
+  flex: 1;
+  position: relative;
+  height: 4px;
+  background: rgba(77, 163, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(90deg, #0a66ff, #2f8cff);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+.progress-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.progress-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #4da3ff;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(77, 163, 255, 0.5);
+}
+
+.progress-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #4da3ff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 8px rgba(77, 163, 255, 0.5);
+}
+
+.botones-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-play-pause {
+  background: linear-gradient(135deg, #0a66ff, #2f8cff);
+  border: none;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(10, 102, 255, 0.3);
+}
+
+.btn-play-pause:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(10, 102, 255, 0.5);
+}
+
+.btn-play-pause:active {
+  transform: scale(0.95);
+}
+
+.btn-volumen {
+  background: none;
+  border: none;
+  color: #4da3ff;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-volumen:hover {
+  transform: scale(1.1);
+}
+
+.slider-volumen {
+  width: 80px;
+  height: 4px;
+  appearance: none;
+  background: rgba(77, 163, 255, 0.1);
+  border-radius: 2px;
+  cursor: pointer;
+  outline: none;
+}
+
+.slider-volumen::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4da3ff;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(77, 163, 255, 0.5);
+}
+
+.slider-volumen::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4da3ff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 6px rgba(77, 163, 255, 0.5);
+}
+
+.reproductor-info {
+  text-align: center;
+  font-size: 11px;
+  color: #7fbbb5;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .reproductor-beats {
+    padding: 15px;
+  }
+
+  .reproductor-beats .beat-cover {
+    width: 50px;
+    height: 50px;
+  }
+
+  .slider-volumen {
+    width: 60px;
+  }
+
+  .tiempo-actual,
+  .tiempo-total {
+    font-size: 11px;
+    min-width: 30px;
+  }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>El 23 - Contacto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../assets/el23.css" />
+  <link rel="icon" type="image/x-icon" href="/Fontend/EL23_BRAND_PACK/el23_gray.png" />
+</head>
+<body>
+
+<header class="nav">
+  <h2 class="logo">El 23</h2>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="el23.html">Inicio</a></li>
+      <li><a href="trabajo.html">Beats</a></li>
+      <li><a href="sobre.html">Sobre Mi</a></li>
+      <li><a href="contacto.html" aria-current="page">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="contact" id="contacto">
+  <h2>Contacto</h2>
+  <form id="formulario">
+    <input type="text" name="nombre" placeholder="Tu nombre" required>
+    <input type="email" name="email" placeholder="Tu email" required>
+    <textarea name="mensaje" placeholder="Tu mensaje" rows="5" required></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+</section>
+
+<script>
+  document.getElementById("formulario")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alert("Gracias por contactarte con El 23. Te responderemos pronto.");
+  });
+</script>
+
+</body>
+</html>

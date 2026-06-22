@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Networking</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(6, 17, 31, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(102, 217, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(10, 102, 255, 0.1);
+      animation: slideDown 0.6s ease-out;
+    }
+
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--blanco);
+      font-size: 28px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .navbar-back {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #66d9ff;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      padding: 10px 16px;
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .navbar-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(102, 217, 255, 0.1), rgba(10, 102, 255, 0.1));
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .navbar-back:hover::before {
+      opacity: 1;
+    }
+    
+    .navbar-back:hover {
+      color: #ffffff;
+      transform: translateX(-4px);
+      text-shadow: 0 0 10px rgba(102, 217, 255, 0.5), 0 0 20px rgba(10, 102, 255, 0.3);
+    }
+    
+    .navbar-back svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    .navbar-back:hover svg {
+      transform: translateX(-3px);
+    }
+    
+    body {
+      padding-top: 80px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="navbar-brand">ProducersGo</a>
+  <div style="display:flex;gap:25px;align-items:center;">
+    <span class="navbar-back" onclick="if (history.length > 1) { history.back(); } else { location.href='/'; }" style="cursor:pointer;color:var(--gris);font-size:14px;transition:color 0.3s;" onmouseover="this.style.color='var(--azul-claro)'" onmouseout="this.style.color='var(--gris)'">&larr; Volver</span>
+  </div>
+</nav>
+<div class="bg-anim"></div>
+<div class="moving-background"></div>
+
+<section class="hero">
+  <h2>Las conexiones correctas <span>cambian tu carrera</span></h2>
+  <p>
+    No se trata solo de talento, sino de estar en el lugar correcto,
+    con las personas correctas y en el momento adecuado. La industria
+    musical no se mueve solo por habilidad, sino por relaciones.
+  </p>
+  <a href="/Fontend/Contacto/contacto.html" class="btn">Acceder a oportunidades</a>
+</section>
+
+<section class="sectionn">
+  <h3>El error que frena a la mayoría</h3>
+
+  <div class="text-block">
+    <p>
+      Muchos productores pasan años perfeccionando su sonido,
+      pero lo hacen completamente aislados. No muestran su trabajo,
+      no generan vínculos y no participan activamente dentro del ecosistema musical.
+    </p>
+
+    <p>
+      Esto crea una barrera invisible: pueden ser buenos,
+      pero nadie lo sabe. Y en la industria, lo que no se ve,
+      no existe.
+    </p>
+
+    <p>
+      Sin conexiones, no hay colaboraciones. Sin colaboraciones,
+      no hay exposición. Y sin exposición, el crecimiento se vuelve lento,
+      frustrante y limitado.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section highlight">
+  <h2 class="big-title">El talento sin conexiones se limita</h2>
+  <p>
+    Podés tener un gran nivel como productor, pero si no estás dentro del circuito,
+    las oportunidades no llegan solas. Nosotros acortamos ese camino,
+    conectándote directamente con artistas, productores y proyectos activos,
+    donde realmente pasan las cosas.
+  </p>
+</section>
+
+<section class="section">
+  <h3>Cómo trabajamos internamente</h3>
+
+  <div class="text-block">
+    <p>
+      No conectamos por conectar. Cada vínculo tiene un propósito.
+      Analizamos perfiles, estilos y objetivos para generar conexiones
+      que realmente puedan convertirse en oportunidades concretas.
+    </p>
+  </div>
+</section>
+
+<section class="section grid">
+  <div class="card">
+    <h3>Selección</h3>
+    <p>
+      Analizamos tu perfil, tu sonido y tu enfoque para identificar
+      con qué tipo de artistas o productores tiene sentido conectarte.
+      Buscamos compatibilidad real, no conexiones al azar.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Conexión</h3>
+    <p>
+      Facilitamos contactos directos dentro de la industria.
+      Accedés a personas que ya están activas en el mercado,
+      generando oportunidades que de otra forma serían difíciles de alcanzar.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Seguimiento</h3>
+    <p>
+      No solo conectamos, también te guiamos para que aproveches cada oportunidad.
+      Cómo comunicarte, cómo presentar tu trabajo y cómo convertir una conexión
+      en una colaboración real.
+    </p>
+  </div>
+</section>
+
+<section class="sectionn">
+  <h3>Qué vas a conseguir</h3>
+
+  <div class="text-block">
+    <p>
+      Acceso a colaboraciones reales, proyectos activos y un entorno donde tu talento
+      puede crecer de forma exponencial.
+    </p>
+
+    <p>
+      Vas a dejar de depender únicamente de subir contenido,
+      para empezar a formar parte de un circuito donde las oportunidades circulan
+      constantemente.
+    </p>
+
+    <p>
+      Pasás de trabajar solo⬦ a moverte dentro de la industria.
+    </p>
+  </div>
+</section>
+<footer id="contacto">
+  <div style="max-width:800px;margin:auto;text-align:center;">
+    <h2 style="margin-bottom:10px;">ProducersGo</h2>
+    <p style="margin-bottom:20px;">Sello discográfico enfocado en productores, beatmakers y DJs.</p>
+
+    <p style="margin-top:40px;font-size:14px;color:var(--gris);">
+      © 2026 ProducersGo - Todos los derechos reservados
+    </p>
+    <a href="/" style="display:inline-block;margin-top:12px;color:var(--turquesa);font-weight:700;text-decoration:none;">Volver a ProducersGo</a>
+  </div>
+</footer>
+</body>
+</html>
+

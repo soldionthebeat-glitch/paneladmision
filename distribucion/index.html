@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distribucion - Go Beats</title>
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06111f; --panel: rgba(10,24,48,0.85); --line: rgba(124,184,255,0.2);
+      --text: #edf6ff; --muted: #9db6d8; --blue: #0a66ff; --cyan: #66d9ff;
+      --ok: #00ff9a; --error: #ff4560; --radius: 10px;
+      --shadow: 0 22px 70px rgba(1,8,22,0.52);
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 18% 8%, rgba(10,102,255,0.34), transparent 30%),
+                  radial-gradient(circle at 80% 0%, rgba(102,217,255,0.22), transparent 26%),
+                  linear-gradient(145deg, #030b18 0%, #071b35 52%, #020712 100%);
+      color: var(--text); padding: 20px;
+    }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    .topbar {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .topbar a {
+      text-decoration: none; color: var(--cyan);
+      background: rgba(102,217,255,0.08); border: 1px solid rgba(102,217,255,0.25);
+      border-radius: 999px; padding: 8px 12px; font-size: 13px; font-weight: 700;
+    }
+    .card {
+      border: 1px solid var(--line); border-radius: 16px;
+      background: var(--panel); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .hero {
+      padding: 24px; border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(10,102,255,0.2), rgba(102,217,255,0.08));
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 26px; }
+    .hero p { margin: 0; color: var(--muted); font-size: 14px; }
+    .content { padding: 22px; display: grid; gap: 16px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    label { display: grid; gap: 6px; font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+    label .note { font-weight: 400; text-transform: none; color: var(--muted); font-size: 11px; }
+    input, select, textarea {
+      width: 100%; min-height: 42px; border-radius: var(--radius);
+      border: 1px solid rgba(124,184,255,0.25);
+      background: rgba(3,18,43,0.75); color: var(--text);
+      outline: none; padding: 10px 12px;
+      font: inherit;
+    }
+    input:focus, select:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(102,217,255,0.14); }
+    button, .action-btn {
+      min-height: 42px; border-radius: var(--radius); border: 0;
+      color: #fff; font-weight: 800; cursor: pointer; padding: 10px 16px;
+      font: inherit; transition: all 0.2s; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 6px;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--blue), var(--cyan)); }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-ghost { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: var(--muted); }
+    .btn-danger { background: rgba(255,69,96,0.2); border: 1px solid rgba(255,69,96,0.4); color: #ff4560; }
+    .status-box {
+      display: none; padding: 12px; border-radius: var(--radius);
+      font-weight: 700; font-size: 13px; border: 1px solid transparent;
+    }
+    .status-box.show { display: block; }
+    .status-box.ok { color: var(--ok); background: rgba(0,255,154,0.08); border-color: rgba(0,255,154,0.35); }
+    .status-box.error { color: var(--error); background: rgba(255,69,96,0.08); border-color: rgba(255,69,96,0.35); }
+    .info-text { color: var(--muted); font-size: 12px; }
+    .is-instrumental-box {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; background: rgba(0,255,154,0.06);
+      border: 1px solid rgba(0,255,154,0.2); border-radius: 8px;
+    }
+    .is-instrumental-box strong { color: var(--ok); font-size: 14px; }
+    .checkbox-row {
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 20px; height: 20px; min-height: auto; accent-color: var(--cyan);
+    }
+    @media (max-width: 700px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    .list-section { margin-top: 24px; }
+    .distro-list {
+      display: grid; gap: 12px;
+    }
+    .distro-item {
+      display: grid; grid-template-columns: 1fr auto; gap: 12px;
+      align-items: center; padding: 14px;
+      background: rgba(3,18,43,0.6); border: 1px solid rgba(124,184,255,0.15);
+      border-radius: 8px;
+    }
+    .distro-item .info strong { display: block; color: var(--cyan); }
+    .distro-item .info span { color: var(--muted); font-size: 12px; }
+    .distro-item .status-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+    }
+    .status-badge.published { background: rgba(0,255,154,0.15); color: #00ff9a; border: 1px solid rgba(0,255,154,0.3); }
+    .status-badge.pending { background: rgba(255,193,7,0.15); color: #ffc107; border: 1px solid rgba(255,193,7,0.3); }
+    .status-badge.distributed { background: rgba(102,217,255,0.15); color: #66d9ff; border: 1px solid rgba(102,217,255,0.3); }
+    .status-badge.rejected { background: rgba(255,69,96,0.15); color: #ff4560; border: 1px solid rgba(255,69,96,0.3); }
+    .distro-item .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .distro-item .actions button { min-height: 32px; padding: 6px 12px; font-size: 12px; }
+    .admin-only { display: none; }
+    body[data-role="admin"] .admin-only { display: block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a href="/Fontend/instrumentales/home.html">Explorer</a>
+      <a href="/Fontend/instrumentales/dashboard.html">Mi Panel</a>
+      <a href="/Fontend/instrumentales/subirbeats.html">Subir instrumental</a>
+    </div>
+
+    <section class="card" id="formSection">
+      <div class="hero">
+        <h1>Datos de Distribucion</h1>
+        <p>Registra los datos de distribucion de tu catalogo: ISRC, UPC, fechas, generos y mas.</p>
+      </div>
+
+      <form id="distroForm" class="content">
+        <input type="hidden" id="distroId" value="">
+        <input type="hidden" id="beatId" value="">
+        <input type="hidden" id="producerUserId" value="">
+
+        <div class="form-group admin-only" style="margin-bottom:14px;">
+          <label>
+            Productor (selecciona a quien asignar esta distribucion)
+            <select id="producerSelect" style="width:100%;min-height:42px;border-radius:var(--radius);border:1px solid rgba(124,184,255,0.25);background:rgba(3,18,43,0.75);color:var(--text);outline:none;padding:10px 12px;"></select>
+          </label>
+        </div>
+
+        <div class="grid-2">
+          <label>
+            Titulo del catalogo
+            <input type="text" id="title" required placeholder="Ej: Catalogo Mayo 2026">
+          </label>
+          <label>
+            Nombre artistico
+            <input type="text" id="artistName" required placeholder="Tu nombre artistico">
+          </label>
+        </div>
+
+        <div class="grid-2">
+          <label>
+            Productor
+            <input type="text" id="producer" placeholder="Nombre del productor">
+          </label>
+          <label>
+            ISRC
+            <input type="text" id="isrc" placeholder="Ej: US-123-45-67890" maxlength="20">
+            <span class="note">International Standard Recording Code</span>
+          </label>
+        </div>
+
+        <div class="grid-2">
+          <label>
+            UPC
+            <input type="text" id="upc" placeholder="Ej: 123456789012" maxlength="20">
+            <span class="note">Universal Product Code</span>
+          </label>
+          <label>
+            Fecha de lanzamiento
+            <input type="date" id="releaseDate">
+          </label>
+        </div>
+
+        <div class="grid-2">
+          <label>
+            Fecha de lanzamiento
+            <input type="date" id="releaseDate">
+          </label>
+          <label>
+            Genero principal
+            <select id="mainGenre">
+              <option value="">Selecciona</option>
+              <option>Trap</option><option>Drill</option><option>R&B</option>
+              <option>Hip-Hop</option><option>Reggaeton</option><option>Techno</option>
+              <option>House</option><option>Lo-Fi</option><option>Pop</option>
+              <option>Electronic</option><option>Latin</option><option>Otros</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="grid-2">
+          <label>
+            Genero secundario
+            <select id="secondaryGenre">
+              <option value="">Ninguno</option>
+              <option>Trap</option><option>Drill</option><option>R&B</option>
+              <option>Hip-Hop</option><option>Reggaeton</option><option>Techno</option>
+              <option>House</option><option>Lo-Fi</option><option>Pop</option>
+              <option>Electronic</option><option>Latin</option><option>Otros</option>
+            </select>
+          </label>
+          <label>
+            Pais
+            <input type="text" id="country" placeholder="Ej: Argentina">
+          </label>
+        </div>
+
+        <div class="is-instrumental-box">
+          <input type="checkbox" id="isInstrumental" checked>
+          <label for="isInstrumental" class="checkbox-row" style="text-transform:none;font-weight:400;gap:8px;">
+            <strong>¿Es instrumental?</strong> <span style="color:var(--muted);">(Por defecto: Si. Esta plataforma es exclusiva para instrumentales)</span>
+          </label>
+        </div>
+
+        <div id="status" class="status-box"></div>
+
+        <div style="display:flex; gap: 12px; flex-wrap: wrap;">
+          <button type="submit" id="submitBtn" class="btn-primary">Guardar distribucion</button>
+          <button type="button" id="cancelBtn" class="btn-ghost" style="display:none;">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card list-section">
+      <div class="hero">
+        <h1>Mis Registros</h1>
+        <p>Tus datos de distribucion guardados.</p>
+      </div>
+      <div class="content">
+        <div id="distroListContainer">
+          <p class="info-text">Cargando registros...</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" 
+      ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+
+    let distros = [];
+    let editingId = null;
+    let usuarioActual = null;
+
+    const form = document.getElementById("distroForm");
+    const formSection = document.getElementById("formSection");
+    const statusBox = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const distroIdInput = document.getElementById("distroId");
+    const beatIdInput = document.getElementById("beatId");
+
+    function token() { return localStorage.getItem("token"); }
+    function authHeaders(extra = {}) { return { ...extra, Authorization: "Bearer " + token() }; }
+    function escapeHtml(v) { return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+
+    function showStatus(text, type) {
+      statusBox.textContent = text;
+      statusBox.className = `status-box show ${type}`;
+    }
+
+    async function proteger() {
+      if (!token()) { window.location.replace("/Fontend/instrumentales/index.html"); return false; }
+      try {
+        const res = await fetch(`${API_URL}/api/me`, { headers: authHeaders() });
+        if (!res.ok) throw new Error("Sesion invalida");
+        usuarioActual = await res.json();
+        document.body.dataset.role = usuarioActual.role;
+        document.getElementById("producer").value = usuarioActual.producerName || "";
+        document.getElementById("artistName").value = usuarioActual.producerName || "";
+        if (usuarioActual.country) document.getElementById("country").value = usuarioActual.country;
+
+        // Solo admin puede crear/editar distribuciones
+        if (usuarioActual.role !== "admin") {
+          formSection.style.display = "none";
+          document.querySelector(".list-section .hero p").textContent = "Tus registros de distribucion (solo lectura).";
+        } else {
+          document.querySelector(".list-section .hero p").textContent = "Todos los registros de distribucion.";
+        }
+
+        return true;
+      } catch {
+        localStorage.removeItem("token");
+        window.location.replace("/Fontend/instrumentales/index.html");
+        return false;
+      }
+    }
+
+    function fillForm(data) {
+      distroIdInput.value = data.id || "";
+      document.getElementById("title").value = data.title || "";
+      document.getElementById("artistName").value = data.artistName || "";
+      document.getElementById("producer").value = data.producer || "";
+      document.getElementById("isrc").value = data.isrc || "";
+      document.getElementById("upc").value = data.upc || "";
+      document.getElementById("releaseDate").value = data.releaseDate ? data.releaseDate.split("T")[0] : "";
+      document.getElementById("mainGenre").value = data.mainGenre || "";
+      document.getElementById("secondaryGenre").value = data.secondaryGenre || "";
+      document.getElementById("country").value = data.country || "";
+      document.getElementById("isInstrumental").checked = data.isInstrumental !== false;
+      if (data.userId) {
+        const userId = typeof data.userId === "object" ? (data.userId.id || data.userId.id) : data.userId;
+        document.getElementById("producerUserId").value = userId;
+        const select = document.getElementById("producerSelect");
+        if (select) select.value = userId;
+      }
+      submitBtn.textContent = "Actualizar distribucion";
+      cancelBtn.style.display = "";
+    }
+
+    function resetForm() {
+      form.reset();
+      distroIdInput.value = "";
+      beatIdInput.value = "";
+      editingId = null;
+      submitBtn.textContent = "Guardar distribucion";
+      cancelBtn.style.display = "none";
+      document.getElementById("isInstrumental").checked = true;
+      document.getElementById("status").className = "status-box";
+    }
+
+    async function cargarDistros() {
+      try {
+        const url = usuarioActual?.role === "admin"
+          ? `${API_URL}/api/distribution/all`
+          : `${API_URL}/api/distribution`;
+        const res = await fetch(url, { headers: authHeaders() });
+        if (!res.ok) throw new Error("Error");
+        distros = await res.json();
+        renderDistros();
+      } catch {
+        document.getElementById("distroListContainer").innerHTML = `<p class="info-text">Error cargando registros.</p>`;
+      }
+    }
+
+    function renderDistros() {
+      const container = document.getElementById("distroListContainer");
+      const isAdmin = usuarioActual?.role === "admin";
+
+      if (!distros.length) {
+        container.innerHTML = `<p class="info-text">No hay registros de distribucion aun.</p>`;
+        return;
+      }
+
+      container.innerHTML = `<div class="distro-list">${distros.map(d => {
+        const producerName = d.userId && typeof d.userId === "object" ? (d.userId.producerName || d.userId.email) : "";
+        return `
+        <div class="distro-item">
+          <div class="info">
+            <strong>${escapeHtml(d.title || "Sin titulo")}</strong>
+            ${producerName ? `<span>Productor: ${escapeHtml(producerName)}</span>` : ""}
+            <span>UPC: ${escapeHtml(d.upc || "-")} | ${d.releaseDate ? new Date(d.releaseDate).toLocaleDateString() : "Sin fecha"}</span>
+            <span>${escapeHtml(d.mainGenre || "")}${d.secondaryGenre ? ` / ${escapeHtml(d.secondaryGenre)}` : ""}</span>
+            <span style="display:block;margin-top:4px;"><span class="status-badge ${d.status}">${d.status}</span></span>
+          </div>
+          ${isAdmin ? `
+          <div class="actions">
+            <button class="btn-ghost" onclick="editDistro('${d.id}')">Editar</button>
+            <button class="btn-danger" onclick="deleteDistro('${d.id}')">Eliminar</button>
+          </div>` : ""}
+        </div>`;
+      }).join("")}</div>`;
+    }
+
+    async function editDistro(id) {
+      const d = distros.find(x => x.id === id);
+      if (!d) return;
+      editingId = id;
+      fillForm(d);
+      form.scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function deleteDistro(id) {
+      if (!confirm("Eliminar este registro de distribucion?")) return;
+      try {
+        const res = await fetch(`${API_URL}/api/distribution/${id}`, {
+          method: "DELETE", headers: authHeaders()
+        });
+        if (!res.ok) throw new Error("Error");
+        showStatus("Registro eliminado.", "ok");
+        await cargarDistros();
+      } catch {
+        showStatus("Error eliminando registro.", "error");
+      }
+    }
+
+    cancelBtn.addEventListener("click", resetForm);
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const isEdit = !!distroIdInput.value;
+
+      const data = {
+        title: document.getElementById("title").value.trim(),
+        artistName: document.getElementById("artistName").value.trim(),
+        producer: document.getElementById("producer").value.trim(),
+        upc: document.getElementById("upc").value.trim(),
+        releaseDate: document.getElementById("releaseDate").value || null,
+        mainGenre: document.getElementById("mainGenre").value,
+        secondaryGenre: document.getElementById("secondaryGenre").value,
+        country: document.getElementById("country").value.trim(),
+        isInstrumental: document.getElementById("isInstrumental").checked,
+        userId: document.getElementById("producerUserId").value || undefined
+      };
+
+      if (!data.title || !data.artistName) {
+        showStatus("Titulo y nombre artistico son obligatorios.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = isEdit ? "Actualizando..." : "Guardando...";
+
+      try {
+        const url = isEdit
+          ? `${API_URL}/api/distribution/${distroIdInput.value}`
+          : `${API_URL}/api/distribution`;
+        const method = isEdit ? "PUT" : "POST";
+
+        const res = await fetch(url, {
+          method,
+          headers: authHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.detalle || result.message || "Error");
+
+        showStatus(result.message || "Distribucion guardada.", "ok");
+        resetForm();
+        await cargarDistros();
+      } catch (err) {
+        showStatus(err.message || "Error de conexion.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = isEdit ? "Actualizar distribucion" : "Guardar distribucion";
+      }
+    });
+
+    async function cargarProductores() {
+      if (usuarioActual?.role !== "admin") return;
+      try {
+        const res = await fetch(`${API_URL}/api/users`, { headers: authHeaders() });
+        if (!res.ok) throw new Error();
+        const users = await res.json();
+        const select = document.getElementById("producerSelect");
+        select.innerHTML = `<option value="">Selecciona un productor</option>`;
+        users.filter(u => u.role === "producer" || u.role === "admin").forEach(u => {
+          const opt = document.createElement("option");
+          opt.value = u.id;
+          opt.textContent = `${u.producerName || u.email} (${u.role})`;
+          select.appendChild(opt);
+        });
+        select.addEventListener("change", () => {
+          document.getElementById("producerUserId").value = select.value;
+        });
+      } catch {}
+    }
+
+    (async () => {
+      const ok = await proteger();
+      if (ok) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("beat")) {
+          beatIdInput.value = params.get("beat");
+        }
+        await cargarProductores();
+        await cargarDistros();
+        if (params.get("id")) {
+          setTimeout(() => editDistro(params.get("id")), 300);
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Panel - Go Beats</title>
+  <link rel="stylesheet" href="cssz/dashboard.css" />
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <style>
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .module-card {
+      background: linear-gradient(135deg, rgba(10, 102, 255, 0.15), rgba(102, 217, 255, 0.05));
+      border: 1px solid rgba(102, 217, 255, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.3s ease;
+      display: grid;
+      gap: 8px;
+    }
+    .module-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--cyan);
+      box-shadow: 0 8px 24px rgba(102, 217, 255, 0.12);
+    }
+    .module-card .icon {
+      font-size: 28px;
+    }
+    .module-card h3 {
+      font-size: 17px;
+      margin: 0;
+    }
+    .module-card p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+    .module-card .count {
+      color: var(--cyan);
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .distro-section {
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(10, 24, 48, 0.72);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .distro-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .distro-card {
+      padding: 16px;
+      background: rgba(3, 18, 43, 0.6);
+      border: 1px solid rgba(124, 184, 255, 0.18);
+      border-radius: 8px;
+    }
+    .distro-card h4 {
+      color: var(--cyan);
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+    .distro-card .field {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(124, 184, 255, 0.08);
+    }
+    .distro-card .field span:first-child {
+      color: var(--muted);
+    }
+    .distro-card .field span:last-child {
+      color: var(--text);
+      font-weight: 600;
+    }
+    /* distribucion table */
+    .distro-table-wrapper { overflow-x: auto; margin-top:8px; }
+    .distro-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+    .distro-table th { text-align:left; padding:10px 12px; background:rgba(0,180,255,0.1); color:var(--cyan); font-weight:600; white-space:nowrap; border-bottom:2px solid var(--cyan); }
+    .distro-table td { padding:10px 12px; border-bottom:1px solid rgba(255,255,255,0.06); color:var(--text); white-space:nowrap; }
+    .distro-table tr:hover td { background:rgba(0,180,255,0.04); }
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .status-badge.published { background: rgba(0, 255, 154, 0.15); color: #00ff9a; border: 1px solid rgba(0, 255, 154, 0.3); }
+    .status-badge.pending { background: rgba(255, 193, 7, 0.15); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.3); }
+    .status-badge.distributed { background: rgba(102, 217, 255, 0.15); color: #66d9ff; border: 1px solid rgba(102, 217, 255, 0.3); }
+    .status-badge.rejected { background: rgba(255, 69, 96, 0.15); color: #ff4560; border: 1px solid rgba(255, 69, 96, 0.3); }
+    .status-badge.draft { background: rgba(160, 168, 192, 0.15); color: #a0a8c0; border: 1px solid rgba(160, 168, 192, 0.3); }
+    .btn-distro {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: rgba(10, 102, 255, 0.2);
+      border: 1px solid rgba(102, 217, 255, 0.3);
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-distro:hover {
+      background: rgba(10, 102, 255, 0.3);
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: rgba(3, 18, 43, 0.5);
+      border-radius: 8px;
+      padding: 4px;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tabs button.active {
+      background: rgba(10, 102, 255, 0.25);
+      color: var(--cyan);
+    }
+    .tabs button:hover {
+      color: var(--text);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .action-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .action-btn.secondary {
+      background: rgba(102, 217, 255, 0.12);
+      border: 1px solid rgba(102, 217, 255, 0.3);
+      color: var(--cyan);
+    }
+    .isrc-upc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .isrc-upc-box {
+      padding: 14px;
+      background: rgba(3, 18, 43, 0.6);
+      border: 1px solid rgba(124, 184, 255, 0.18);
+      border-radius: 8px;
+      text-align: center;
+    }
+    .isrc-upc-box strong {
+      display: block;
+      font-size: 16px;
+      color: var(--cyan);
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    .isrc-upc-box small {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button id="sidebarHandle" class="sidebar-handle" type="button" aria-label="Abrir menu"></button>
+    <div class="brand-block">
+      <span class="brand-mark">GB</span>
+      <div>
+        <h2>Go Beats</h2>
+        <p>Mi Panel</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="home.html">Explorer</a>
+      <a href="dashboard.html" class="active">Mi Panel</a>
+      <a href="subirbeats.html">Subir instrumental</a>
+      <a href="../distribucion/index.html">Distribucion</a>
+      <a href="../libreria/index.html">Libreria</a>
+      <a href="perfil-editor.html">Mi Perfil</a>
+      <a href="admin-descargas.html" class="admin-only hidden">Descargas</a>
+      <a href="admin-submissions.html" class="admin-only hidden">Submissions</a>
+      <a href="admi.html" class="admin-only hidden">Admin</a>
+    </nav>
+  </aside>
+
+  <main class="main" id="main">
+    <header class="header">
+      <button id="toggleSidebar" type="button" aria-label="Abrir menu"></button>
+      <div>
+        <p class="eyebrow">Panel de Productor</p>
+        <h1>Mi Panel</h1>
+      </div>
+      <div class="header-actions">
+        <span id="userBadge" class="user-badge">Cargando...</span>
+        <button id="logoutBtn" type="button">Cerrar sesion</button>
+      </div>
+    </header>
+
+    <!-- Modulos de acceso rapido -->
+    <section class="module-grid">
+      <a href="subirbeats.html" class="module-card">
+        <div class="icon">🎵</div>
+        <h3>Subir Instrumental</h3>
+        <p>MP3 + Portada obligatorios</p>
+      </a>
+      <a href="../distribucion/index.html" class="module-card admin-only hidden">
+        <div class="icon">📡</div>
+        <h3>Datos de Distribucion</h3>
+        <p>ISRC, UPC, fechas y generos</p>
+      </a>
+      <a href="../libreria/index.html" class="module-card">
+        <div class="icon">📦</div>
+        <h3>Libreria de Sonidos</h3>
+        <p>Drum Kits, Sample Packs, Loops</p>
+      </a>
+      <a href="#distribuciones" class="module-card" id="distroModule">
+        <div class="icon">📡</div>
+        <h3>Mis Distribuciones</h3>
+        <p>ISRC, UPC, fechas y codigos</p>
+      </a>
+
+    </section>
+
+    <!-- Tabs: Mis Beats / Distribucion -->
+    <section class="hero-panel">
+      <div>
+        <p class="eyebrow">Resumen</p>
+        <h2 id="panelTitle">Mis Instrumentales</h2>
+        <p id="panelDescription">Gestiona tu catalogo y datos de distribucion.</p>
+      </div>
+      <div class="hero-stat">
+        <strong id="totalCount">0</strong>
+        <span id="totalLabel">instrumentales</span>
+      </div>
+    </section>
+
+    <div class="tabs">
+      <button class="active" data-tab="beats">Mis Beats</button>
+      <button data-tab="distro" class="admin-only hidden">Distribucion</button>
+      <button data-tab="stats" class="admin-only hidden">ISRC / UPC</button>
+    </div>
+
+    <!-- TAB: MIS BEATS -->
+    <div class="tab-content active" id="tab-beats">
+      <section class="filters-panel">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+          <div class="search-box" style="flex: 1; min-width: 200px;">
+            <label for="searchInput">Buscar</label>
+            <input id="searchInput" type="search" placeholder="Nombre, genero, BPM..." />
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="refresh-btn" id="refreshBtn" title="Actualizar">Actualizar</button>
+            <a href="subirbeats.html" class="action-btn">+ Nueva instrumental</a>
+          </div>
+        </div>
+        <div class="filter-tabs" style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="available">Disponibles</button>
+          <button class="filter-btn" data-filter="taken">Tomados</button>
+          <button class="filter-btn" data-filter="draft">Borradores</button>
+        </div>
+      </section>
+
+      <section class="beats-section">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Tus Producciones</p>
+            <h2>Instrumentales</h2>
+          </div>
+        </div>
+        <div id="beats-status" class="status">Cargando instrumentales...</div>
+        <div id="beats-container" class="beats-grid"></div>
+      </section>
+    </div>
+
+    <!-- SECCION: DISTRIBUCIONES (visible para todos) -->
+    <section class="distro-section" id="distribuciones" style="margin-top:24px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <p class="eyebrow">Distribucion</p>
+          <h2>Mis Distribuciones</h2>
+          <p>Registros de distribucion asignados por el administrador.</p>
+        </div>
+      </div>
+      <div id="producer-distro-container">
+        <p class="status">Cargando distribuciones...</p>
+      </div>
+    </section>
+
+    <!-- TAB: DISTRIBUCION -->
+    <div class="tab-content admin-only hidden" id="tab-distro">
+      <section class="distro-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <p class="eyebrow">Distribucion</p>
+            <h2>Datos de Distribucion</h2>
+            <p>ISRC, UPC, generos y fechas de lanzamiento.</p>
+          </div>
+          <a href="../distribucion/index.html" class="action-btn admin-only">+ Nueva distribucion</a>
+        </div>
+        <div id="distro-container">
+          <p class="status">Cargando datos de distribucion...</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB: ISRC / UPC -->
+    <div class="tab-content admin-only hidden" id="tab-stats">
+      <section class="distro-section">
+        <p class="eyebrow">Codigos</p>
+        <h2>ISRC y UPC</h2>
+        <p>Todos tus codigos de distribucion registrados.</p>
+        <div id="isrc-upc-container">
+          <p class="status">Cargando codigos...</p>
+        </div>
+      </section>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+
+// State
+let usuarioActual = null;
+let beatsGlobal = [];
+let distrosGlobal = [];
+let filterActual = "all";
+let isLoading = false;
+const dashPlayers = new Map();
+
+// DOM refs
+const sidebar = document.getElementById("sidebar");
+const statusBox = document.getElementById("beats-status");
+const beatsContainer = document.getElementById("beats-container");
+const userBadge = document.getElementById("userBadge");
+const searchInput = document.getElementById("searchInput");
+const refreshBtn = document.getElementById("refreshBtn");
+const filterBtns = document.querySelectorAll(".filter-btn");
+
+function toggleSidebar() { sidebar.classList.toggle("active"); }
+
+function token() { return localStorage.getItem("token"); }
+function authHeaders(extra = {}) {
+  return { ...extra, Authorization: "Bearer " + token() };
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function normalize(value) { return String(value || "").trim().toLowerCase(); }
+
+function buildAssetUrl(path) {
+  if (!path) return "";
+  let value = String(path).replaceAll("\\", "/");
+  try { value = decodeURIComponent(value); } catch {}
+  if (value.startsWith("data:") || value.startsWith("blob:")) return value;
+  value = value.replace(/uploadsaudio[\u0000-\u001f\u007f]*/i, "uploads/audio/");
+  value = value.replace(/uploadsimages[\u0000-\u001f\u007f]*/i, "uploads/images/");
+  return value.startsWith("http") ? value : `${API_URL}/${value.replace(/^\/+/, "")}`;
+}
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return "0:00";
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${min}:${sec}`;
+}
+
+function getDashPlayer(id) {
+  const root = document.querySelector(`[data-player-id="${CSS.escape(String(id))}"]`);
+  if (!root) return null;
+  const audioUrl = root.dataset.audio || "";
+  if (!audioUrl) return null;
+  if (!dashPlayers.has(id)) {
+    const audio = new Audio(audioUrl);
+    dashPlayers.set(id, { audio, root });
+    audio.addEventListener("timeupdate", () => updateDashPlayer(id));
+    audio.addEventListener("loadedmetadata", () => updateDashPlayer(id));
+    audio.addEventListener("ended", () => {
+      const btn = root.querySelector(".play-btn");
+      if (btn) btn.textContent = "▶";
+      updateDashPlayer(id);
+    });
+  }
+  return dashPlayers.get(id);
+}
+
+function updateDashPlayer(id) {
+  const player = dashPlayers.get(id);
+  const root = document.querySelector(`[data-player-id="${CSS.escape(String(id))}"]`);
+  if (!player || !root) return;
+  const range = root.querySelector(".beat-progress");
+  const time = root.querySelector(".beat-time");
+  const duration = player.audio.duration || 0;
+  const current = player.audio.currentTime || 0;
+  if (range) { range.max = duration || 0; range.value = current || 0; }
+  if (time) time.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+}
+
+function pauseOtherPlayers(id) {
+  dashPlayers.forEach((player, key) => {
+    if (String(key) === String(id)) return;
+    player.audio.pause();
+    const btn = document.querySelector(`[data-player-id="${CSS.escape(String(key))}"] .play-btn`);
+    if (btn) btn.textContent = "▶";
+  });
+}
+
+function toggleDashPlayer(id, btn) {
+  const player = getDashPlayer(id);
+  if (!player) return;
+  if (!player.audio.paused) { player.audio.pause(); btn.textContent = "▶"; return; }
+  pauseOtherPlayers(id);
+  player.audio.play().then(() => { btn.textContent = "⏸"; }).catch(() => { btn.textContent = "▶"; alert("No se pudo reproducir."); });
+}
+
+function seekDashBeat(id, seconds) {
+  const player = getDashPlayer(id);
+  if (!player) return;
+  player.audio.currentTime = Math.max(0, Math.min(player.audio.duration || 0, player.audio.currentTime + seconds));
+  updateDashPlayer(id);
+}
+
+function scrubDashBeat(id, value) {
+  const player = getDashPlayer(id);
+  if (!player) return;
+  player.audio.currentTime = Number(value || 0);
+  updateDashPlayer(id);
+}
+
+function renderBeats() {
+  const q = normalize(searchInput.value);
+  let visibles = beatsGlobal.filter((beat) => {
+    const haystack = normalize(`${beat.name} ${beat.genre} ${beat.mood} ${beat.key} ${beat.bpm}`);
+    return !q || haystack.includes(q);
+  });
+
+  if (filterActual === "available") visibles = visibles.filter(b => !b.assigned);
+  else if (filterActual === "taken") visibles = visibles.filter(b => b.assigned);
+  else if (filterActual === "draft") visibles = visibles.filter(b => b.status === "draft");
+
+  if (!visibles.length) {
+    beatsContainer.innerHTML = "";
+    statusBox.innerHTML = beatsGlobal.length === 0
+      ? `<div style="text-align:center;padding:40px;"><h3>Aun no tienes instrumentales</h3><p>Sube tu primera instrumental con MP3 y portada.</p><a href="subirbeats.html" class="action-btn" style="margin-top:12px;">Subir instrumental</a></div>`
+      : `<p class="status">No se encontraron resultados.</p>`;
+    return;
+  }
+
+  statusBox.textContent = "";
+  document.getElementById("totalCount").textContent = visibles.length;
+  document.getElementById("totalLabel").textContent = `instrumentales (${beatsGlobal.length} totales)`;
+
+  beatsContainer.innerHTML = visibles.map((beat) => {
+    const cover = buildAssetUrl(beat.coverUrl);
+    const audio = buildAssetUrl(beat.fileUrl);
+    const isTaken = Boolean(beat.assigned);
+    const playerId = String(beat.id || beat.name || Math.random()).replace(/[^a-zA-Z0-9_-]/g, "-");
+    const pubStatus = beat.status || (beat.assigned ? "taken" : "published");
+    const statusClass = pubStatus === "published" ? "published" : pubStatus === "draft" ? "draft" : isTaken ? "pending" : "published";
+
+    const pubLabel = pubStatus === "published" ? "Disponible" : pubStatus === "draft" ? "Borrador" : "Pendiente";
+
+    return `
+      <article class="beat-card personal ${isTaken ? "is-taken" : ""}">
+        <div class="beat-cover">
+          ${cover ? `<img src="${cover}" alt="Portada" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%230a1830%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E'">` : ""}
+          <div class="cover-strip">
+            <span>♫ ${escapeHtml(beat.genre || "?")}</span>
+            <span class="dot">·</span>
+            <span>${beat.bpm || "?"} BPM</span>
+            <span class="dot">·</span>
+            <span>${escapeHtml(beat.key || "?")}</span>
+            ${beat.duration ? `<span class="cover-duration">${beat.duration}</span>` : ""}
+          </div>
+          <div class="cover-badge ${statusClass}">${pubLabel}</div>
+          <div class="cover-menu">
+            <button class="menu-btn" onclick="toggleBeatMenu(this)" type="button">⋮</button>
+            <div class="menu-dropdown">
+              <button onclick="editBeat('${beat.id}')">Editar</button>
+              <button onclick="deleteBeat('${beat.id}', this)">${usuarioActual?.role === "admin" ? "Ocultar" : "Eliminar"}</button>
+              <a href="../distribucion/index.html?beat=${beat.id}">Distribución</a>
+            </div>
+          </div>
+        </div>
+        <div class="beat-body">
+          <h3>${escapeHtml(beat.name || "Sin nombre")}</h3>
+          ${audio ? `<div class="beat-player" data-player-id="${escapeHtml(playerId)}" data-audio="${escapeHtml(audio)}"><button type="button" class="play-btn" onclick="toggleDashPlayer('${escapeHtml(playerId)}', this)">▶</button><input class="beat-progress" type="range" min="0" value="0" step="0.1" oninput="scrubDashBeat('${escapeHtml(playerId)}', this.value)"><span class="beat-time">0:00 / 0:00</span></div>` : `<p class="status">Audio no disponible</p>`}
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function editBeat(beatId) {
+  alert("Edición próximamente");
+}
+
+async function deleteBeat(beatId, btn) {
+  const isAdmin = usuarioActual?.role === "admin";
+  const action = isAdmin ? "ocultar" : "eliminar";
+  if (!confirm(`Seguro que quieres ${action} este beat?`)) return;
+  try {
+    btn.textContent = isAdmin ? "Ocultando..." : "Eliminando...";
+    btn.disabled = true;
+    const res = await fetch(`${API_URL}/api/beats/${beatId}`, { method: "DELETE", headers: authHeaders() });
+    if (!res.ok) throw new Error(`Error al ${action}`);
+    beatsGlobal = beatsGlobal.filter(b => b.id !== beatId);
+    renderBeats();
+  } catch (err) {
+    alert(err.message);
+    btn.textContent = isAdmin ? "Ocultar" : "Eliminar";
+    btn.disabled = false;
+  }
+}
+
+async function cargarBeats() {
+  if (isLoading) return;
+  isLoading = true;
+  statusBox.textContent = "Cargando instrumentales...";
+  try {
+    const res = await fetch(`${API_URL}/api/my-beats`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Error");
+    beatsGlobal = await res.json();
+    renderBeats();
+  } catch (err) {
+    console.error(err);
+    beatsContainer.innerHTML = "";
+    statusBox.innerHTML = `<p style="color:#ff4560;text-align:center;">Error conectando con el servidor</p>`;
+  } finally {
+    isLoading = false;
+  }
+}
+
+async function cargarDistribucion() {
+  try {
+    const res = await fetch(`${API_URL}/api/distribution`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Error");
+    distrosGlobal = await res.json();
+    renderDistro();
+    renderIsrcUpc();
+  } catch (err) {
+    document.getElementById("distro-container").innerHTML = `<p class="status">Sin datos de distribucion aun.</p>`;
+    document.getElementById("producer-distro-container").innerHTML = `<p class="status">Sin datos de distribucion aun.</p>`;
+  }
+}
+
+function renderDistro() {
+  const container = document.getElementById("distro-container");
+  if (!distrosGlobal.length) {
+    container.innerHTML = `<div style="text-align:center;padding:30px;"><p>Aun no tienes registros de distribucion.</p><a href="../distribucion/index.html" class="action-btn" style="margin-top:12px;">Crear distribucion</a></div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="distro-grid">${distrosGlobal.map(d => `
+    <div class="distro-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <h4>${escapeHtml(d.title || "Sin titulo")}</h4>
+        <span class="status-badge ${d.status}">${d.status}</span>
+      </div>
+      <div class="field"><span>Artista</span><span>${escapeHtml(d.artistName || "-")}</span></div>
+      <div class="field"><span>ISRC</span><span>${escapeHtml(d.isrc || "-")}</span></div>
+      <div class="field"><span>UPC</span><span>${escapeHtml(d.upc || "-")}</span></div>
+      <div class="field"><span>Genero</span><span>${escapeHtml(d.mainGenre || "-")}${d.secondaryGenre ? ` / ${escapeHtml(d.secondaryGenre)}` : ""}</span></div>
+      <div class="field"><span>Lanzamiento</span><span>${d.releaseDate ? new Date(d.releaseDate).toLocaleDateString() : "-"}</span></div>
+      <div class="field"><span>Pais</span><span>${escapeHtml(d.country || "-")}</span></div>
+      <div class="field"><span>Instrumental</span><span>${d.isInstrumental ? "Si" : "No"}</span></div>
+      <a href="../distribucion/index.html?id=${d.id}" class="btn-distro" style="margin-top:8px;">Editar</a>
+    </div>
+  `).join("")}</div>`;
+  renderProducerDistro();
+}
+
+function renderProducerDistro() {
+  const container = document.getElementById("producer-distro-container");
+  if (!distrosGlobal.length) {
+    container.innerHTML = `<p class="status">Aun no tienes distribuciones asignadas.</p>`;
+    return;
+  }
+  container.innerHTML = `<div class="distro-table-wrapper"><table class="distro-table">
+    <thead><tr>
+      <th>Catalogo</th>
+      <th>Productor</th>
+      <th>Sello</th>
+      <th>Subida</th>
+      <th>Lanzamiento</th>
+      <th>UPC</th>
+      <th>ISRC</th>
+    </tr></thead>
+    <tbody>${distrosGlobal.map(d => `
+      <tr>
+        <td>${escapeHtml(d.title || "—")}</td>
+        <td>${escapeHtml(d.producer || "—")}</td>
+        <td>PRODUCERS GO</td>
+        <td>${d.createdAt ? new Date(d.createdAt).toLocaleDateString() : "—"}</td>
+        <td>${d.releaseDate ? new Date(d.releaseDate).toLocaleDateString() : "—"}</td>
+        <td>${escapeHtml(d.upc || "—")}</td>
+        <td>${escapeHtml(d.isrc || "—")}</td>
+      </tr>
+    `).join("")}</tbody>
+  </table></div>`;
+}
+
+function renderIsrcUpc() {
+  const container = document.getElementById("isrc-upc-container");
+  if (!distrosGlobal.length) {
+    container.innerHTML = `<p class="status">No hay codigos registrados.</p>`;
+    return;
+  }
+
+  const withCodes = distrosGlobal.filter(d => d.isrc || d.upc);
+  if (!withCodes.length) {
+    container.innerHTML = `<p class="status">Aun no has registrado ISRC o UPC.</p>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="isrc-upc-grid">${withCodes.map(d => `
+    <div class="isrc-upc-box">
+      <small>Titulo: ${escapeHtml(d.title || "Sin titulo")}</small>
+      ${d.isrc ? `<strong>ISRC: ${escapeHtml(d.isrc)}</strong>` : ""}
+      ${d.upc ? `<strong>UPC: ${escapeHtml(d.upc)}</strong>` : ""}
+      <small>${d.releaseDate ? new Date(d.releaseDate).toLocaleDateString() : "Sin fecha"}</small>
+    </div>
+  `).join("")}</div>`;
+}
+
+async function proteger() {
+  if (!token()) { window.location.replace("index.html"); return false; }
+  try {
+    const res = await fetch(`${API_URL}/api/me`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Sesion invalida");
+    usuarioActual = await res.json();
+    userBadge.textContent = usuarioActual.role === "admin"
+      ? `Admin: ${usuarioActual.producerName || usuarioActual.email}`
+      : `${usuarioActual.producerName || usuarioActual.email}`;
+    document.body.dataset.role = usuarioActual.role;
+    if (usuarioActual.role === "admin") {
+      document.querySelectorAll(".admin-only").forEach((el) => el.classList.remove("hidden"));
+      document.getElementById("panelTitle").textContent = "Panel de Administrador";
+      document.getElementById("panelDescription").textContent = "Gestiona todos los productores y contenido.";
+    }
+    return true;
+  } catch {
+    localStorage.removeItem("token");
+    window.location.replace("index.html");
+    return false;
+  }
+}
+
+// Tab switching
+document.querySelectorAll(".tabs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+  });
+});
+
+// Event listeners
+document.getElementById("toggleSidebar").onclick = toggleSidebar;
+document.getElementById("sidebarHandle").onclick = toggleSidebar;
+refreshBtn.onclick = cargarBeats;
+searchInput.addEventListener("input", renderBeats);
+
+filterBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    filterBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    filterActual = btn.dataset.filter;
+    renderBeats();
+  });
+});
+
+document.getElementById("logoutBtn").onclick = () => {
+  localStorage.removeItem("token");
+  window.location.replace("index.html");
+};
+
+// Init
+(async () => {
+  const ok = await proteger();
+  if (ok) {
+    await Promise.all([cargarBeats(), cargarDistribucion()]);
+  }
+})();
+
+function toggleBeatMenu(btn) {
+  const dropdown = btn.nextElementSibling;
+  const isOpen = dropdown.classList.contains("open");
+  document.querySelectorAll(".menu-dropdown.open").forEach(el => el.classList.remove("open"));
+  if (!isOpen) dropdown.classList.add("open");
+}
+
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".menu-trigger")) {
+    document.querySelectorAll(".menu-dropdown.open").forEach(el => el.classList.remove("open"));
+  }
+});
+
+window.toggleDashPlayer = toggleDashPlayer;
+window.seekDashBeat = seekDashBeat;
+window.scrubDashBeat = scrubDashBeat;
+window.toggleBeatMenu = toggleBeatMenu;
+</script>
+
+</body>
+</html>

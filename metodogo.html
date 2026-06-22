@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Método Go - ProducersGo</title>
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <link rel="stylesheet" href="assets/metodogo.css?v=20260605">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(6, 17, 31, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(102, 217, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(10, 102, 255, 0.1);
+    }
+
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    body {
+      padding-top: 80px;
+    }
+
+    @media (max-width: 640px) {
+      .navbar {
+        padding: 10px 14px;
+      }
+      .navbar-brand {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">ProducersGo</a>
+    <div style="display:flex;gap:25px;align-items:center;">
+      <span style="cursor:pointer;color:#a0a8c0;font-size:14px;transition:color 0.3s;" onclick="if (history.length > 1) { history.back(); } else { location.href='/'; }" onmouseover="this.style.color='#4da3ff'" onmouseout="this.style.color='#a0a8c0'">&larr; Volver</span>
+    </div>
+  </nav>
+
+  <div class="intro-strong fade">
+    <p>
+      La mayoría de los productores no fracasa por falta de talento…
+      <br>
+      <span>sino por falta de dirección.</span>
+    </p>
+    <p class="sub">
+      En ProducersGo no improvisamos: construimos un sistema donde cada decisión está pensada para posicionarte dentro de la industria.
+    </p>
+  </div>
+
+  <section id="servicios">
+    <h2 class="fade center">La diferencia es el proceso</h2>
+    <p class="intro fade">
+      La mayoría de los productores no falla por talento, sino por falta de dirección. En ProducersGo trabajamos con un sistema claro, donde cada paso tiene un propósito: ayudarte a posicionarte, crecer y generar resultados reales dentro de la industria.
+    </p>
+
+    <div class="grid">
+      <div class="card producersgo fade center">
+        <h3>Con ProducersGo</h3>
+        <ul>
+          <li>✓ Dirección estratégica personalizada</li>
+          <li>✓ Desarrollo de identidad sonora y visual</li>
+          <li>✓ Planificación de contenido y lanzamientos</li>
+          <li>✓ Feedback constante y evolución real</li>
+          <li>✓ Conexión con artistas y oportunidades</li>
+          <li>✓ Optimización para plataformas digitales</li>
+          <li>✓ Enfoque en ingresos reales</li>
+          <li>✓ Seguimiento profesional continuo</li>
+        </ul>
+        <p class="extra">
+          No improvisamos. Cada paso está pensado para que tu música tenga impacto real.
+        </p>
+      </div>
+
+      <div class="card fade center">
+        <h3>Sin ProducersGo</h3>
+        <ul>
+          <li>× Subís contenido sin estrategia</li>
+          <li>× No hay identidad clara</li>
+          <li>× Falta de criterio profesional</li>
+          <li>× Difícil acceso a artistas</li>
+          <li>× Poca visibilidad</li>
+          <li>× Sin ingresos consistentes</li>
+          <li>× Crecimiento lento</li>
+          <li>× Falta de oportunidades</li>
+        </ul>
+        <p class="extra">
+          Todo depende de prueba y error, sin una estructura real detrás.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="analisis-pro">
+    <div class="analisis-container fade">
+      <span class="tag">PROCESO INTERNO</span>
+      <h2>
+        Cómo trabajamos tu carrera <br>
+        <span>desde dentro del sello</span>
+      </h2>
+      <div class="linea"></div>
+      <p>
+        Cuando entrás a ProducersGo, no sos un cliente: sos un proyecto. Eso significa que analizamos tu perfil completo y trabajamos en base a objetivos reales dentro de la industria.
+      </p>
+      <p>
+        El primer paso es un análisis profundo de tu sonido. Evaluamos calidad de mezcla, selección de sonidos, estructura musical y coherencia artística. Detectamos qué está listo para competir y qué necesita evolucionar.
+      </p>
+      <p>
+        A partir de eso, definimos un enfoque: qué estilo potenciar, qué tipo de artistas apuntar y cómo posicionarte dentro del mercado actual.
+      </p>
+      <p class="highlight">No trabajamos por cantidad… trabajamos por impacto.</p>
+    </div>
+  </section>
+
+  <section class="analisis-pro">
+    <div class="analisis-container fade">
+      <span class="tag">METODOLOGÍA DE TRABAJO</span>
+      <h2>
+        Organización, seguimiento y evolución <br>
+        <span>constante</span>
+      </h2>
+      <div class="linea"></div>
+      <p>
+        Nuestro sistema se basa en seguimiento constante. No es una asesoría puntual: es un proceso continuo donde vamos ajustando decisiones según tu evolución.
+      </p>
+      <p>
+        Realizamos reuniones periódicas donde revisamos tu progreso, analizamos nuevos beats, definimos mejoras y planteamos los siguientes pasos.
+      </p>
+      <p>
+        En cada etapa trabajamos sobre objetivos concretos: mejorar tu sonido, aumentar tu visibilidad y generar conexiones reales dentro del circuito musical.
+      </p>
+      <p>
+        También organizamos revisiones internas donde evaluamos tu material como lo haría un sello: con criterio comercial y artístico.
+      </p>
+      <p class="highlight">Siempre sabés qué estás haciendo… y por qué lo estás haciendo.</p>
+    </div>
+  </section>
+
+  <section class="analisis-pro">
+    <div class="analisis-container fade">
+      <span class="tag">OPERATIVA DEL SELLO</span>
+      <h2>
+        Qué hacemos internamente <br>
+        <span>para hacerte crecer</span>
+      </h2>
+      <div class="linea"></div>
+      <p>
+        Detrás de cada productor hay un trabajo interno constante. Nos encargamos de analizar tendencias, estudiar el mercado y detectar oportunidades donde tu sonido puede encajar.
+      </p>
+      <p>
+        Evaluamos posibles colaboraciones, buscamos conexiones con artistas y definimos estrategias para posicionarte correctamente dentro de tu nicho.
+      </p>
+      <p>
+        También trabajamos en cómo presentar tu música: desde el contenido hasta la forma en que se distribuye y se consume.
+      </p>
+      <p>
+        Todo esto no lo ves directamente… pero es lo que hace la diferencia entre subir beats y construir una carrera.
+      </p>
+      <p class="highlight">Vos producís. Nosotros nos encargamos del resto.</p>
+    </div>
+  </section>
+
+  <section class="cta-strong fade">
+    <h2>La diferencia entre hacer música… o vivir de ella</h2>
+    <p>Podés seguir solo, o podés entrar a un sistema que ya funciona.</p>
+    <a href="/Fontend/Contacto/contacto.html" class="btn">Quiero formar parte</a>
+  </section>
+
+  <footer>
+    <p>© 2026 ProducersGo - Todos los derechos reservados</p>
+    <a href="https://www.instagram.com/producersgo" target="_blank" rel="noopener" style="display:block; margin-top:15px; color:var(--azul); text-decoration:none;">
+      Instagram
+    </a>
+  </footer>
+
+  <script>
+    const elementos = document.querySelectorAll(".fade");
+
+    const mostrarScroll = () => {
+      elementos.forEach((el) => {
+        const top = el.getBoundingClientRect().top;
+        if (top < window.innerHeight - 100) {
+          el.classList.add("show");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", mostrarScroll);
+    window.addEventListener("load", mostrarScroll);
+  </script>
+</body>
+</html>

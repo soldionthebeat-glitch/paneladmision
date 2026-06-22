@@ -1,0 +1,807 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* GENERAL */
+body {
+  font-family: Arial, sans-serif;
+  background: #3a0b0b;
+  color: white;
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: #520d0d;
+  position: relative;
+  top: 0;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.nav a:hover {
+  color: #ff4d4d;
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+.video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 🔥 clave */
+  z-index: -1;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5); /* oscurece */
+  z-index: 0;
+}
+
+.hero h1 {
+  font-size: 48px;
+}
+
+.hero p {
+  margin: 15px 0;
+}
+
+/* CAROUSEL */
+.carousel {
+  width: 100%;
+  overflow: hidden;
+  padding: 80px 0;
+  background: #0a0a0a;
+  position: relative;
+}
+
+.carousel-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+}
+
+/* ITEMS VERTICALES */
+.item {
+  min-width: 160px;
+  height: 280px;
+  flex-shrink: 0;
+  opacity: 0.4;
+  transition: 0.3s;
+}
+
+.item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  transition: 0.3s;
+}
+
+/* CENTRO */
+.item.active {
+  opacity: 1;
+}
+
+.item.active img {
+  transform: scale(1.25);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+}
+
+/* LADOS */
+.item:not(.active) img {
+  filter: brightness(0.5) blur(1px);
+}
+
+/* FADE LATERAL */
+.carousel::before,
+.carousel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 150px;
+  height: 100%;
+  z-index: 5;
+}
+
+.carousel::before {
+  left: 0;
+  background: linear-gradient(to right, #0a0a0a, transparent);
+}
+
+.carousel::after {
+  right: 0;
+  background: linear-gradient(to left, #0a0a0a, transparent);
+}
+
+.btn {
+  background: #ff4d4d;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+}
+.btnn {
+  background: #bd1212;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+}
+
+.btn:hover {
+  background: #ff3333;
+}
+
+/* BEATS */
+
+.tag {
+  display: inline-block;
+  background: rgb(0, 0, 0);
+  padding: 5px 10px;
+  font-size: 0.7rem;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.beats {
+  padding: 80px 20px;
+  text-align: center;
+  background: #bb1515;
+
+}
+
+.beats h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card h3 {
+  margin-bottom: 10px;
+}
+
+.card p {
+  margin-bottom: 15px;
+  color: #aaa;
+}
+
+.player {
+  width: 100%;
+}
+
+/* HOVER PRO */
+.card:hover {
+  transform: translateY(-10px) scale(1.03);
+  border: 1px solid #fff;
+  background: rgba(255,255,255,0.1);
+}
+
+.Trabajos {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 30px;
+  }
+
+  .tidal {width: 100%;
+  max-width: 600px;
+  height: 300px;
+  border: none;
+}
+.player {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #0b1f3a, #f61515);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.player:hover {
+  transform: scale(1.02);
+  transition: 0.3s;
+}
+.beatss {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.btnn {
+  background: #bd1212;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+}
+/* SOBRE */
+.about {
+  padding: 80px 20px;
+  background: #bb1515;
+  text-align: center;
+}
+
+.about h2 {
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  letter-spacing: 2px;
+}
+
+.about-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.about-box {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.251);
+}
+
+.about-box h3 {
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  color: #ffffff;
+}
+
+.about-box p {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.about-box:hover {
+  transform: translateY(-10px) scale(1.03);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #ffffff;
+}
+
+/* Swiper estilo activo centrado */
+.swiper-slide {
+  opacity: 0.4;
+  transition: 0.3s;
+  min-width: 160px;
+  height: 280px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.3s;
+}
+
+.swiper-slide-active {
+  opacity: 1;
+  transform: scale(1.25);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+}
+
+.swiper-slide:not(.swiper-slide-active) img {
+  filter: brightness(0.5) blur(1px);
+}
+
+/* Fade lateral */
+.swiper::before,
+.swiper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 150px;
+  height: 100%;
+  z-index: 5;
+}
+
+.swiper::before {
+  left: 0;
+  background: linear-gradient(to right, #0a0a0a, transparent);
+}
+
+.swiper::after {
+  right: 0;
+  background: linear-gradient(to left, #0a0a0a, transparent);
+}
+
+
+/* Ajuste general de slides */
+.swiper-slide {
+  opacity: 0.4;
+  transition: 0.3s;
+  min-width: 120px;  /* más pequeño que antes */
+  height: 220px;     /* más bajo */
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.3s;
+}
+
+.swiper-slide-active {
+  opacity: 1;
+  transform: scale(1.1); /* menos exagerado que antes */
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+}
+
+.swiper-slide:not(.swiper-slide-active) img {
+  filter: brightness(0.5) blur(0.8px);
+}
+
+/* Fade lateral */
+.swiper::before,
+.swiper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100px;   /* menos ancho que antes */
+  height: 100%;
+  z-index: 5;
+}
+
+.swiper::before {
+  left: 0;
+  background: linear-gradient(to right, #0a0a0a, transparent);
+}
+
+.swiper::after {
+  right: 0;
+  background: linear-gradient(to left, #0a0a0a, transparent);
+}
+
+/* Ajustes responsive */
+@media (max-width: 768px) {
+  .swiper-slide {
+    min-width: 180px;  /* ancho del slide en móviles */
+    height: 200px;
+  }
+  .swiper-slide-active {
+    transform: scale(1.05); /* escala más suave en móviles */
+  }
+  .swiper::before, .swiper::after {
+    width: 50px; /* menos fade lateral */
+  }
+}
+
+@media (max-width: 480px) {
+  .swiper-slide {
+    min-width: 140px;  /* slide aún más pequeño */
+    height: 160px;
+  }
+  .swiper-slide-active {
+    transform: scale(1.03);
+  }
+}
+/* 🔥 CONTACTO ULTRA PRO (SOLDI STYLE) */
+
+.contac {
+  padding: 100px 20px;
+  background: radial-gradient(circle at top, #0b1f3a, #000);
+  position: relative;
+  overflow: hidden;
+}
+
+/* EFECTO GLOW DE FONDO */
+.contac::before {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: #ff4d4d;
+  filter: blur(150px);
+  opacity: 0.2;
+  top: -100px;
+  left: -100px;
+}
+
+.contac::after {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: #bd1212;
+  filter: blur(150px);
+  opacity: 0.2;
+  bottom: -100px;
+  right: -100px;
+}
+
+/* TITULO */
+.contactos {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 60px;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 2;
+}
+
+/* CONTENEDOR */
+.Bloquecontac {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 50px;
+
+  max-width: 1100px;
+  margin: auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* FORM GLASS */
+.formulario {
+  flex: 1;
+  max-width: 500px;
+
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+
+  border-radius: 20px;
+  padding: 30px;
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+
+  transition: 0.4s;
+}
+
+/* HOVER PRO */
+.formulario:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 70px rgba(255, 77, 77, 0.3);
+  border: 1px solid rgba(255, 77, 77, 0.5);
+}
+
+/* INPUTS */
+.formulario input,
+.formulario textarea,
+.formulario select {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+
+  background: rgba(255,255,255,0.05);
+  color: white;
+
+  transition: 0.3s;
+}
+
+/* FOCUS NEÓN */
+.formulario input:focus,
+.formulario textarea:focus,
+.formulario select:focus {
+  outline: none;
+  border: 1px solid #ff4d4d;
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+}
+
+/* BOTÓN DIOS */
+.btn-enviar {
+  width: 100%;
+  padding: 15px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #bd1212, #ff4d4d);
+  color: white;
+
+  font-weight: bold;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+  transition: 0.3s;
+
+  box-shadow: 0 10px 30px rgba(255, 77, 77, 0.4);
+}
+
+/* HOVER BOTÓN */
+.btn-enviar:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(255, 77, 77, 0.7);
+}
+
+/* REDES */
+.redes {
+  flex: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* LOGO FLOTANTE */
+.insta {
+  width: 220px;
+  border-radius: 20px;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+
+  transition: 0.5s;
+}
+
+/* HOVER */
+.insta:hover {
+  transform: scale(1.1) rotate(2deg);
+  box-shadow: 0 30px 80px rgba(255, 77, 77, 0.6);
+}
+
+/* 📱 MOBILE */
+@media (max-width: 768px) {
+
+  .Bloquecontac {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .formulario {
+    max-width: 100%;
+  }
+
+  .insta {
+    width: 180px;
+  }
+}
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .about-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .about-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CONTACT */
+.contact {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+  margin: auto;
+}
+
+input, textarea {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  background: #ff4d4d;
+  border: none;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff3333;
+}
+
+.redes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.insta, .insta2 {
+  width: 200px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px black;
+  transition: 0.3s;
+}
+
+.insta:hover, .insta2:hover {
+  transform: scale(1.05);
+}
+/* 📱 SOLO MOVIL - NO ROMPE PC */
+@media (max-width: 768px) {
+
+  /* NAV */
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px 20px;
+  }
+
+  .nav nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav a {
+    margin: 5px 0;
+  }
+
+  /* HERO */
+  .hero h1 {
+    font-size: 28px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+
+  /* CARDS (beats) */
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 90%;
+  }
+
+  /* TIDAL / IFRAME */
+  iframe {
+    width: 100%;
+    height: 200px;
+  }
+
+  .player {
+    width: 90%;
+    padding: 10px;
+  }
+
+  .beatss {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ABOUT */
+  .about {
+    padding: 40px 15px;
+  }
+
+  /* CONTACT */
+  form {
+    width: 100%;
+    padding: 0 10px;
+  }
+}
+
+
+
+  /* 📱 AJUSTE MOBILE LOGO CERCA DEL FORM */
+@media (max-width: 768px) {
+
+  .Bloquecontac {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px; /* 🔥 controla la separación general */
+  }
+
+  .redes {
+    margin-top: 0; /* 🔥 elimina separación extra */
+  }
+
+}
+
+option {
+  background-color: #bb1515;
+}
+
+/* Para móviles */
+@media (max-width: 768px) {
+  .Trabajos {
+    margin-top: 60px; /* ajusta este valor a lo que se vea bien */
+    font-size: 24px;   /* opcional: puedes hacer el texto más pequeño en móvil */
+  }
+}
+
+.video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Ajustes responsive extra */
+@media (max-width: 768px) {
+  .hero {
+    height: 70vh; /* menos altura para móviles */
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: 60vh; 
+  }
+
+  .hero-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+  }
+}

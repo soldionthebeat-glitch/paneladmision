@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>El 23 - Beats Destacados</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../assets/el23.css" />
+  <link rel="stylesheet" href="/assets/modal-obtener.css" />
+  <link rel="stylesheet" href="/assets/reproductor-beats.css" />
+  <link rel="icon" type="image/x-icon" href="/Fontend/EL23_BRAND_PACK/el23_gray.png" />
+  <style>
+    .beat-card {
+      background: var(--panel-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      padding: 20px;
+      width: 100%;
+      max-width: 350px;
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: all 0.3s ease;
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .beat-card:hover {
+      box-shadow: 0 0 20px var(--turquoise-muted);
+      transform: translateY(-5px);
+    }
+
+    .beat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .beat-info-header {
+      flex: 1;
+    }
+
+    .beat-title {
+      color: var(--turquoise-light);
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin: 0 0 5px 0;
+    }
+
+    .beat-producer {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .beat-tag {
+      background: var(--turquoise-muted);
+      color: var(--bg);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .beat-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .beat-meta-item {
+      background: rgba(26, 188, 156, 0.2);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .beat-reproductor-container {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .beat-actions {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .btn-obtener {
+      flex: 1;
+      background: linear-gradient(135deg, var(--turquoise), var(--turquoise-light));
+      color: var(--bg);
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+    }
+
+    .btn-obtener:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(26, 188, 156, 0.5);
+      background: linear-gradient(135deg, var(--turquoise-light), var(--turquoise));
+    }
+
+    .btn-obtener:active {
+      transform: translateY(0);
+    }
+
+    .beats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .beats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .beat-card {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="nav">
+  <h2 class="logo">El 23</h2>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="el23.html">Inicio</a></li>
+      <li><a href="trabajo.html" aria-current="page">Beats</a></li>
+      <li><a href="sobre.html">Sobre Mi</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section id="beats" class="beats">
+  <h2>Beats Destacados <span class="tag">TOP</span></h2>
+  <div class="beats-grid" id="beatsContainer">
+    
+    <!-- Beat Card 1 -->
+    <div class="beat-card">
+      <div class="beat-header">
+        <div class="beat-info-header">
+          <h3 class="beat-title">Trap Oscuro</h3>
+          <p class="beat-producer">El 23</p>
+        </div>
+        <span class="beat-tag">Trap</span>
+      </div>
+      
+      <div class="beat-meta">
+        <span class="beat-meta-item">140 BPM</span>
+        <span class="beat-meta-item">Menor</span>
+        <span class="beat-meta-item">Oscuro</span>
+      </div>
+
+      <div class="beat-reproductor-container" data-reproductor="beat">
+        <audio>
+          <source src="/audios/beat-trap-1.mp3" type="audio/mpeg" />
+          Tu navegador no soporta audio.
+        </audio>
+      </div>
+
+      <div class="beat-actions">
+        <button class="btn-obtener" 
+                data-beat-name="Trap Oscuro" 
+                data-beat-producer="El 23" 
+                data-beat-id="trap-oscuro">
+          Obtener Beat
+        </button>
+      </div>
+    </div>
+
+    <!-- Beat Card 2 -->
+    <div class="beat-card">
+      <div class="beat-header">
+        <div class="beat-info-header">
+          <h3 class="beat-title">Boom Bap Minimalista</h3>
+          <p class="beat-producer">El 23</p>
+        </div>
+        <span class="beat-tag">Hip-Hop</span>
+      </div>
+      
+      <div class="beat-meta">
+        <span class="beat-meta-item">92 BPM</span>
+        <span class="beat-meta-item">Mayor</span>
+        <span class="beat-meta-item">Crudo</span>
+      </div>
+
+      <div class="beat-reproductor-container" data-reproductor="beat">
+        <audio>
+          <source src="/audios/beat-boombap-1.mp3" type="audio/mpeg" />
+          Tu navegador no soporta audio.
+        </audio>
+      </div>
+
+      <div class="beat-actions">
+        <button class="btn-obtener" 
+                data-beat-name="Boom Bap Minimalista" 
+                data-beat-producer="El 23" 
+                data-beat-id="boombap-minimal">
+          Obtener Beat
+        </button>
+      </div>
+    </div>
+
+    <!-- Beat Card 3 -->
+    <div class="beat-card">
+      <div class="beat-header">
+        <div class="beat-info-header">
+          <h3 class="beat-title">Onda Experimental</h3>
+          <p class="beat-producer">El 23</p>
+        </div>
+        <span class="beat-tag">Experimental</span>
+      </div>
+      
+      <div class="beat-meta">
+        <span class="beat-meta-item">110 BPM</span>
+        <span class="beat-meta-item">Mixto</span>
+        <span class="beat-meta-item">Atmosférico</span>
+      </div>
+
+      <div class="beat-reproductor-container" data-reproductor="beat">
+        <audio>
+          <source src="/audios/beat-experimental-1.mp3" type="audio/mpeg" />
+          Tu navegador no soporta audio.
+        </audio>
+      </div>
+
+      <div class="beat-actions">
+        <button class="btn-obtener" 
+                data-beat-name="Onda Experimental" 
+                data-beat-producer="El 23" 
+                data-beat-id="experimental">
+          Obtener Beat
+        </button>
+      </div>
+    </div>
+
+    <!-- Beat Card 4 -->
+    <div class="beat-card">
+      <div class="beat-header">
+        <div class="beat-info-header">
+          <h3 class="beat-title">Reggaeton Futuro</h3>
+          <p class="beat-producer">El 23</p>
+        </div>
+        <span class="beat-tag">Reggaeton</span>
+      </div>
+      
+      <div class="beat-meta">
+        <span class="beat-meta-item">95 BPM</span>
+        <span class="beat-meta-item">Menor</span>
+        <span class="beat-meta-item">Energético</span>
+      </div>
+
+      <div class="beat-reproductor-container" data-reproductor="beat">
+        <audio>
+          <source src="/audios/beat-reggaeton-1.mp3" type="audio/mpeg" />
+          Tu navegador no soporta audio.
+        </audio>
+      </div>
+
+      <div class="beat-actions">
+        <button class="btn-obtener" 
+                data-beat-name="Reggaeton Futuro" 
+                data-beat-producer="El 23" 
+                data-beat-id="reggaeton-futuro">
+          Obtener Beat
+        </button>
+      </div>
+    </div>
+
+    <!-- Beat Card 5 -->
+    <div class="beat-card">
+      <div class="beat-header">
+        <div class="beat-info-header">
+          <h3 class="beat-title">Drill Pesado</h3>
+          <p class="beat-producer">El 23</p>
+        </div>
+        <span class="beat-tag">Drill</span>
+      </div>
+      
+      <div class="beat-meta">
+        <span class="beat-meta-item">160 BPM</span>
+        <span class="beat-meta-item">Menor</span>
+        <span class="beat-meta-item">Agresivo</span>
+      </div>
+
+      <div class="beat-reproductor-container" data-reproductor="beat">
+        <audio>
+          <source src="/audios/beat-drill-1.mp3" type="audio/mpeg" />
+          Tu navegador no soporta audio.
+        </audio>
+      </div>
+
+      <div class="beat-actions">
+        <button class="btn-obtener" 
+                data-beat-name="Drill Pesado" 
+                data-beat-producer="El 23" 
+                data-beat-id="drill-pesado">
+          Obtener Beat
+        </button>
+      </div>
+    </div>
+
+    <!-- Beat Card 6 -->
+    <div class="beat-card">
+      <div class="beat-header">
+        <div class="beat-info-header">
+          <h3 class="beat-title">Ambient Urbano</h3>
+          <p class="beat-producer">El 23</p>
+        </div>
+        <span class="beat-tag">Ambient</span>
+      </div>
+      
+      <div class="beat-meta">
+        <span class="beat-meta-item">80 BPM</span>
+        <span class="beat-meta-item">Mayor</span>
+        <span class="beat-meta-item">Relajante</span>
+      </div>
+
+      <div class="beat-reproductor-container" data-reproductor="beat">
+        <audio>
+          <source src="/audios/beat-ambient-1.mp3" type="audio/mpeg" />
+          Tu navegador no soporta audio.
+        </audio>
+      </div>
+
+      <div class="beat-actions">
+        <button class="btn-obtener" 
+                data-beat-name="Ambient Urbano" 
+                data-beat-producer="El 23" 
+                data-beat-id="ambient-urbano">
+          Obtener Beat
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SCRIPTS -->
+<script src="/assets/modal-obtener.js"></script>
+<script src="/assets/reproductor-beats.js"></script>
+
+</body>
+</html>

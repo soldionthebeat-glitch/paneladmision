@@ -1,0 +1,629 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Beats - Explorer</title>
+  <link rel="stylesheet" href="cssz/dashboard.css" />
+  <link rel="stylesheet" href="../assets/modal-obtener.css" />
+  <link rel="stylesheet" href="../assets/reproductor-beats.css" />
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+</head>
+<body>
+
+<div class="layout">
+  <aside class="sidebar active" id="sidebar">
+    <button id="sidebarHandle" class="sidebar-handle" type="button" aria-label="Abrir menu">Menu</button>
+
+    <div class="brand-block">
+      <span class="brand-mark">GB</span>
+      <div>
+        <h2>Go Beats</h2>
+        <p>Catalogo general</p>
+      </div>
+    </div>
+
+    <nav class="side-nav">
+      <a href="home.html" class="active">Explorer</a>
+      <a href="dashboard.html">Mi Panel</a>
+      <a href="subirbeats.html">Subir instrumental</a>
+      <a href="../distribucion/index.html" class="admin-only hidden">Distribucion</a>
+      <a href="../libreria/index.html">Libreria</a>
+      <a href="perfil-editor.html">Mi Perfil</a>
+      <a href="admin-descargas.html" class="admin-only hidden">Descargas</a>
+      <a href="admi.html" class="admin-only hidden">Admin</a>
+    </nav>
+  </aside>
+
+  <main class="main" id="main">
+    <header class="header">
+      <button id="toggleSidebar" type="button" aria-label="Abrir menu">Menu</button>
+      <div>
+        <p class="eyebrow">Explorer</p>
+        <h1>Go Beats</h1>
+      </div>
+      <div class="header-actions">
+        <span id="userBadge" class="user-badge">Cargando...</span>
+        <button id="logoutBtn" type="button">Cerrar sesion</button>
+      </div>
+    </header>
+
+    <section class="hero-panel">
+      <div>
+        <p class="eyebrow">Catalogo del sello</p>
+        <h2>Encuentra el beat correcto para tu proximo tema</h2>
+        <p>Explora por estado de animo, productor, genero, seleccion del sello y artistas de referencia.</p>
+      </div>
+      <div class="hero-stat">
+        <strong id="beatCount">0</strong>
+        <span>beats visibles</span>
+      </div>
+    </section>
+
+    <section class="filters-panel" aria-label="Filtros de beats">
+      <div class="search-box">
+        <label for="searchInput">Buscar</label>
+        <input id="searchInput" type="search" placeholder="Nombre, productor, genero, mood, artista..." />
+      </div>
+
+      <div class="filter-row">
+        <label>
+          Estado de animo
+          <select id="moodFilter">
+            <option value="">Todos</option>
+          </select>
+        </label>
+        <label>
+          Productor
+          <select id="producerFilter">
+            <option value="">Todos</option>
+          </select>
+        </label>
+        <label>
+          Genero
+          <select id="genreFilter">
+            <option value="">Todos</option>
+          </select>
+        </label>
+        <label>
+          Type beat artist
+          <select id="artistFilter">
+            <option value="">Todos</option>
+          </select>
+        </label>
+        <label>
+          Estado
+          <select id="statusFilter">
+            <option value="">Todos</option>
+            <option value="available">Disponibles</option>
+            <option value="taken">Tomados</option>
+            <option value="hidden" class="admin-only hidden">Ocultos</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="discovery-section" aria-label="Accesos rapidos">
+      <div class="discovery-block">
+        <div class="section-title compact">
+          <div>
+            <p class="eyebrow">Moods</p>
+            <h2>Beats por estado de animo</h2>
+          </div>
+        </div>
+        <div id="moodChips" class="chip-grid"></div>
+      </div>
+
+      <div class="discovery-block">
+        <div class="section-title compact">
+          <div>
+            <p class="eyebrow">Curadoria</p>
+            <h2>Productores seleccionados</h2>
+          </div>
+        </div>
+        <div id="producerCards" class="producer-grid"></div>
+      </div>
+
+      <div class="discovery-block">
+        <div class="section-title compact">
+          <div>
+            <p class="eyebrow">Generos</p>
+            <h2>Beats por generos</h2>
+          </div>
+        </div>
+        <div id="genreChips" class="chip-grid"></div>
+      </div>
+
+      <div class="discovery-block label-picks">
+        <div class="section-title compact">
+          <div>
+            <p class="eyebrow">Seleccion del sello</p>
+            <h2>Destacados para tomar hoy</h2>
+          </div>
+        </div>
+        <div id="labelPicks" class="mini-beats-grid"></div>
+      </div>
+
+      <div class="discovery-block">
+        <div class="section-title compact">
+          <div>
+            <p class="eyebrow">Referencias</p>
+            <h2>Type beat artists</h2>
+          </div>
+        </div>
+        <div id="artistChips" class="chip-grid"></div>
+      </div>
+    </section>
+
+    <section class="beats-section">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">General</p>
+          <h2>Todos los beats</h2>
+        </div>
+        <button id="clearFilters" type="button" class="ghost-button">Limpiar filtros</button>
+      </div>
+
+      <div id="beats-status" class="status">Cargando beats...</div>
+      <div id="beats-container" class="beats-grid explorer-grid"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+window.API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+
+const API_URL = window.API_URL;
+const sidebar = document.getElementById("sidebar");
+const statusBox = document.getElementById("beats-status");
+const beatsContainer = document.getElementById("beats-container");
+const userBadge = document.getElementById("userBadge");
+const beatCount = document.getElementById("beatCount");
+const searchInput = document.getElementById("searchInput");
+const moodFilter = document.getElementById("moodFilter");
+const producerFilter = document.getElementById("producerFilter");
+const genreFilter = document.getElementById("genreFilter");
+const artistFilter = document.getElementById("artistFilter");
+const statusFilter = document.getElementById("statusFilter");
+
+let usuarioActual = null;
+let beatsGlobal = [];
+const beatPlayers = new Map();
+
+document.getElementById("toggleSidebar").onclick = () => sidebar.classList.toggle("active");
+document.getElementById("sidebarHandle").onclick = () => sidebar.classList.toggle("active");
+
+function token() {
+  return localStorage.getItem("token");
+}
+
+function authHeaders(extra = {}) {
+  const storedToken = token();
+  return storedToken ? { ...extra, Authorization: "Bearer " + storedToken } : extra;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function jsString(value) {
+  return String(value ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\r?\n/g, " ");
+}
+
+function buildAssetUrl(path) {
+  if (!path) return "";
+  let value = String(path).replaceAll("\\", "/");
+  try {
+    value = decodeURIComponent(value);
+  } catch {}
+  if (value.startsWith("data:") || value.startsWith("blob:")) return value;
+  value = value.replace(/uploadsaudio[\u0000-\u001f\u007f]*/i, "uploads/audio/");
+  value = value.replace(/uploadsimages[\u0000-\u001f\u007f]*/i, "uploads/images/");
+  return value.startsWith("http") ? value : `${API_URL}/${value.replace(/^\/+/, "")}`;
+}
+
+function normalize(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function uniqueValues(key) {
+  return [...new Set(beatsGlobal.map((beat) => String(beat[key] || "").trim()).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
+}
+
+function inferArtist(beat) {
+  if (beat.artistReference) return beat.artistReference;
+  const source = `${beat.name || ""} ${beat.genre || ""}`.toLowerCase();
+  const artists = ["Duki", "Bizarrap", "Trueno", "Nicki Nicole", "Milo J", "Bad Bunny", "Feid", "Future", "Drake", "Quevedo"];
+  return artists.find((artist) => source.includes(artist.toLowerCase())) || "";
+}
+
+function beatMatches(beat) {
+  const q = normalize(searchInput.value);
+  const artist = inferArtist(beat);
+  const haystack = normalize(`${beat.name} ${beat.producer} ${beat.genre} ${beat.mood} ${beat.key} ${beat.assignedTo} ${artist}`);
+
+  if (q && !haystack.includes(q)) return false;
+  if (moodFilter.value && normalize(beat.mood) !== normalize(moodFilter.value)) return false;
+  if (producerFilter.value && normalize(beat.producer) !== normalize(producerFilter.value)) return false;
+  if (genreFilter.value && normalize(beat.genre) !== normalize(genreFilter.value)) return false;
+  if (artistFilter.value && normalize(artist) !== normalize(artistFilter.value)) return false;
+  if (statusFilter.value === "available" && (beat.assigned || beat.hidden)) return false;
+  if (statusFilter.value === "taken" && !beat.assigned) return false;
+  if (statusFilter.value === "hidden" && !beat.hidden) return false;
+  if (statusFilter.value !== "hidden" && beat.hidden && usuarioActual?.role !== "admin") return false;
+
+  return true;
+}
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return "0:00";
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${min}:${sec}`;
+}
+
+function getBeatPlayer(id) {
+  const root = document.querySelector(`[data-player-id="${CSS.escape(String(id))}"]`);
+  if (!root) return null;
+  const audioUrl = root.dataset.audio || "";
+  if (!audioUrl) return null;
+
+  if (!beatPlayers.has(id)) {
+    const audio = new Audio(audioUrl);
+    beatPlayers.set(id, { audio, root });
+    audio.addEventListener("timeupdate", () => updatePlayerUI(id));
+    audio.addEventListener("loadedmetadata", () => updatePlayerUI(id));
+    audio.addEventListener("ended", () => {
+      const btn = root.querySelector(".play-preview-btn");
+      if (btn) btn.textContent = "Reproducir";
+      updatePlayerUI(id);
+    });
+  }
+
+  return beatPlayers.get(id);
+}
+
+function updatePlayerUI(id) {
+  const player = beatPlayers.get(id);
+  const root = document.querySelector(`[data-player-id="${CSS.escape(String(id))}"]`);
+  if (!player || !root) return;
+  const range = root.querySelector(".beat-progress");
+  const time = root.querySelector(".beat-time");
+  const duration = player.audio.duration || 0;
+  const current = player.audio.currentTime || 0;
+  if (range) {
+    range.max = duration || 0;
+    range.value = current || 0;
+  }
+  if (time) time.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+}
+
+function pauseOtherPlayers(id) {
+  beatPlayers.forEach((player, key) => {
+    if (String(key) === String(id)) return;
+    player.audio.pause();
+    const btn = document.querySelector(`[data-player-id="${CSS.escape(String(key))}"] .play-preview-btn`);
+    if (btn) btn.textContent = "Reproducir";
+  });
+}
+
+function stopPreview() {
+  beatPlayers.forEach((player) => {
+    player.audio.pause();
+    player.audio.currentTime = 0;
+  });
+  document.querySelectorAll(".play-preview-btn").forEach((btn) => btn.textContent = "Reproducir");
+}
+
+function toggleBeatPlayer(id, btn) {
+  const player = getBeatPlayer(id);
+  if (!player) return;
+  if (!player.audio.paused) {
+    player.audio.pause();
+    btn.textContent = "Reproducir";
+    return;
+  }
+  pauseOtherPlayers(id);
+  player.audio.play().then(() => {
+    btn.textContent = "Pausar";
+  }).catch(() => {
+    btn.textContent = "Reproducir";
+  });
+}
+
+function seekBeat(id, seconds) {
+  const player = getBeatPlayer(id);
+  if (!player) return;
+  player.audio.currentTime = Math.max(0, Math.min(player.audio.duration || 0, player.audio.currentTime + seconds));
+  updatePlayerUI(id);
+}
+
+function scrubBeat(id, value) {
+  const player = getBeatPlayer(id);
+  if (!player) return;
+  player.audio.currentTime = Number(value || 0);
+  updatePlayerUI(id);
+}
+
+async function proteger() {
+  if (!token()) {
+    window.location.replace("index.html");
+    return false;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/me`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Sesion invalida");
+
+    usuarioActual = await res.json();
+    const label = usuarioActual.producerName || usuarioActual.email;
+    userBadge.textContent = usuarioActual.role === "admin" ? `Admin: ${label}` : label;
+    document.body.dataset.role = usuarioActual.role;
+
+    if (usuarioActual.role === "admin") {
+      document.querySelectorAll(".admin-only").forEach((el) => el.classList.remove("hidden"));
+    }
+
+    return true;
+  } catch {
+    localStorage.removeItem("token");
+    window.location.replace("index.html");
+    return false;
+  }
+}
+
+function renderOptions() {
+  const optionHtml = (values) => `<option value="">Todos</option>${values.map((value) => `<option>${escapeHtml(value)}</option>`).join("")}`;
+  moodFilter.innerHTML = optionHtml(uniqueValues("mood"));
+  producerFilter.innerHTML = optionHtml(uniqueValues("producer"));
+  genreFilter.innerHTML = optionHtml(uniqueValues("genre"));
+
+  const artists = [...new Set(beatsGlobal.map(inferArtist).filter(Boolean))].sort();
+  artistFilter.innerHTML = optionHtml(artists);
+}
+
+function setFilter(type, value) {
+  const filters = { mood: moodFilter, producer: producerFilter, genre: genreFilter, artist: artistFilter };
+  if (filters[type]) filters[type].value = value;
+  renderBeats();
+  document.querySelector(".beats-section").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderDiscovery() {
+  const countBy = (key) => uniqueValues(key).map((value) => ({
+    value,
+    count: beatsGlobal.filter((beat) => normalize(beat[key]) === normalize(value)).length
+  })).sort((a, b) => b.count - a.count);
+
+  document.getElementById("moodChips").innerHTML = countBy("mood").slice(0, 10).map((item) => `
+    <button type="button" class="filter-chip" onclick="setFilter('mood', '${jsString(item.value)}')">
+      <strong>${escapeHtml(item.value)}</strong><span>${item.count} beats</span>
+    </button>
+  `).join("") || `<p class="status">Sin moods cargados.</p>`;
+
+  document.getElementById("genreChips").innerHTML = countBy("genre").slice(0, 10).map((item) => `
+    <button type="button" class="filter-chip" onclick="setFilter('genre', '${jsString(item.value)}')">
+      <strong>${escapeHtml(item.value)}</strong><span>${item.count} beats</span>
+    </button>
+  `).join("") || `<p class="status">Sin generos cargados.</p>`;
+
+  const producers = countBy("producer").slice(0, 6);
+  document.getElementById("producerCards").innerHTML = producers.map((item) => `
+    <button type="button" class="producer-card" onclick="setFilter('producer', '${jsString(item.value)}')">
+      <span>${escapeHtml(item.value.charAt(0).toUpperCase())}</span>
+      <strong>${escapeHtml(item.value)}</strong>
+      <small>${item.count} beats publicados</small>
+    </button>
+  `).join("") || `<p class="status">Sin productores cargados.</p>`;
+
+  const artistCounts = [...new Set(beatsGlobal.map(inferArtist).filter(Boolean))].map((artist) => ({
+    value: artist,
+    count: beatsGlobal.filter((beat) => normalize(inferArtist(beat)) === normalize(artist)).length
+  })).sort((a, b) => b.count - a.count);
+
+  document.getElementById("artistChips").innerHTML = artistCounts.map((item) => `
+    <button type="button" class="filter-chip" onclick="setFilter('artist', '${jsString(item.value)}')">
+      <strong>${escapeHtml(item.value)}</strong><span>${item.count} type beats</span>
+    </button>
+  `).join("") || `<p class="status">Agrega el artista de referencia en el nombre del beat para verlo aqui.</p>`;
+
+  const labelCandidates = beatsGlobal.filter((beat) => !beat.assigned && beat.labelPick);
+  const labelFallback = beatsGlobal.filter((beat) => !beat.assigned).slice(0, 4);
+
+  document.getElementById("labelPicks").innerHTML = (labelCandidates.length ? labelCandidates : labelFallback)
+    .slice(0, 4)
+    .map(renderMiniBeat)
+    .join("") || `<p class="status">No hay beats disponibles para destacar.</p>`;
+}
+
+function renderMiniBeat(beat) {
+  const cover = buildAssetUrl(beat.coverUrl);
+  const audio = buildAssetUrl(beat.fileUrl);
+  return `
+    <article class="mini-beat">
+      <img src="${cover}" alt="Portada de ${escapeHtml(beat.name)}" onerror="this.style.display='none'">
+      <div>
+        <strong>${escapeHtml(beat.name || "Beat sin nombre")}</strong>
+        <span>${escapeHtml(beat.genre || "Beat")} / ${escapeHtml(beat.mood || "Mood libre")}</span>
+      </div>
+      <button class="btn-obtener" data-beat-name="${escapeHtml(beat.name)}" data-beat-producer="${escapeHtml(beat.producer)}" data-beat-file="${escapeHtml(audio)}" data-beat-id="${beat.id || ""}">Tomar</button>
+    </article>
+  `;
+}
+
+function renderBeats() {
+  const visibles = beatsGlobal.filter(beatMatches);
+  beatCount.textContent = visibles.length;
+
+  if (!visibles.length) {
+    beatsContainer.innerHTML = "";
+    statusBox.textContent = "No hay beats para mostrar con estos filtros.";
+    return;
+  }
+
+  statusBox.textContent = "";
+  beatsContainer.innerHTML = visibles.map((beat) => {
+    const cover = buildAssetUrl(beat.coverUrl);
+    const audio = buildAssetUrl(beat.fileUrl);
+    const isTaken = Boolean(beat.assigned);
+    const isHidden = Boolean(beat.hidden);
+    const playerId = String(beat.id || beat.name || Math.random()).replace(/[^a-zA-Z0-9_-]/g, "-");
+    const avatar = buildAssetUrl(beat.producerProfilePhotoUrl);
+    const defaultAvatar = "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2280%22%20height=%2280%22%3E%3Crect%20width=%2280%22%20height=%2280%22%20rx=%2240%22%20fill=%22%230a1830%22/%3E%3Ctext%20x=%2250%25%22%20y=%2254%25%22%20fill=%22%2366d9ff%22%20font-size=%2226%22%20text-anchor=%22middle%22%20font-family=%22Arial%22%3EGB%3C/text%3E%3C/svg%3E";
+    const producerHref = beat.producerId ? `perfil-productor.html?id=${encodeURIComponent(beat.producerId)}` : "";
+    const producerOpen = producerHref ? `<a class="producer-strip" href="${producerHref}">` : `<div class="producer-strip">`;
+    const producerClose = producerHref ? `</a>` : `</div>`;
+
+    return `
+      <article class="beat-card explorer-card ${isTaken ? "is-taken" : ""}">
+        <div class="beat-cover explorer-cover">
+          ${cover ? `<img src="${cover}" alt="Portada de ${escapeHtml(beat.name)}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22600%22%3E%3Crect fill=%22%230a1830%22 width=%22600%22 height=%22600%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2366d9ff%22 font-size=%2232%22 font-family=%22Arial%22%3ENo Cover%3C/text%3E%3C/svg%3E'">` : ""}
+          ${isHidden ? `<span class="taken-badge hidden-badge">Oculto</span>` : isTaken ? `<span class="taken-badge">Tomado</span>` : `<span class="taken-badge available">Disponible</span>`}
+        </div>
+        <div class="beat-info explorer-info">
+          <div class="beat-heading">
+            <h3>${escapeHtml(beat.name || "Beat sin nombre")}</h3>
+            <span>${escapeHtml(beat.genre || "Beat")}</span>
+          </div>
+          ${producerOpen}
+            <img src="${avatar || defaultAvatar}" alt="Foto de ${escapeHtml(beat.producerProfileName || beat.producer || "productor")}" onerror="this.onerror=null; this.src='${defaultAvatar}'">
+            <div>
+              <p>Prod. ${escapeHtml(beat.producerProfileName || beat.producer || "Desconocido")} </p>
+              ${beat.producerInstagram ? `<small>${escapeHtml(beat.producerInstagram)}</small>` : ""}
+            </div>
+          ${producerClose}
+          ${isTaken ? `<p>Tomado por ${escapeHtml(beat.assignedTo || "productor")}</p>` : ""}
+          <div class="beat-meta">
+            <span>${beat.bpm ? escapeHtml(beat.bpm) + " BPM" : "BPM libre"}</span>
+            <span>${escapeHtml(beat.key || "Sin nota")}</span>
+            <span>${escapeHtml(beat.mood || "Sin mood")}</span>
+          </div>
+          ${audio && (!isHidden || usuarioActual?.role === "admin") ? `<div class="beat-player-pro" data-player-id="${escapeHtml(playerId)}" data-audio="${escapeHtml(audio)}"><div class="player-buttons"><button type="button" onclick="seekBeat('${escapeHtml(playerId)}', -10)">-10s</button><button type="button" class="play-preview-btn" onclick="toggleBeatPlayer('${escapeHtml(playerId)}', this)">Reproducir</button><button type="button" onclick="seekBeat('${escapeHtml(playerId)}', 10)">+10s</button></div><input class="beat-progress" type="range" min="0" value="0" step="0.1" oninput="scrubBeat('${escapeHtml(playerId)}', this.value)"><span class="beat-time">0:00 / 0:00</span></div>` : `<p class="status">Audio no disponible</p>`}
+          <div class="beat-actions">
+            ${isHidden ? `<button type="button" disabled>Oculto</button>` : isTaken ? `<button type="button" disabled>No disponible</button>` : `<button class="btn-obtener ghost-button" data-beat-name="${escapeHtml(beat.name)}" data-beat-producer="${escapeHtml(beat.producer)}" data-beat-file="${escapeHtml(audio)}" data-beat-id="${beat.id || ""}">Tomar</button>`}
+            ${usuarioActual?.role === "admin" ? `<button class="btn-sections ghost-button" data-id="${beat.id}">Secciones</button><button class="btn-delete ghost-button" data-id="${beat.id}">Eliminar</button>` : ""}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+async function cargarBeats() {
+  statusBox.textContent = "Cargando beats...";
+
+  try {
+    const res = await fetch(`${API_URL}/api/all-beats`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("No se pudieron cargar los beats");
+
+    beatsGlobal = await res.json();
+    renderOptions();
+    renderDiscovery();
+    renderBeats();
+  } catch (err) {
+    console.error(err);
+    statusBox.textContent = "No se pudo cargar el catalogo de beats.";
+  }
+}
+
+window.cargarBeats = cargarBeats;
+window.toggleBeatPlayer = toggleBeatPlayer;
+window.seekBeat = seekBeat;
+window.scrubBeat = scrubBeat;
+window.setFilter = setFilter;
+
+[searchInput, moodFilter, producerFilter, genreFilter, artistFilter, statusFilter].forEach((input) => {
+  input.addEventListener("input", renderBeats);
+  input.addEventListener("change", renderBeats);
+});
+
+document.getElementById("clearFilters").onclick = () => {
+  searchInput.value = "";
+  moodFilter.value = "";
+  producerFilter.value = "";
+  genreFilter.value = "";
+  artistFilter.value = "";
+  statusFilter.value = "";
+  renderBeats();
+};
+
+document.getElementById("logoutBtn").onclick = () => {
+  stopPreview();
+  localStorage.removeItem("token");
+  window.location.replace("index.html");
+};
+
+document.addEventListener("click", async (event) => {
+  const sectionsBtn = event.target.closest(".btn-sections");
+  if (sectionsBtn) {
+    await editarSecciones(sectionsBtn.dataset.id);
+    return;
+  }
+
+  const btn = event.target.closest(".btn-delete");
+  if (!btn) return;
+  if (!confirm("Eliminar este beat definitivamente?")) return;
+
+  try {
+    const res = await fetch(`${API_URL}/api/beats/${btn.dataset.id}`, {
+      method: "DELETE",
+      headers: authHeaders()
+    });
+
+    if (!res.ok) throw new Error("Error al eliminar");
+    cargarBeats();
+  } catch (err) {
+    alert("No se pudo eliminar el beat.");
+  }
+});
+
+async function editarSecciones(beatId) {
+  const beat = beatsGlobal.find((item) => String(item.id) === String(beatId));
+  if (!beat) return;
+
+  const producer = prompt("Productor seleccionado:", beat.producer || "");
+  if (producer === null) return;
+
+  const genre = prompt("Genero para la seccion Beats por generos:", beat.genre || "");
+  if (genre === null) return;
+
+  const mood = prompt("Estado de animo para la seccion Beats por estado de animo:", beat.mood || "");
+  if (mood === null) return;
+
+  const artistReference = prompt("Type beat artist:", beat.artistReference || "");
+  if (artistReference === null) return;
+
+  const labelPick = confirm("Agregar este beat a Seleccion del sello?");
+
+  try {
+    const res = await fetch(`${API_URL}/api/admin/beats/${beatId}/sections`, {
+      method: "PATCH",
+      headers: authHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ producer, genre, mood, artistReference, labelPick })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || "No se pudieron actualizar las secciones");
+
+    await cargarBeats();
+    alert("Secciones actualizadas.");
+  } catch (err) {
+    alert(err.message || "No se pudieron actualizar las secciones.");
+  }
+}
+
+(async () => {
+  const ok = await proteger();
+  if (ok) cargarBeats();
+})();
+</script>
+<script src="../../assets/modal-obtener.js"></script>
+
+</body>
+</html>

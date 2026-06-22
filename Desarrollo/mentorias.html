@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mentorías</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(6, 17, 31, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(102, 217, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(10, 102, 255, 0.1);
+      animation: slideDown 0.6s ease-out;
+    }
+
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--blanco);
+      font-size: 28px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .navbar-back {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #66d9ff;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      padding: 10px 16px;
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .navbar-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(102, 217, 255, 0.1), rgba(10, 102, 255, 0.1));
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .navbar-back:hover::before {
+      opacity: 1;
+    }
+    
+    .navbar-back:hover {
+      color: #ffffff;
+      transform: translateX(-4px);
+      text-shadow: 0 0 10px rgba(102, 217, 255, 0.5), 0 0 20px rgba(10, 102, 255, 0.3);
+    }
+    
+    .navbar-back svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    .navbar-back:hover svg {
+      transform: translateX(-3px);
+    }
+    
+    body {
+      padding-top: 80px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="navbar-brand">ProducersGo</a>
+  <div style="display:flex;gap:25px;align-items:center;">
+    <span class="navbar-back" onclick="if (history.length > 1) { history.back(); } else { location.href='/'; }" style="cursor:pointer;color:var(--gris);font-size:14px;transition:color 0.3s;" onmouseover="this.style.color='var(--azul-claro)'" onmouseout="this.style.color='var(--gris)'">&larr; Volver</span>
+  </div>
+</nav>
+<div class="bg-anim"></div>
+<div class="moving-background"></div>
+<section class="hero">
+  <h2>No estás solo en esto, tenés <span>acompañamiento real en cada etapa</span></h2>
+  <p>Te guiamos, te corregimos y te ayudamos a avanzar sin perder tiempo ni energía en cosas que no te hacen mejorar.</p>
+  <a href="/Fontend/Contacto/contacto.html" class="btn">Quiero empezar</a>
+</section>
+
+<section class="sectionn">
+  <h3>El problema de avanzar sin dirección</h3>
+
+  <div class="text-block">
+    <p>
+      Aprender producción musical de forma independiente puede parecer una buena idea al principio,
+      pero con el tiempo se convierte en un camino lleno de dudas, bloqueos y frustraciones.
+      Tenés acceso a miles de tutoriales, cursos y contenido, pero eso no significa que estés avanzando correctamente.
+    </p>
+
+    <p>
+      El problema no es la falta de información, sino el exceso de información sin estructura.
+      Terminás consumiendo contenido sin saber qué aplicar, cuándo hacerlo o por qué hacerlo.
+      Probás cosas, copiás estilos, repetís técnicas, pero sin una base sólida que te permita entender lo que estás construyendo.
+    </p>
+
+    <p>
+      Eso genera una sensación constante de estancamiento. Sentís que hacés cosas,
+      pero no mejorás de verdad. Tus proyectos no evolucionan, tu sonido no se define
+      y cada nuevo beat parece empezar desde cero.
+    </p>
+
+    <p>
+      Con el tiempo, esto no solo afecta tu nivel, sino también tu motivación.
+      Porque cuando no ves progreso claro, empezás a dudar de vos mismo y de tu camino.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section highlight">
+  <h2 class="big-title">Acá es donde entramos nosotros</h2>
+  <p>
+    No te damos más información. Te damos claridad, dirección y acompañamiento real.
+  </p>
+</section>
+
+<section class="section">
+  <h3>Cómo trabajamos con vos dentro de la mentoría</h3>
+
+  <div class="text-block">
+    <p>
+      Nuestro enfoque es completamente personalizado. No creemos en procesos genéricos ni en estructuras rígidas
+      que se aplican igual a todos. Cada productor tiene un punto de partida distinto, un estilo diferente
+      y objetivos propios, por eso adaptamos todo el proceso a vos.
+    </p>
+
+    <p>
+      Desde el primer momento, nos enfocamos en entender cómo pensás, cómo producís y qué estás buscando lograr.
+      No solo analizamos tu música, sino también tus decisiones creativas, tu forma de trabajar y los errores que repetís.
+    </p>
+
+    <p>
+      A partir de ahí, empezamos a construir una guía clara para que sepas exactamente en qué enfocarte,
+      qué mejorar y cómo hacerlo. No te dejamos solo entre sesión y sesión, estamos presentes
+      para resolver dudas, corregir procesos y ayudarte cuando te trabás.
+    </p>
+
+    <p>
+      La idea es que no dependas de nosotros, sino que aprendas a pensar como productor.
+      Ese es el verdadero objetivo.
+    </p>
+  </div>
+</section>
+
+<section class="section grid">
+  <div class="card">
+    <h3>Diagnóstico profundo y real</h3>
+    <p>
+      Analizamos en detalle tu nivel actual, tus producciones, tus decisiones y tu forma de trabajar.
+      No nos quedamos en lo superficial, buscamos entender qué está frenando tu progreso
+      y qué aspectos necesitan más atención.
+    </p>
+
+    <p>
+      Este diagnóstico es clave porque define todo el proceso.
+      Nos permite trabajar con precisión y no perder tiempo en cosas innecesarias.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Plan adaptado a tu proceso</h3>
+    <p>
+      Diseñamos un camino claro para vos, basado en tu nivel, tu estilo y tus objetivos.
+      No vas a aprender cosas al azar, vas a avanzar con lógica y progresión.
+    </p>
+
+    <p>
+      Cada paso tiene un propósito, y cada mejora está pensada para construir sobre la anterior.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Acompañamiento constante</h3>
+    <p>
+      No es una mentoría donde ves contenido y listo. Estamos presentes en tu proceso.
+      Te ayudamos cuando te trabás, cuando dudás o cuando no sabés cómo avanzar.
+    </p>
+
+    <p>
+      Ese acompañamiento es lo que realmente marca la diferencia.
+    </p>
+  </div>
+</section>
+
+<section class="sectionn">
+  <h3>Qué cambia realmente en vos</h3>
+
+  <div class="text-block">
+    <p>
+      Vas a empezar a entender lo que hacés, no solo a repetirlo.
+      Vas a poder tomar decisiones con criterio, sin depender de referencias externas todo el tiempo.
+    </p>
+
+    <p>
+      Tu proceso creativo va a ser más claro, más ordenado y más eficiente.
+      Vas a dejar de perder tiempo en cosas que no aportan y enfocarte en lo que realmente mejora tu nivel.
+    </p>
+
+    <p>
+      También vas a ganar confianza. Porque cuando entendés lo que hacés,
+      dejás de dudar tanto y empezás a avanzar con seguridad.
+    </p>
+
+    <p>
+      Y eso cambia completamente tu relación con la música.
+    </p>
+  </div>
+</section>
+
+<section class="section highlight">
+  <h2 class="big-title">No es solo aprender, es transformar tu proceso</h2>
+  <p>
+    Queremos que dejes de sentirte perdido y empieces a avanzar con claridad.
+  </p>
+</section>
+
+<section class="section">
+  <h3>Resultado final</h3>
+
+  <div class="text-block">
+    <p>
+      Vas a avanzar más rápido, con menos frustración y con una guía constante.
+      Tu sonido va a mejorar, tu criterio también y tu forma de trabajar va a ser completamente distinta.
+    </p>
+
+    <p>
+      No vas a depender de tutoriales, ni de copiar estilos.
+      Vas a poder construir tu propio camino dentro de la producción musical.
+    </p>
+
+    <p>
+      Y lo más importante: vas a saber exactamente qué estás haciendo y por qué.
+    </p>
+  </div>
+</section>
+<footer id="contacto">
+  <div style="max-width:800px;margin:auto;text-align:center;">
+    <h2 style="margin-bottom:10px;">ProducersGo</h2>
+    <p style="margin-bottom:20px;">Sello discográfico enfocado en productores, beatmakers y DJs.</p>
+
+    <p style="margin-top:40px;font-size:14px;color:var(--gris);">
+      © 2026 ProducersGo - Todos los derechos reservados
+    </p>
+    <a href="/" style="display:inline-block;margin-top:12px;color:var(--turquesa);font-weight:700;text-decoration:none;">Volver a ProducersGo</a>
+  </div>
+</footer>
+
+</body>
+</html>
+

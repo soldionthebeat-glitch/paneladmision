@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Go Beats</title>
+  <link rel="stylesheet" href="cssz/dashboard.css" />
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <style>
+    .admin-modules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .admin-modules a {
+      padding: 18px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(10,102,255,0.15), rgba(102,217,255,0.05));
+      border: 1px solid rgba(102,217,255,0.2);
+      text-decoration: none;
+      color: var(--text);
+      text-align: center;
+      font-weight: 700;
+      transition: all 0.3s;
+    }
+    .admin-modules a:hover {
+      transform: translateY(-2px);
+      border-color: var(--cyan);
+    }
+    .admin-modules a .count {
+      display: block;
+      font-size: 28px;
+      color: var(--cyan);
+      margin-bottom: 4px;
+    }
+    .admin-modules a small {
+      display: block;
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .section-panel {
+      background: rgba(10,24,48,0.72);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .section-panel h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table th, table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-size: 13px;
+    }
+    table th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    table tr:hover td {
+      background: rgba(10,102,255,0.05);
+    }
+    .status-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .status-pill.pending { background: rgba(255,193,7,0.15); color: #ffc107; }
+    .status-pill.approved { background: rgba(0,255,154,0.15); color: #00ff9a; }
+    .status-pill.rejected { background: rgba(255,69,96,0.15); color: #ff4560; }
+    .btn-sm {
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: none;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s;
+    }
+    .btn-sm.approve { background: rgba(0,255,154,0.2); border: 1px solid rgba(0,255,154,0.4); color: #00ff9a; }
+    .btn-sm.reject { background: rgba(255,69,96,0.2); border: 1px solid rgba(255,69,96,0.4); color: #ff4560; }
+    .btn-sm:hover { opacity: 0.8; }
+    .tab-nav {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: rgba(3,18,43,0.5);
+      border-radius: 8px;
+      padding: 4px;
+      flex-wrap: wrap;
+    }
+    .tab-nav button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-nav button.active {
+      background: rgba(10,102,255,0.25);
+      color: var(--cyan);
+    }
+    .tab-nav button:hover { color: var(--text); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .inline-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .inline-form input, .inline-form select {
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(124,184,255,0.25);
+      background: rgba(3,18,43,0.75);
+      color: var(--text);
+      font-size: 13px;
+    }
+    .inline-form button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: white;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button id="sidebarHandle" class="sidebar-handle" type="button"></button>
+    <div class="brand-block">
+      <span class="brand-mark">GB</span>
+      <div><h2>Go Beats</h2><p>Admin</p></div>
+    </div>
+    <nav class="side-nav">
+      <a href="home.html">Explorer</a>
+      <a href="dashboard.html">Mi Panel</a>
+      <a href="subirbeats.html">Subir instrumental</a>
+      <a href="perfil-editor.html">Mi Perfil</a>
+      <a href="admin-descargas.html">Descargas</a>
+      <a href="admin-submissions.html">Submissions</a>
+      <a href="admi.html" class="active">Admin</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="header">
+      <button id="toggleSidebar" type="button"></button>
+      <div>
+        <p class="eyebrow">Administracion</p>
+        <h1>Panel de Administracion</h1>
+      </div>
+      <div class="header-actions">
+        <span id="userBadge" class="user-badge">Cargando...</span>
+        <button id="logoutBtn" type="button">Cerrar sesion</button>
+      </div>
+    </header>
+
+    <div class="tab-nav">
+      <button class="active" data-tab="dashboard">Dashboard</button>
+      <button data-tab="users">Usuarios</button>
+      <button data-tab="admissions">Admisiones</button>
+      <button data-tab="distributions">Distribuciones</button>
+      <button data-tab="sounds">Libreria</button>
+      <button data-tab="create">Crear usuario</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="admin-modules" id="statsGrid">
+        <a><span class="count" id="statProducers">0</span>Productores<small>registrados</small></a>
+        <a><span class="count" id="statBeats">0</span>Instrumentales<small>publicadas</small></a>
+        <a><span class="count" id="statAssignments">0</span>Tomadas<small>por productores</small></a>
+        <a><span class="count" id="statAdmissions">0</span>Solicitudes<small>pendientes</small></a>
+        <a><span class="count" id="statSounds">0</span>Sonidos<small>en libreria</small></a>
+        <a><span class="count" id="statDistributions">0</span>Distribuciones<small>registradas</small></a>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn-sm approve" id="exportAllBtn" style="padding:10px 20px;font-size:13px;">Descargar todo (ZIP)</button>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="tab-content" id="tab-users">
+      <div class="section-panel">
+        <h2>Gestion de Usuarios</h2>
+        <div id="usersContainer"><p class="status">Cargando usuarios...</p></div>
+      </div>
+    </div>
+
+    <!-- ADMISSIONS -->
+    <div class="tab-content" id="tab-admissions">
+      <div class="section-panel">
+        <h2>Solicitudes de Admision</h2>
+        <div id="admissionsContainer"><p class="status">Cargando solicitudes...</p></div>
+      </div>
+    </div>
+
+    <!-- DISTRIBUTIONS -->
+    <div class="tab-content" id="tab-distributions">
+      <div class="section-panel">
+        <h2>Distribuciones</h2>
+        <div id="distrosContainer"><p class="status">Cargando distribuciones...</p></div>
+      </div>
+    </div>
+
+    <!-- SOUND LIBRARY -->
+    <div class="tab-content" id="tab-sounds">
+      <div class="section-panel">
+        <h2>Libreria de Sonidos</h2>
+        <div id="soundsContainer"><p class="status">Cargando libreria...</p></div>
+      </div>
+    </div>
+
+    <!-- CREATE USER -->
+    <div class="tab-content" id="tab-create">
+      <div class="section-panel">
+        <h2>Crear Usuario</h2>
+        <form id="createUserForm" style="display:grid; gap:14px; max-width:500px;">
+          <label style="display:grid; gap:6px; font-size:12px; color:var(--muted); text-transform:uppercase; font-weight:800;">
+            Email
+            <input type="email" id="newEmail" required style="min-height:42px; border-radius:8px; border:1px solid rgba(124,184,255,0.25); background:rgba(3,18,43,0.75); color:var(--text); padding:10px;">
+          </label>
+          <label style="display:grid; gap:6px; font-size:12px; color:var(--muted); text-transform:uppercase; font-weight:800;">
+            Contrasena
+            <input type="password" id="newPassword" minlength="6" required style="min-height:42px; border-radius:8px; border:1px solid rgba(124,184,255,0.25); background:rgba(3,18,43,0.75); color:var(--text); padding:10px;">
+          </label>
+          <label style="display:grid; gap:6px; font-size:12px; color:var(--muted); text-transform:uppercase; font-weight:800;">
+            Rol
+            <select id="newRole" style="min-height:42px; border-radius:8px; border:1px solid rgba(124,184,255,0.25); background:rgba(3,18,43,0.75); color:var(--text); padding:10px;">
+              <option value="producer">Productor</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </label>
+          <div id="createUserStatus" style="padding:10px; border-radius:8px; font-weight:700; font-size:13px; display:none;"></div>
+          <button type="submit" id="createUserBtn" style="min-height:42px; border-radius:8px; border:0; background:linear-gradient(135deg,var(--blue),var(--cyan)); color:white; font-weight:800; cursor:pointer;">Crear usuario</button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" 
+  ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+
+let usuarioActual = null;
+
+function token() { return localStorage.getItem("token"); }
+function authHeaders(extra = {}) { return { ...extra, Authorization: "Bearer " + token() }; }
+function escapeHtml(v) { return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+
+async function proteger() {
+  if (!token()) { window.location.replace("index.html"); return false; }
+  try {
+    const res = await fetch(`${API_URL}/api/me`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Sesion invalida");
+    usuarioActual = await res.json();
+    if (usuarioActual.role !== "admin") { alert("Solo administradores"); window.location.replace("home.html"); return false; }
+    userBadge.textContent = `Admin: ${usuarioActual.producerName || usuarioActual.email}`;
+    return true;
+  } catch {
+    localStorage.removeItem("token");
+    window.location.replace("index.html");
+    return false;
+  }
+}
+
+async function cargarDashboard() {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/dashboard`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Error");
+    const data = await res.json();
+    document.getElementById("statProducers").textContent = data.totalProducers || 0;
+    document.getElementById("statBeats").textContent = data.totalBeats || 0;
+    document.getElementById("statAssignments").textContent = data.totalAssignments || 0;
+    document.getElementById("statAdmissions").textContent = data.totalAdmissions || 0;
+    document.getElementById("statSounds").textContent = data.totalSounds || 0;
+    document.getElementById("statDistributions").textContent = data.totalDistributions || 0;
+  } catch {}
+}
+
+async function cargarUsuarios() {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/users`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Error");
+    const users = await res.json();
+    const container = document.getElementById("usersContainer");
+    if (!users.length) { container.innerHTML = "<p class='status'>No hay usuarios.</p>"; return; }
+    container.innerHTML = `<table><thead><tr><th>Email</th><th>Nombre</th><th>Rol</th><th>Estado</th><th>Accion</th></tr></thead><tbody>${users.map(u => `
+      <tr>
+        <td>${escapeHtml(u.email)}</td>
+        <td>${escapeHtml(u.producerName || "-")}</td>
+        <td><span class="status-pill ${u.role}">${u.role}</span></td>
+        <td>${u.isActive ? "Activo" : "Inactivo"}</td>
+        <td style="display:flex;gap:6px;">
+          <select onchange="cambiarRol('${u.id}', this.value)" style="padding:4px 6px;border-radius:4px;border:1px solid rgba(124,184,255,0.2);background:rgba(3,18,43,0.7);color:var(--text);font-size:11px;">
+            <option value="producer" ${u.role==="producer"?"selected":""}>Productor</option>
+            <option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>
+          </select>
+          <button class="btn-sm ${u.isActive ? 'reject' : 'approve'}" onclick="toggleUser('${u.id}')">${u.isActive ? "Desactivar" : "Activar"}</button>
+        </td>
+      </tr>
+    `).join("")}</tbody></table>`;
+  } catch {
+    document.getElementById("usersContainer").innerHTML = "<p class='status'>Error cargando usuarios.</p>";
+  }
+}
+
+async function cambiarRol(id, role) {
+  try {
+    await fetch(`${API_URL}/api/admin/users/${id}/role`, {
+      method: "PATCH",
+      headers: authHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ role })
+    });
+    cargarUsuarios();
+  } catch {}
+}
+
+async function toggleUser(id) {
+  try {
+    await fetch(`${API_URL}/api/admin/users/${id}/toggle`, {
+      method: "PATCH", headers: authHeaders()
+    });
+    cargarUsuarios();
+  } catch {}
+}
+
+async function cargarAdmisiones() {
+  try {
+    const res = await fetch(`${API_URL}/api/admission`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Error");
+    const admisiones = await res.json();
+    const container = document.getElementById("admissionsContainer");
+    if (!admisiones.length) { container.innerHTML = "<p class='status'>No hay solicitudes.</p>"; return; }
+    container.innerHTML = `<table><thead><tr><th>Artista</th><th>Email</th><th>Generos</th><th>Experiencia</th><th>Estado</th><th>Accion</th></tr></thead><tbody>${admisiones.map(a => `
+      <tr>
+        <td><strong>${escapeHtml(a.artisticName)}</strong></td>
+        <td>${escapeHtml(a.email)}</td>
+        <td>${escapeHtml(a.genres || "-")}</td>
+        <td>${a.yearsExperience || 0} años</td>
+        <td><span class="status-pill ${a.status}">${a.status}</span></td>
+        <td style="display:flex;gap:6px;">
+          ${a.status === "pending" ? `
+            <button class="btn-sm approve" onclick="aprobarAdmision('${a.id}')">Aprobar</button>
+            <button class="btn-sm reject" onclick="rechazarAdmision('${a.id}')">Rechazar</button>
+          ` : `<span style="color:var(--muted);font-size:12px;">${a.reviewedAt ? new Date(a.reviewedAt).toLocaleDateString() : ""}</span>`}
+          <button onclick="verDetalle('${escapeHtml(JSON.stringify(a).replace(/'/g, "\\'"))}')" style="padding:4px 8px;border-radius:4px;border:1px solid rgba(124,184,255,0.2);background:transparent;color:var(--cyan);cursor:pointer;font-size:11px;">Ver</button>
+        </td>
+      </tr>
+    `).join("")}</tbody></table>`;
+  } catch {
+    document.getElementById("admissionsContainer").innerHTML = "<p class='status'>Error cargando solicitudes.</p>";
+  }
+}
+
+async function aprobarAdmision(id) {
+  if (!confirm("Aprobar esta solicitud? Se creara un usuario automaticamente.")) return;
+  try {
+    const res = await fetch(`${API_URL}/api/admission/${id}/status`, {
+      method: "PATCH",
+      headers: authHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ status: "approved" })
+    });
+    if (!res.ok) throw new Error("Error");
+    cargarAdmisiones();
+  } catch {}
+}
+
+async function rechazarAdmision(id) {
+  if (!confirm("Rechazar esta solicitud?")) return;
+  try {
+    const res = await fetch(`${API_URL}/api/admission/${id}/status`, {
+      method: "PATCH",
+      headers: authHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ status: "rejected" })
+    });
+    if (!res.ok) throw new Error("Error");
+    cargarAdmisiones();
+  } catch {}
+}
+
+function verDetalle(jsonStr) {
+  try {
+    const a = JSON.parse(jsonStr);
+    alert([
+      `Artista: ${a.artisticName}`,
+      `Nombre real: ${a.realName || "-"}`,
+      `Email: ${a.email}`,
+      `Pais: ${a.country || "-"}`,
+      `Generos: ${a.genres || "-"}`,
+      `Experiencia: ${a.yearsExperience || 0} años`,
+      `Redes: ${a.socialMedia || "-"}`,
+      `Portafolio: ${a.portfolio || "-"}`,
+      `Biografia: ${a.biography || "-"}`,
+      `Motivo: ${a.reason || "-"}`,
+      `Estado: ${a.status}`
+    ].join("\n"));
+  } catch {}
+}
+
+async function cargarDistribucionesAdmin() {
+  try {
+    const res = await fetch(`${API_URL}/api/distribution/all`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Error");
+    const distros = await res.json();
+    const container = document.getElementById("distrosContainer");
+    if (!distros.length) { container.innerHTML = "<p class='status'>No hay distribuciones.</p>"; return; }
+    container.innerHTML = `<table><thead><tr><th>Titulo</th><th>Productor</th><th>ISRC</th><th>UPC</th><th>Estado</th><th>Accion</th></tr></thead><tbody>${distros.map(d => `
+      <tr>
+        <td><strong>${escapeHtml(d.title || "Sin titulo")}</strong></td>
+        <td>${d.userId ? escapeHtml(d.userId.producerName || d.userId.email) : "-"}</td>
+        <td>${escapeHtml(d.isrc || "-")}</td>
+        <td>${escapeHtml(d.upc || "-")}</td>
+        <td><span class="status-pill ${d.status}">${d.status}</span></td>
+        <td>
+          <select onchange="cambiarEstadoDistro('${d.id}', this.value)" style="padding:4px 6px;border-radius:4px;border:1px solid rgba(124,184,255,0.2);background:rgba(3,18,43,0.7);color:var(--text);font-size:11px;">
+            <option value="pending" ${d.status==="pending"?"selected":""}>Pendiente</option>
+            <option value="distributed" ${d.status==="distributed"?"selected":""}>Distribuido</option>
+            <option value="published" ${d.status==="published"?"selected":""}>Publicado</option>
+            <option value="rejected" ${d.status==="rejected"?"selected":""}>Rechazado</option>
+          </select>
+        </td>
+      </tr>
+    `).join("")}</tbody></table>`;
+  } catch {
+    document.getElementById("distrosContainer").innerHTML = "<p class='status'>Error cargando distribuciones.</p>";
+  }
+}
+
+async function cambiarEstadoDistro(id, status) {
+  try {
+    await fetch(`${API_URL}/api/distribution/${id}/status`, {
+      method: "PATCH",
+      headers: authHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ status })
+    });
+    cargarDistribucionesAdmin();
+  } catch {}
+}
+
+async function cargarSoundsAdmin() {
+  try {
+    const res = await fetch(`${API_URL}/api/soundlibrary/all`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Error");
+    const sounds = await res.json();
+    const container = document.getElementById("soundsContainer");
+    if (!sounds.length) { container.innerHTML = "<p class='status'>No hay elementos en la libreria.</p>"; return; }
+    container.innerHTML = `<table><thead><tr><th>Nombre</th><th>Categoria</th><th>Subido por</th><th>Tamaño</th><th>Accion</th></tr></thead><tbody>${sounds.map(s => `
+      <tr>
+        <td><strong>${escapeHtml(s.name)}</strong></td>
+        <td>${escapeHtml(s.category)}</td>
+        <td>${escapeHtml(s.uploadedBy || "-")}</td>
+        <td>${s.fileSize ? (s.fileSize / (1024*1024)).toFixed(2) + " MB" : "-"}</td>
+        <td>
+          <button onclick="deleteSound('${s.id}')" style="padding:4px 8px;border-radius:4px;border:1px solid rgba(255,69,96,0.4);background:rgba(255,69,96,0.15);color:#ff4560;cursor:pointer;font-size:11px;">Eliminar</button>
+        </td>
+      </tr>
+    `).join("")}</tbody></table>`;
+  } catch {
+    document.getElementById("soundsContainer").innerHTML = "<p class='status'>Error cargando libreria.</p>";
+  }
+}
+
+async function deleteSound(id) {
+  if (!confirm("Eliminar este elemento de la libreria?")) return;
+  try {
+    await fetch(`${API_URL}/api/soundlibrary/${id}`, { method: "DELETE", headers: authHeaders() });
+    cargarSoundsAdmin();
+  } catch {}
+}
+
+document.getElementById("createUserForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("newEmail").value.trim().toLowerCase();
+  const password = document.getElementById("newPassword").value.trim();
+  const role = document.getElementById("newRole").value;
+  const statusBox = document.getElementById("createUserStatus");
+  const btn = document.getElementById("createUserBtn");
+
+  btn.disabled = true;
+  btn.textContent = "Creando...";
+  statusBox.style.display = "none";
+
+  try {
+    const res = await fetch(`${API_URL}/api/register`, {
+      method: "POST",
+      headers: authHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ email, password, role })
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Error");
+    statusBox.textContent = `Usuario ${email} creado (${role}).`;
+    statusBox.style.cssText = "display:block;color:#00ff9a;background:rgba(0,255,154,0.08);border:1px solid rgba(0,255,154,0.3);";
+    document.getElementById("createUserForm").reset();
+  } catch (err) {
+    statusBox.textContent = err.message;
+    statusBox.style.cssText = "display:block;color:#ff4560;background:rgba(255,69,96,0.08);border:1px solid rgba(255,69,96,0.3);";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Crear usuario";
+  }
+});
+
+// Tab switching
+document.querySelectorAll(".tab-nav button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+  });
+});
+
+document.getElementById("toggleSidebar").onclick = () => document.getElementById("sidebar").classList.toggle("active");
+document.getElementById("sidebarHandle").onclick = () => document.getElementById("sidebar").classList.toggle("active");
+document.getElementById("logoutBtn").onclick = () => { localStorage.removeItem("token"); window.location.replace("index.html"); };
+
+document.getElementById("exportAllBtn").addEventListener("click", () => {
+  const btn = document.getElementById("exportAllBtn");
+  btn.disabled = true;
+  btn.textContent = "Generando ZIP...";
+  fetch(`${API_URL}/api/admin/export-beats`, { headers: authHeaders() })
+    .then((res) => {
+      if (!res.ok) throw new Error("Error exportando");
+      return res.blob();
+    })
+    .then((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Go_Beats_Export_${new Date().toISOString().split("T")[0]}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    })
+    .catch((err) => {
+      alert("Error: " + err.message);
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = "Descargar todo (ZIP)";
+    });
+});
+
+(async () => {
+  const ok = await proteger();
+  if (ok) {
+    await Promise.all([
+      cargarDashboard(),
+      cargarUsuarios(),
+      cargarAdmisiones(),
+      cargarDistribucionesAdmin(),
+      cargarSoundsAdmin()
+    ]);
+  }
+})();
+</script>
+</body>
+</html>

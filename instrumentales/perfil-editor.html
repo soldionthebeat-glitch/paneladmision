@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Perfil - Go Beats</title>
+  <link rel="stylesheet" href="cssz/dashboard.css"/>
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <style>
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .profile-sidebar-card {
+      background: rgba(10, 24, 48, 0.72);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+    .profile-photo-wrap {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid rgba(102, 217, 255, 0.25);
+      background: rgba(3, 18, 43, 0.6);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .profile-photo-wrap:hover {
+      border-color: var(--cyan);
+    }
+    .profile-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-photo-wrap .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .profile-photo-wrap:hover .overlay {
+      opacity: 1;
+    }
+    #photoInput { display: none; }
+    .photo-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .profile-name-display {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      margin: 8px 0 4px;
+    }
+    .profile-email-display {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+    .profile-role-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: rgba(102, 217, 255, 0.12);
+      border: 1px solid rgba(102, 217, 255, 0.25);
+      color: var(--cyan);
+    }
+    .profile-main-card {
+      background: rgba(10, 24, 48, 0.72);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid .full-width { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(124, 184, 255, 0.18);
+      background: rgba(3, 18, 43, 0.6);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--cyan);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(160, 168, 192, 0.4);
+    }
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+    .save-btn {
+      padding: 10px 28px;
+      border-radius: 6px;
+      border: none;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .save-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .save-status {
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: none;
+    }
+    .save-status.success { display: block; background: rgba(0, 255, 154, 0.1); color: #00ff9a; border: 1px solid rgba(0, 255, 154, 0.2); }
+    .save-status.error { display: block; background: rgba(255, 69, 96, 0.1); color: #ff4560; border: 1px solid rgba(255, 69, 96, 0.2); }
+    .save-status.loading { display: block; background: rgba(102, 217, 255, 0.1); color: var(--cyan); border: 1px solid rgba(102, 217, 255, 0.2); }
+    @media (max-width: 768px) {
+      .profile-layout { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button id="sidebarHandle" class="sidebar-handle" type="button" aria-label="Abrir menu"></button>
+    <div class="brand-block">
+      <span class="brand-mark">GB</span>
+      <div>
+        <h2>Go Beats</h2>
+        <p>Mi Perfil</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="home.html">Explorer</a>
+      <a href="dashboard.html">Mi Panel</a>
+      <a href="subirbeats.html">Subir instrumental</a>
+      <a href="../distribucion/index.html">Distribucion</a>
+      <a href="../libreria/index.html">Libreria</a>
+      <a href="perfil-editor.html" class="active">Mi Perfil</a>
+      <a href="admin-descargas.html" class="admin-only hidden">Descargas</a>
+      <a href="admi.html" class="admin-only hidden">Admin</a>
+    </nav>
+  </aside>
+
+  <main class="main" id="main">
+    <header class="header">
+      <button id="toggleSidebar" type="button" aria-label="Abrir menu"></button>
+      <div>
+        <p class="eyebrow">Productor</p>
+        <h1>Mi Perfil</h1>
+      </div>
+      <div class="header-actions">
+        <span id="userBadge" class="user-badge">Cargando...</span>
+        <button id="logoutBtn" type="button">Cerrar sesion</button>
+      </div>
+    </header>
+
+    <div class="profile-layout">
+      <!-- Sidebar: foto y resumen -->
+      <div class="profile-sidebar-card">
+        <div class="profile-photo-wrap" id="photoWrap" title="Haz clic para cambiar foto">
+          <img id="profilePhoto" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22300%22%20height=%22300%22%3E%3Crect%20width=%22300%22%20height=%22300%22%20fill=%22%230a1830%22/%3E%3Ctext%20x=%2250%25%22%20y=%2250%25%22%20fill=%22%2366d9ff%22%20font-family=%22Arial%22%20font-size=%2252%22%20text-anchor=%22middle%22%20dominant-baseline=%22middle%22%3EGB%3C/text%3E%3C/svg%3E" alt="Foto de perfil">
+          <div class="overlay">Cambiar foto</div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*">
+        <p class="photo-hint">JPG o PNG, max 10 MB</p>
+        <p class="profile-name-display" id="displayName">—</p>
+        <p class="profile-email-display" id="displayEmail">—</p>
+        <span class="profile-role-badge" id="displayRole">productor</span>
+      </div>
+
+      <!-- Formulario -->
+      <div class="profile-main-card">
+        <div id="saveStatus" class="save-status"></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre artistico</label>
+            <input id="inputProducerName" type="text" placeholder="Ej: Soldi On The Beat">
+          </div>
+          <div class="form-group">
+            <label>Nombre real</label>
+            <input id="inputRealName" type="text" placeholder="Ej: Juan Perez">
+          </div>
+          <div class="form-group full-width">
+            <label>Biografia</label>
+            <textarea id="inputBiography" placeholder="Cuenta tu historia como productor..."></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label>Descripcion corta</label>
+            <input id="inputDescription" type="text" placeholder="Breve descripcion para tu perfil publico">
+          </div>
+          <div class="form-group">
+            <label>Instagram</label>
+            <input id="inputInstagram" type="text" placeholder="@tuusuario">
+          </div>
+          <div class="form-group">
+            <label>Redes sociales (URLs)</label>
+            <input id="inputSocialMedia" type="text" placeholder="YouTube, TikTok, X...">
+          </div>
+          <div class="form-group">
+            <label>Portfolio / Web</label>
+            <input id="inputPortfolio" type="text" placeholder="https://tusitio.com">
+          </div>
+          <div class="form-group">
+            <label>Pais</label>
+            <input id="inputCountry" type="text" placeholder="Ej: Argentina">
+          </div>
+          <div class="form-group">
+            <label>Generos musicales</label>
+            <input id="inputGenres" type="text" placeholder="Trap, Reggaeton, Drill...">
+          </div>
+          <div class="form-group">
+            <label>Anos de experiencia</label>
+            <input id="inputYears" type="number" min="0" max="99" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Resume / CV</label>
+            <input id="inputResume" type="text" placeholder="Logros, colaboraciones...">
+          </div>
+          <div class="form-group full-width" style="margin-top:8px;padding-top:16px;border-top:1px solid rgba(124,184,255,0.12);">
+            <label>Link de catalogo para artistas</label>
+            <div style="display:flex;gap:8px;">
+              <input id="inputReferral" type="text" readonly style="opacity:0.7; cursor:text;flex:1;">
+              <button id="copyReferralBtn" type="button" class="save-btn" style="padding:8px 14px;font-size:12px;white-space:nowrap;">Copiar link</button>
+            </div>
+            <p style="font-size:12px;color:var(--muted);margin-top:4px;">Comparte este link con artistas para que escuchen tu catalogo.</p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a href="dashboard.html" class="save-btn" style="background:transparent;border:1px solid rgba(124,184,255,0.25);color:var(--muted);text-decoration:none;padding:10px 20px;font-size:13px;">Cancelar</a>
+          <button id="saveBtn" class="save-btn">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+
+let usuarioActual = null;
+
+function token() { return localStorage.getItem("token"); }
+function authHeaders(extra = {}) {
+  return { ...extra, Authorization: "Bearer " + token() };
+}
+
+function buildAssetUrl(path) {
+  if (!path) return "";
+  let value = String(path).replaceAll("\\", "/");
+  try { value = decodeURIComponent(value); } catch {}
+  if (value.startsWith("data:") || value.startsWith("blob:")) return value;
+  value = value.replace(/uploadsaudio[\u0000-\u001f\u007f]*/i, "uploads/audio/");
+  value = value.replace(/uploadsimages[\u0000-\u001f\u007f]*/i, "uploads/images/");
+  return value.startsWith("http") ? value : `${API_URL}/${value.replace(/^\/+/, "")}`;
+}
+
+function toggleSidebar() { document.getElementById("sidebar").classList.toggle("active"); }
+
+function showStatus(msg, type) {
+  const el = document.getElementById("saveStatus");
+  el.textContent = msg;
+  el.className = "save-status " + type;
+  if (type === "success") setTimeout(() => { el.className = "save-status"; }, 3000);
+}
+
+async function proteger() {
+  if (!token()) { window.location.replace("index.html"); return false; }
+  try {
+    const res = await fetch(`${API_URL}/api/me`, { headers: authHeaders() });
+    if (!res.ok) throw new Error("Sesion invalida");
+    usuarioActual = await res.json();
+    const badge = document.getElementById("userBadge");
+    badge.textContent = usuarioActual.role === "admin"
+      ? "Admin: " + (usuarioActual.producerName || usuarioActual.email)
+      : (usuarioActual.producerName || usuarioActual.email);
+    document.body.dataset.role = usuarioActual.role;
+    if (usuarioActual.role === "admin") {
+      document.querySelectorAll(".admin-only").forEach(el => el.classList.remove("hidden"));
+    }
+    return true;
+  } catch {
+    localStorage.removeItem("token");
+    window.location.replace("index.html");
+    return false;
+  }
+}
+
+function fillForm(user) {
+  document.getElementById("displayName").textContent = user.producerName || "Sin nombre";
+  document.getElementById("displayEmail").textContent = user.email;
+  document.getElementById("displayRole").textContent = user.role;
+  if (user.profilePhotoUrl) {
+    document.getElementById("profilePhoto").src = buildAssetUrl(user.profilePhotoUrl);
+  }
+  document.getElementById("inputProducerName").value = user.producerName || "";
+  document.getElementById("inputRealName").value = user.realName || "";
+  document.getElementById("inputBiography").value = user.biography || "";
+  document.getElementById("inputDescription").value = user.description || "";
+  document.getElementById("inputInstagram").value = user.instagram || "";
+  document.getElementById("inputSocialMedia").value = user.socialMedia || "";
+  document.getElementById("inputPortfolio").value = user.portfolio || "";
+  document.getElementById("inputCountry").value = user.country || "";
+  document.getElementById("inputGenres").value = user.genres || "";
+  document.getElementById("inputYears").value = user.yearsExperience || 0;
+  document.getElementById("inputResume").value = user.resume || "";
+  const code = user.referralCode || "";
+  document.getElementById("inputReferral").value = code
+    ? `${window.location.origin}/Fontend/instrumentales/referido.html?code=${encodeURIComponent(code)}`
+    : "Sin codigo de referido";
+}
+
+// Photo upload
+document.getElementById("photoWrap").addEventListener("click", () => {
+  document.getElementById("photoInput").click();
+});
+
+document.getElementById("photoInput").addEventListener("change", async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  // Show local preview
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById("profilePhoto").src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  // Upload to R2
+  showStatus("Subiendo foto...", "loading");
+  const formData = new FormData();
+  formData.append("photo", file);
+  try {
+    const res = await fetch(`${API_URL}/api/me/profile-photo`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: formData
+    });
+    const text = await res.text();
+    if (!res.ok) {
+      let msg = "Error al subir foto";
+      try { const j = JSON.parse(text); msg = j.message || msg; } catch {}
+      throw new Error(msg);
+    }
+    const data = JSON.parse(text);
+    showStatus("Foto actualizada", "success");
+    document.getElementById("profilePhoto").src = buildAssetUrl(data.profilePhotoUrl);
+    if (usuarioActual) usuarioActual.profilePhotoUrl = data.profilePhotoUrl;
+  } catch (err) {
+    showStatus(err.message || "Error al subir foto", "error");
+    if (usuarioActual?.profilePhotoUrl) {
+      document.getElementById("profilePhoto").src = buildAssetUrl(usuarioActual.profilePhotoUrl);
+    } else {
+      document.getElementById("profilePhoto").src = "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22300%22%20height=%22300%22%3E%3Crect%20width=%22300%22%20height=%22300%22%20fill=%22%230a1830%22/%3E%3Ctext%20x=%2250%25%22%20y=%2250%25%22%20fill=%22%2366d9ff%22%20font-family=%22Arial%22%20font-size=%2252%22%20text-anchor=%22middle%22%20dominant-baseline=%22middle%22%3EGB%3C/text%3E%3C/svg%3E";
+    }
+  }
+});
+
+// Save profile
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = true;
+  btn.textContent = "Guardando...";
+  showStatus("Guardando cambios...", "loading");
+
+  const body = {
+    producerName: document.getElementById("inputProducerName").value,
+    realName: document.getElementById("inputRealName").value,
+    biography: document.getElementById("inputBiography").value,
+    description: document.getElementById("inputDescription").value,
+    instagram: document.getElementById("inputInstagram").value,
+    socialMedia: document.getElementById("inputSocialMedia").value,
+    portfolio: document.getElementById("inputPortfolio").value,
+    country: document.getElementById("inputCountry").value,
+    genres: document.getElementById("inputGenres").value,
+    yearsExperience: document.getElementById("inputYears").value,
+    resume: document.getElementById("inputResume").value
+  };
+
+  try {
+    const res = await fetch(`${API_URL}/api/me/profile`, {
+      method: "PUT",
+      headers: authHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error("Error al guardar");
+    const data = await res.json();
+    usuarioActual = { ...usuarioActual, ...data, ...body };
+    if (data.profilePhotoUrl) usuarioActual.profilePhotoUrl = data.profilePhotoUrl;
+    document.getElementById("profilePhoto").src = usuarioActual.profilePhotoUrl
+      ? buildAssetUrl(usuarioActual.profilePhotoUrl)
+      : "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22300%22%20height=%22300%22%3E%3Crect%20width=%22300%22%20height=%22300%22%20fill=%22%230a1830%22/%3E%3Ctext%20x=%2250%25%22%20y=%2250%25%22%20fill=%22%2366d9ff%22%20font-family=%22Arial%22%20font-size=%2252%22%20text-anchor=%22middle%22%20dominant-baseline=%22middle%22%3EGB%3C/text%3E%3C/svg%3E";
+    document.getElementById("displayName").textContent = usuarioActual.producerName || "Sin nombre";
+    document.getElementById("userBadge").textContent = usuarioActual.role === "admin"
+      ? "Admin: " + (usuarioActual.producerName || usuarioActual.email)
+      : (usuarioActual.producerName || usuarioActual.email);
+    showStatus("Perfil actualizado correctamente", "success");
+  } catch (err) {
+    showStatus(err.message || "Error al guardar perfil", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Guardar cambios";
+  }
+});
+
+// Copy referral link
+document.getElementById("copyReferralBtn").addEventListener("click", () => {
+  const input = document.getElementById("inputReferral");
+  if (!input.value) return;
+  navigator.clipboard.writeText(input.value).then(() => {
+    showStatus("Link copiado al portapapeles", "success");
+  }).catch(() => {
+    input.select();
+    document.execCommand("copy");
+    showStatus("Link copiado", "success");
+  });
+});
+
+// Event listeners
+document.getElementById("toggleSidebar").onclick = toggleSidebar;
+document.getElementById("sidebarHandle").onclick = toggleSidebar;
+document.getElementById("logoutBtn").onclick = () => {
+  localStorage.removeItem("token");
+  window.location.replace("index.html");
+};
+
+// Init
+(async () => {
+  const ok = await proteger();
+  if (ok && usuarioActual) fillForm(usuarioActual);
+})();
+</script>
+
+</body>
+</html>

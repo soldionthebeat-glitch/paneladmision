@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submissions - Admin | Go Beats</title>
+  <link rel="stylesheet" href="cssz/subirbeats.css">
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+  <style>
+    body { padding-bottom: 40px; }
+    .submission-card { margin-bottom: 16px; }
+    .submission-header { padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .submission-header:hover { background: rgba(102, 217, 255, 0.04); }
+    .submission-header h3 { margin: 0; font-size: 15px; color: var(--cyan); }
+    .submission-meta { font-size: 12px; color: var(--muted); }
+    .submission-body { padding: 0 18px 18px; }
+    .submission-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .submission-table th { text-align: left; padding: 8px 6px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid rgba(124, 184, 255, 0.1); }
+    .submission-table td { padding: 8px 6px; border-bottom: 1px solid rgba(124, 184, 255, 0.05); }
+    .submission-table tr:hover td { background: rgba(102, 217, 255, 0.03); }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; padding: 12px; border-radius: 10px; background: rgba(3, 18, 43, 0.4); }
+    .meta-item { font-size: 12px; }
+    .meta-item .label { color: var(--muted); display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .meta-item .value { color: var(--text); font-weight: 600; }
+    .badge-green { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(0, 255, 154, 0.1); color: var(--green); }
+    .badge-yellow { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(255, 209, 102, 0.1); color: var(--gold); }
+    .badge-gray { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(124, 184, 255, 0.08); color: var(--muted); }
+    .detail-row { display: flex; gap: 6px; margin: 2px 0; font-size: 12px; }
+    .detail-row .dl { color: var(--muted); min-width: 100px; }
+    .detail-row .dv { color: var(--text); }
+    .stats-row { display: flex; gap: 24px; padding: 14px 22px; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 24px; font-weight: 800; color: var(--cyan); }
+    .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
+    .btn-export { margin-left: auto; }
+    .search-bar { padding: 0 22px 16px; }
+    .search-bar input { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(124, 184, 255, 0.22); background: rgba(3, 18, 43, 0.78); color: var(--text); font-size: 14px; outline: none; }
+    .search-bar input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(102, 217, 255, 0.12); }
+    @media (max-width: 680px) { .meta-grid { grid-template-columns: 1fr 1fr; } .stats-row { gap: 12px; } .stat-num { font-size: 18px; } }
+    @media (max-width: 480px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="topbar">
+    <a href="home.html">Explorer</a>
+    <a href="dashboard.html">Mi Panel</a>
+    <a href="subirbeats.html">Subir lanzamiento</a>
+    <a href="admi.html" class="admin-only">Admin</a>
+    <a href="admin-submissions.html" class="admin-only" style="color:var(--green)">Submissions</a>
+    <a href="perfil-editor.html">Mi Perfil</a>
+    <span id="userBadge" class="user-badge">Cargando...</span>
+  </nav>
+
+  <main class="page-shell">
+    <section class="form-card">
+      <div class="card-header">
+        <h2>Submissions para DistroKid</h2>
+        <button type="button" class="btn-ghost btn-sm" id="exportBtn">Exportar JSON</button>
+      </div>
+      <div class="stats-row" id="statsRow">
+        <div class="stat"><div class="stat-num" id="totalBeats">0</div><div class="stat-label">Beats</div></div>
+        <div class="stat"><div class="stat-num" id="totalCatalogs">0</div><div class="stat-label">Catalogos</div></div>
+        <div class="stat"><div class="stat-num" id="totalProducers">0</div><div class="stat-label">Productores</div></div>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Buscar por catalogo, productor, beat...">
+      </div>
+    </section>
+
+    <div id="submissionsList"></div>
+  </main>
+
+  <div id="msg"></div>
+
+  <script>
+    const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:"
+      ? "http://localhost:5000"
+      : "https://backend-j3sk.onrender.com");
+    const $ = (id) => document.getElementById(id);
+
+    function token() { return localStorage.getItem("token"); }
+    function authHeaders(extra = {}) { return { ...extra, Authorization: "Bearer " + token() }; }
+
+    function showMessage(text, type) {
+      const msg = $("msg");
+      msg.className = type;
+      msg.textContent = text;
+    }
+
+    async function proteger() {
+      if (!token()) { window.location.replace("index.html"); return; }
+      try {
+        const res = await fetch(`${API_URL}/api/me`, { headers: authHeaders() });
+        if (!res.ok) throw new Error("No autorizado");
+        const user = await res.json();
+        $("userBadge").textContent = user.role === "admin" ? `Admin: ${user.producerName || user.email}` : user.producerName || user.email;
+        if (user.role !== "admin") { window.location.replace("dashboard.html"); return; }
+        return user;
+      } catch {
+        localStorage.removeItem("token");
+        window.location.replace("index.html");
+      }
+    }
+
+    function formatDate(d) {
+      if (!d) return "-";
+      return new Date(d).toLocaleDateString("es-ES", { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    function buildMetadataTable(submission) {
+      const beatList = submission.beats || [];
+      let html = `<div class="meta-grid">`;
+      html += `<div class="meta-item"><span class="label">Productor</span><span class="value">${submission.producer || "-"}</span></div>`;
+      html += `<div class="meta-item"><span class="label">Email</span><span class="value">${submission.producerEmail || "-"}</span></div>`;
+      html += `<div class="meta-item"><span class="label">Creado</span><span class="value">${formatDate(submission.createdAt)}</span></div>`;
+      html += `<div class="meta-item"><span class="label">Release</span><span class="value">${formatDate(submission.releaseDate)}</span></div>`;
+      html += `<div class="meta-item"><span class="label">Beats</span><span class="value">${beatList.length}</span></div>`;
+
+      const anyData = beatList.find(b => b.submissionData);
+      if (anyData?.submissionData) {
+        const sd = anyData.submissionData;
+        html += `<div class="meta-item"><span class="label">Servicios</span><span class="value">${sd.services ? JSON.parse(sd.services).length : "-"}</span></div>`;
+        html += `<div class="meta-item"><span class="label">Monetizacion</span><span class="value">${sd.socialMonetization === "yes" ? '<span class="badge-green">Si</span>' : '<span class="badge-gray">No</span>'}</span></div>`;
+        html += `<div class="meta-item"><span class="label">Genero</span><span class="value">${sd.primaryGenre || "-"}</span></div>`;
+        html += `<div class="meta-item"><span class="label">Idioma</span><span class="value">${sd.language || "-"}</span></div>`;
+      }
+      html += `</div>`;
+
+      html += `<table class="submission-table"><thead><tr>`;
+      html += `<th>#</th><th>Titulo</th><th>Artista</th><th>BPM</th><th>Tono</th><th>Genero</th><th>Duracion</th>`;
+      html += `<th>Explicit</th><th>IA</th><th>Instrumental</th><th>Precio</th><th>ISRC</th><th>Tags</th>`;
+      html += `</tr></thead><tbody>`;
+
+      beatList.forEach((beat, i) => {
+        const sd = beat.submissionData;
+        const beatMeta = sd?.beatsJson ? sd.beatsJson.find(b => b.title === beat.name) : null;
+        html += `<tr>`;
+        html += `<td>${i + 1}</td>`;
+        html += `<td><strong>${beat.name}</strong></td>`;
+        html += `<td>${submission.producer || "-"}</td>`;
+        html += `<td>${beat.bpm || "-"}</td>`;
+        html += `<td>${beat.key || "-"}</td>`;
+        html += `<td>${beat.genre || "-"}</td>`;
+        html += `<td>${beat.duration ? Math.round(beat.duration / 60) + ":" + String(Math.round(beat.duration % 60)).padStart(2, "0") : "-"}</td>`;
+        html += `<td>${beatMeta?.explicit === "yes" ? '<span class="badge-yellow">Si</span>' : '<span class="badge-gray">No</span>'}</td>`;
+        html += `<td>${beatMeta?.aiGenerated === "yes" ? '<span class="badge-yellow">Si</span>' : '<span class="badge-gray">No</span>'}</td>`;
+        html += `<td>${beat.isInstrumental ? "Si" : "No"}</td>`;
+        html += `<td>${beatMeta?.price ? "$" + beatMeta.price : "-"}</td>`;
+        html += `<td style="font-size:11px">${beatMeta?.isrc || "-"}</td>`;
+        html += `<td style="font-size:11px;color:var(--muted)">${beat.tags || "-"}</td>`;
+        html += `</tr>`;
+      });
+
+      html += `</tbody></table>`;
+      return html;
+    }
+
+    function renderSubmissions(data) {
+      $("totalBeats").textContent = data.total;
+      $("totalCatalogs").textContent = data.catalogs;
+      const producers = new Set(data.submissions.map(s => s.producer));
+      $("totalProducers").textContent = producers.size;
+
+      const list = $("submissionsList");
+      list.innerHTML = "";
+
+      if (!data.submissions.length) {
+        list.innerHTML = `<section class="form-card"><div class="card-body"><p class="card-hint" style="margin:0">No hay submissions aun.</p></div></section>`;
+        return;
+      }
+
+      data.submissions.forEach((sub, idx) => {
+        const section = document.createElement("section");
+        section.className = "form-card submission-card";
+        section.dataset.catalog = sub.catalog.toLowerCase();
+        section.dataset.producer = sub.producer.toLowerCase();
+        const beatNames = sub.beats.map(b => b.name.toLowerCase()).join(" ");
+
+        section.innerHTML = `
+          <div class="submission-header" data-toggle="${idx}">
+            <div>
+              <h3>${sub.catalog}</h3>
+              <div class="submission-meta">${sub.producer} &middot; ${sub.beats.length} beats &middot; ${formatDate(sub.createdAt)}</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transform:rotate(180deg);transition:0.3s"><polyline points="6 15 12 9 18 15"/></svg>
+          </div>
+          <div class="submission-body" id="body-${idx}">
+            ${buildMetadataTable(sub)}
+          </div>
+        `;
+
+        const header = section.querySelector(".submission-header");
+        const body = section.querySelector(".submission-body");
+        const arrow = header.querySelector("svg");
+        let expanded = true;
+
+        header.addEventListener("click", () => {
+          expanded = !expanded;
+          body.classList.toggle("hidden");
+          arrow.style.transform = expanded ? "rotate(180deg)" : "rotate(0deg)";
+        });
+
+        list.appendChild(section);
+      });
+    }
+
+    function filterSubmissions() {
+      const q = $("searchInput").value.toLowerCase();
+      document.querySelectorAll(".submission-card").forEach(card => {
+        const catalog = card.dataset.catalog || "";
+        const producer = card.dataset.producer || "";
+        const matches = catalog.includes(q) || producer.includes(q) || card.textContent.toLowerCase().includes(q);
+        card.style.display = matches ? "" : "none";
+      });
+    }
+
+    async function loadSubmissions() {
+      try {
+        const res = await fetch(`${API_URL}/api/admin/submissions`, { headers: authHeaders() });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        renderSubmissions(data);
+      } catch (err) {
+        showMessage("Error cargando submissions: " + err.message, "error");
+      }
+    }
+
+    $("exportBtn").addEventListener("click", () => {
+      const rows = document.querySelectorAll(".submission-card");
+      const data = [];
+      rows.forEach(card => {
+        const catalog = card.querySelector("h3")?.textContent || "";
+        const meta = card.querySelector(".submission-meta")?.textContent || "";
+        data.push({ catalog, meta });
+      });
+      const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), count: data.length, submissions: data }, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `submissions-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    $("searchInput").addEventListener("input", filterSubmissions);
+
+    proteger().then(() => loadSubmissions());
+  </script>
+</body>
+</html>

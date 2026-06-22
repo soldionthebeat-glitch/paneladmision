@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Go Beats</title>
+  <link rel="stylesheet" href="style.css?v=20260605" />
+  <link rel="icon" href="/Fontend/img/logo de pestana .png">
+</head>
+<body>
+
+<div class="login-container">
+  <form id="loginForm">
+    <h1>GO BEATS</h1>
+
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Contrasena" required />
+
+    <button id="loginBtn" type="submit">Entrar</button>
+
+    <p id="errorMsg" style="color: red; margin-top: 10px;"></p>
+
+    <a href="/" class="back-home-btn">Volver a ProducersGo</a>
+  </form>
+</div>
+
+<script>
+const API_URL = (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:" ? "http://localhost:5000" : "https://backend-j3sk.onrender.com");
+
+document.getElementById("loginForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const errorMsg = document.getElementById("errorMsg");
+
+  errorMsg.textContent = "";
+
+  if (!email || !password) {
+    errorMsg.textContent = "Completa todos los campos";
+    errorMsg.style.display = "block";
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      errorMsg.textContent = data.message || "Error de autenticacion";
+      errorMsg.style.display = "block";
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+
+    window.location.replace("dashboard.html");
+
+  } catch (err) {
+    console.error(err);
+    errorMsg.textContent = "Error de conexion";
+    errorMsg.style.display = "block";
+  }
+});
+</script>
+
+</body>
+</html>
+
