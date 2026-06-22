@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - PRODUCERS GO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at 12% 15%, rgba(34, 211, 238, 0.18), transparent 30%), radial-gradient(circle at 85% 20%, rgba(37, 99, 235, 0.22), transparent 32%), linear-gradient(135deg, #06111f 0%, #0f2747 54%, #081826 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            border-radius: 12px;
+            box-shadow: 0 24px 70px rgba(2, 8, 23, 0.42);
+            backdrop-filter: blur(18px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #22d3ee 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.82);
+            color: #2563eb;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(248, 250, 252, 0.74);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-card .number {
+            font-size: 2em;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.48);
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.16);
+        }
+
+        .applications-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .applications-table th {
+            background: rgba(248, 250, 252, 0.74);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #2563eb;
+        }
+
+        .applications-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .applications-table tbody tr:hover {
+            background: rgba(248, 250, 252, 0.68);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-review {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+
+        .status-approved {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #F8D7DA;
+            color: #721C24;
+        }
+
+        .score-display {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background: rgba(248, 250, 252, 0.74);
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .score-badge.excellent {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .score-badge.good {
+            background: #8BC34A;
+            color: white;
+        }
+
+        .score-badge.average {
+            background: #FF9800;
+            color: white;
+        }
+
+        .score-badge.low {
+            background: #F44336;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.82);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: #2563eb;
+        }
+
+        .close-modal {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2563eb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #22d3ee;
+        }
+
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            background: rgba(248, 250, 252, 0.74);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #2563eb;
+        }
+
+        .score-item label {
+            display: block;
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .score-item .score-number {
+            font-size: 2em;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .detail-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(248, 250, 252, 0.68);
+            border-radius: 8px;
+        }
+
+        .detail-section h3 {
+            color: #2563eb;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .detail-section p {
+            margin: 8px 0;
+            word-break: break-word;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-approve {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #45a049;
+        }
+
+        .btn-reject {
+            background: #F44336;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #da190b;
+        }
+
+        .btn-review {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-review:hover {
+            background: #0b7dda;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .no-data {
+            background: rgba(248, 250, 252, 0.68);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            color: #999;
+        }
+
+        .export-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .export-btn:hover {
+            background: #22d3ee;
+        }
+
+        .btn-export {
+            background: #0f766e;
+            color: white;
+            font-size: 0.85em;
+            padding: 6px 10px;
+        }
+
+        .btn-export:hover {
+            background: #115e59;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .applications-table {
+                font-size: 0.9em;
+            }
+
+            .applications-table th,
+            .applications-table td {
+                padding: 10px;
+            }
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart {
+            background: rgba(248, 250, 252, 0.74);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #2563eb;
+        }
+
+        .chart h3 {
+            color: #2563eb;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .chart-label {
+            width: 80px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .chart-progress {
+            flex: 1;
+            height: 20px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #22d3ee);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 5px;
+            color: white;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>PRODUCERS GO - Panel Administrativo</h1>
+                <p>Sistema de Evaluación Automática con IA</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportData()">Exportar todo (CSV)</button>
+                <a href="formulario-admision-productores.html" class="btn btn-primary">Link de Admisión</a>
+                <button class="btn btn-secondary" onclick="logoutFounder()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Estadísticas -->
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Total de Solicitudes</h3>
+                    <div class="number" id="totalApps">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pendientes de Revisar</h3>
+                    <div class="number" id="pendingApps">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>En Revisión Legal</h3>
+                    <div class="number" id="reviewApps">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Puntaje Promedio</h3>
+                    <div class="number" id="avgScore">0.0</div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="chart-container">
+                <div class="chart">
+                    <h3>Clasificación por Modelo</h3>
+                    <div id="classificationChart"></div>
+                </div>
+                <div class="chart">
+                    <h3>Promedio de Puntajes</h3>
+                    <div id="scoresChart"></div>
+                </div>
+                <div class="chart">
+                    <h3>Estado de Solicitudes</h3>
+                    <div id="statusChart"></div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Buscar:</label>
+                    <input type="text" id="searchInput" placeholder="Nombre, email...">
+                </div>
+                <div class="filter-group">
+                    <label>Estado:</label>
+                    <select id="statusFilter">
+                        <option value="">Todos</option>
+                        <option value="pending">Pendiente</option>
+                        <option value="review">En Revisión</option>
+                        <option value="approved">Aprobado</option>
+                        <option value="rejected">Rechazado</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Modelo:</label>
+                    <select id="modelFilter">
+                        <option value="">Todos</option>
+                        <option value="A/B/C">A/B/C</option>
+                        <option value="B/C">B/C</option>
+                        <option value="B">B</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="clearFilters()">Limpiar Filtros</button>
+            </div>
+
+            <!-- Tabla de Aplicaciones -->
+            <div id="applicationsContainer">
+                <div class="no-data">No hay solicitudes. Las solicitudes apareceran aqui cuando se envien a traves del formulario.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles de Solicitud</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        const API_BASE_URL = window.PRODUCERS_GO_CONFIG?.API_BASE_URL || 'https://panel-de-administracion-de-admision.onrender.com/api';
+        const FOUNDER_SESSION_KEY = 'pg_founder_session';
+        let currentApplications = [];
+        let visibleApplications = [];
+
+        // Cargar datos al abrir
+        document.addEventListener('DOMContentLoaded', function() {
+            requireFounderSession();
+            loadApplications();
+        });
+
+        // Buscar cambios en los filtros
+        document.getElementById('searchInput').addEventListener('input', filterApplications);
+        document.getElementById('statusFilter').addEventListener('change', filterApplications);
+        document.getElementById('modelFilter').addEventListener('change', filterApplications);
+
+        async function apiRequest(path, options = {}) {
+            const token = localStorage.getItem(FOUNDER_SESSION_KEY);
+            const headers = {
+                ...(options.headers || {}),
+                'Authorization': `Bearer ${token || ''}`
+            };
+
+            const response = await fetch(`${API_BASE_URL}${path}`, {
+                ...options,
+                headers
+            });
+            const result = await response.json().catch(() => ({}));
+            if (response.status === 401) {
+                localStorage.removeItem(FOUNDER_SESSION_KEY);
+                window.location.href = '../index.html';
+                throw new Error('Sesión de fundador requerida');
+            }
+            if (!response.ok || result.success === false) {
+                throw new Error(result.message || result.error || `HTTP ${response.status}`);
+            }
+            return result;
+        }
+
+        function requireFounderSession() {
+            if (!localStorage.getItem(FOUNDER_SESSION_KEY)) {
+                window.location.href = '../index.html';
+            }
+        }
+
+        function logoutFounder() {
+            localStorage.removeItem(FOUNDER_SESSION_KEY);
+            window.location.href = '../index.html';
+        }
+
+        function normalizarAplicante(row) {
+            if (row.personalData) return row;
+
+            const completos = row.datos_completos || {};
+            const parsedCompletos = typeof completos === 'string'
+                ? (() => { try { return JSON.parse(completos); } catch (e) { return {}; } })()
+                : completos;
+
+            return {
+                id: row.id,
+                timestamp: row.created_at ? new Date(row.created_at).toLocaleString('es-AR') : '',
+                personalData: parsedCompletos.personalData || {
+                    nombre: row.nombre,
+                    nombreArtistico: row.nombre_artistico,
+                    email: row.email,
+                    whatsapp: row.whatsapp,
+                    edad: row.edad,
+                    pais: row.pais
+                },
+                scores: parsedCompletos.scores || {
+                    artistico: Number(row.score_artistico || 0),
+                    tecnico: Number(row.score_tecnico || 0),
+                    humano: Number(row.score_humano || 0),
+                    organizativo: Number(row.score_organizativo || 0),
+                    comercial: Number(row.score_comercial || 0)
+                },
+                responses: parsedCompletos.responses || {},
+                evaluationDetails: parsedCompletos.evaluationDetails || null,
+                finalScore: Number(row.puntaje_final || 0),
+                classification: parsedCompletos.classification || {
+                    model: row.modelo_clasificacion,
+                    label: row.modelo_clasificacion,
+                    color: '#2563eb'
+                },
+                status: row.estado || 'pending'
+            };
+        }
+
+        async function loadApplications() {
+            try {
+                const result = await apiRequest('/aplicantes');
+                currentApplications = (result.data || []).map(normalizarAplicante);
+            } catch (error) {
+                console.warn('API no disponible, usando localStorage:', error);
+                currentApplications = JSON.parse(localStorage.getItem('pg_applications') || '[]');
+            }
+
+            displayApplications(currentApplications);
+            updateStats(currentApplications);
+            updateCharts(currentApplications);
+        }
+
+        function displayApplications(applications) {
+            const container = document.getElementById('applicationsContainer');
+            visibleApplications = applications;
+
+            if (applications.length === 0) {
+                container.innerHTML = '<div class="no-data">No hay solicitudes. Las solicitudes apareceran aqui cuando se envien a traves del formulario.</div>';
+                return;
+            }
+
+            let html = '<table class="applications-table"><thead><tr>' +
+                '<th>ID</th>' +
+                '<th>Productor</th>' +
+                '<th>Email</th>' +
+                '<th>Puntaje Final</th>' +
+                '<th>Clasificación</th>' +
+                '<th>Estado</th>' +
+                '<th>Fecha</th>' +
+                '<th>Acciones</th>' +
+                '</tr></thead><tbody>';
+
+            applications.forEach((app, index) => {
+                const score = app.finalScore || 0;
+                const classification = app.classification || {};
+                let scoreBadge = 'low';
+
+                if (score >= 4.6) scoreBadge = 'excellent';
+                else if (score >= 4.0) scoreBadge = 'good';
+                else if (score >= 3.0) scoreBadge = 'average';
+
+                html += `<tr>
+                    <td>#${app.id}</td>
+                    <td><strong>${app.personalData?.nombreArtistico || 'N/A'}</strong></td>
+                    <td>${app.personalData?.email || 'N/A'}</td>
+                    <td><span class="score-badge ${scoreBadge}">${score}/5.0</span></td>
+                    <td><strong style="color: ${classification.color || '#999'}">${classification.label || 'N/A'}</strong></td>
+                    <td><span class="status-badge status-${app.status || 'pending'}">${getStatusLabel(app.status)}</span></td>
+                    <td>${app.timestamp}</td>
+                    <td>
+                        <button class="btn btn-small btn-review" onclick="showDetails(${index})">Ver Detalles</button>
+                        <button class="btn btn-small btn-export" onclick="exportSingleApplicationPDF(${app.id})">PDF</button>
+                    </td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function filterApplications() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const modelFilter = document.getElementById('modelFilter').value;
+
+            const filtered = currentApplications.filter(app => {
+                const matchesSearch = !searchTerm ||
+                    app.personalData?.nombreArtistico?.toLowerCase().includes(searchTerm) ||
+                    app.personalData?.email?.toLowerCase().includes(searchTerm);
+
+                const matchesStatus = !statusFilter || app.status === statusFilter;
+                const matchesModel = !modelFilter || app.classification?.model === modelFilter;
+
+                return matchesSearch && matchesStatus && matchesModel;
+            });
+
+            displayApplications(filtered);
+        }
+
+        function updateStats(applications) {
+            document.getElementById('totalApps').textContent = applications.length;
+
+            const pending = applications.filter(a => a.status === 'pending').length;
+            document.getElementById('pendingApps').textContent = pending;
+
+            const review = applications.filter(a => a.status === 'review').length;
+            document.getElementById('reviewApps').textContent = review;
+
+            const avgScore = applications.length > 0
+                ? (applications.reduce((sum, a) => sum + (a.finalScore || 0), 0) / applications.length).toFixed(2)
+                : 0;
+            document.getElementById('avgScore').textContent = avgScore;
+        }
+
+        function updateCharts(applications) {
+            // Gráfico de clasificación
+            const classifications = {};
+            applications.forEach(app => {
+                const model = app.classification?.model || 'N/A';
+                classifications[model] = (classifications[model] || 0) + 1;
+            });
+
+            let classChart = '';
+            Object.entries(classifications).forEach(([model, count]) => {
+                const percent = Math.round((count / applications.length) * 100);
+                classChart += `
+                    <div class="chart-bar">
+                        <div class="chart-label">${model}</div>
+                        <div class="chart-progress">
+                            <div class="chart-fill" style="width: ${percent}%">${count}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('classificationChart').innerHTML = classChart || '<p>Sin datos</p>';
+
+            // Gráfico de puntajes promedio
+            const categories = ['Artístico', 'Técnico', 'Humano', 'Organizativo', 'Comercial'];
+            const keys = ['artistico', 'tecnico', 'humano', 'organizativo', 'comercial'];
+            let scoresChart = '';
+
+            keys.forEach((key, i) => {
+                const avg = applications.length > 0
+                    ? (applications.reduce((sum, a) => sum + (a.scores?.[key] || 0), 0) / applications.length).toFixed(1)
+                    : 0;
+                const percent = (avg / 10) * 100;
+                scoresChart += `
+                    <div class="chart-bar">
+                        <div class="chart-label">${categories[i]}</div>
+                        <div class="chart-progress">
+                            <div class="chart-fill" style="width: ${percent}%">${avg}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('scoresChart').innerHTML = scoresChart;
+
+            // Gráfico de estado
+            const statuses = {};
+            applications.forEach(app => {
+                const status = app.status || 'pending';
+                statuses[status] = (statuses[status] || 0) + 1;
+            });
+
+            let statusChart = '';
+            Object.entries(statuses).forEach(([status, count]) => {
+                const percent = Math.round((count / applications.length) * 100);
+                const statusLabel = getStatusLabel(status);
+                statusChart += `
+                    <div class="chart-bar">
+                        <div class="chart-label">${statusLabel}</div>
+                        <div class="chart-progress">
+                            <div class="chart-fill" style="width: ${percent}%">${count}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('statusChart').innerHTML = statusChart;
+        }
+
+        const RESPONSE_LABELS = {
+            nombre: 'Nombre y Apellido',
+            nombreArtistico: 'Nombre Artístico',
+            edad: 'Edad',
+            pais: 'País / Ciudad',
+            email: 'Email',
+            whatsapp: 'WhatsApp',
+            redesSociales: 'Redes Sociales',
+            linksMusica: 'Links a tu Música',
+            daw: 'DAW Principal',
+            experiencia: 'Años de Experiencia',
+            disponibilidad: 'Disponibilidad Semanal (horas)',
+            situacionActual: 'Situación Actual',
+            generos: '¿Qué géneros musicales producís principalmente?',
+            referencias: '¿Cuáles son tus principales referencias musicales?',
+            sonido: '¿Cómo describirías tu sonido como productor?',
+            diferenciacion: '¿Qué creés que te diferencia de otros productores?',
+            producciones: 'Links de 3 a 5 producciones que representen tu mejor nivel',
+            enfoque: '¿Tus producciones están pensadas para?',
+            parteCreativa: '¿Qué parte del proceso creativo disfrutás más?',
+            stems: '¿Sabés entregar stems correctamente?',
+            bpmTonalidad: '¿Sabés identificar BPM y tonalidad de tus producciones?',
+            organizacion: '¿Cómo organizás tus proyectos y sesiones?',
+            mezcla: '¿Tenés conocimientos de mezcla?',
+            mastering: '¿Tenés conocimientos de mastering?',
+            usaSamples: '¿Usás samples, loops, melodías de terceros o IA?',
+            demostracionLicencias: '¿Podés demostrar la licencia o procedencia de samples/loops?',
+            entregaRapida: '¿Podrías entregar un beat con stems, BPM, tonalidad y metadata en menos de 48hs?',
+            porqueUnirse: '¿Por qué querés sumarte a PRODUCERS GO?',
+            esperativas: '¿Qué esperás recibir del ecosistema?',
+            aportes: '¿Qué estás dispuesto a aportar al ecosistema además de beats?',
+            feedback: '¿Cómo reaccionás ante una corrección?',
+            colaboracion: '¿Preferís trabajar solo o en colaboración?',
+            desacuerdos: '¿Cómo manejás desacuerdos sobre porcentajes, créditos o decisiones creativas?',
+            fortaleza: '¿Cuál es tu mayor fortaleza personal?',
+            debilidad: '¿Cuál es tu mayor debilidad?',
+            horasSemana: '¿Cuántas horas reales por semana podrías dedicar a PRODUCERS GO?',
+            procesos: '¿Estás dispuesto a respetar procesos internos, reglas y acuerdos?',
+            sistemaOrganizacion: '¿Cómo organizás tus beats, sesiones o proyectos?',
+            catalogoOrdenado: '¿Tenés tu catálogo ordenado actualmente?',
+            identificarObras: '¿Podés identificar qué obras están libres, vendidas, licenciadas o pendientes?',
+            registroColaboraciones: '¿Llevás registro de tus colaboraciones y porcentajes?',
+            informacionProduccion: '¿Guardás información básica de cada producción?',
+            entregaProfesional: '¿Podés entregar una carpeta profesional de un beat o canción?',
+            tiemposEntrega: '¿Cómo manejás los tiempos de entrega?',
+            herramientasOrganizacion: '¿Usás alguna herramienta para organizarte?',
+            sistemaProducersGo: '¿Estás dispuesto a usar el sistema interno de organización de PRODUCERS GO?',
+            catalogo: '¿Tenés catálogo propio disponible?',
+            catalogoLibre: '¿Ese catálogo está libre para ser explotado comercialmente?',
+            ingresos: '¿Tus beats o canciones ya generaron ingresos?',
+            plataformas: '¿Tenés perfil en BeatStars, YouTube, Spotify, SoundCloud o similares?',
+            redesActivas: '¿Tenés redes sociales activas como productor?',
+            trabajoArtistas: '¿Trabajaste con artistas anteriormente?',
+            publicadas: '¿Tenés canciones publicadas oficialmente donde figures como productor?',
+            objetivoComercial: '¿Cuál es tu objetivo comercial?',
+            monetizacionPg: '¿Aceptarías que PRODUCERS GO monetice tu catálogo bajo un acuerdo de porcentajes?',
+            inversion: '¿Necesitarías inversión inicial para desarrollar o monetizar tu catálogo?',
+            inversion_uso: 'Si necesitás inversión, ¿para qué la usarías?',
+            contratosVigentes: '¿Tenés contrato vigente con algún sello, distribuidora, publisher, manager, productor, artista o empresa?',
+            detallesContratos: 'Detalle de contratos vigentes',
+            conflictos: '¿Alguna obra tiene conflictos de derechos, reclamos, strikes o disputas?',
+            detallesConflictos: 'Detalle de conflictos',
+            beatsExclusivos: '¿Vendiste beats de forma exclusiva anteriormente?',
+            detallesExclusivos: 'Detalle de beats exclusivos vendidos',
+            'gestión': '¿Tenés obras registradas en alguna sociedad de gestión?',
+            compartirDerechos: '¿Compartís derechos con otros productores, compositores, músicos o artistas?',
+            detallesCompartir: 'Detalle de derechos compartidos',
+            samplesNoAutorizados: '¿Usaste samples/works sin autorización?',
+            declaracionVeracidad: '¿Podés declarar que las obras presentadas son propias o están autorizadas?',
+            declaracion1: 'Declaración 1 — Veracidad de la información',
+            declaracion2: 'Declaración 2 — Titularidad y autorización de obras',
+            declaracion3: 'Declaración 3 — Ausencia de conflictos previos',
+            declaracion4: 'Declaración 4 — Comprensión de términos',
+            declaracion5: 'Declaración 5 — Autorización de revisión y evaluación',
+            declaracion6: 'Declaración 6 — Confidencialidad precontractual',
+            declaracion7: 'Declaración 7 — Aceptación de resultados',
+            declaracion8: 'Declaración 8 — Consentimiento para comunicación',
+            terminos: 'Acepta los términos y condiciones de admisión'
+        };
+
+        const BOOLEAN_RESPONSE_FIELDS = new Set([
+            'declaracion1', 'declaracion2', 'declaracion3', 'declaracion4',
+            'declaracion5', 'declaracion6', 'declaracion7', 'declaracion8', 'terminos'
+        ]);
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatResponseValue(key, value) {
+            if (BOOLEAN_RESPONSE_FIELDS.has(key)) {
+                return value ? 'Aceptado ✓' : 'No aceptado';
+            }
+            if (Array.isArray(value)) {
+                return value.length > 0 ? value.join(', ') : '(ninguna opción marcada)';
+            }
+            const text = String(value ?? '').trim();
+            return text !== '' ? text : '(sin responder)';
+        }
+
+        function renderResponsesSection(app) {
+            const responses = app.responses || {};
+            const keys = Object.keys(responses);
+            if (keys.length === 0) {
+                return `
+                <div class="detail-section">
+                    <h3>Respuestas del Formulario</h3>
+                    <p>No hay respuestas registradas para esta solicitud (puede ser una solicitud antigua).</p>
+                </div>`;
+            }
+            const rows = keys.map((key) => {
+                const label = RESPONSE_LABELS[key] || key;
+                const value = formatResponseValue(key, responses[key]);
+                return `<p><span class="detail-label">${escapeHtml(label)}:</span> ${escapeHtml(value)}</p>`;
+            }).join('');
+            return `
+                <div class="detail-section">
+                    <h3>Respuestas del Formulario</h3>
+                    ${rows}
+                </div>`;
+        }
+
+        function showDetails(index) {
+            const app = visibleApplications[index];
+
+            if (!app) return;
+
+            const scores = app.scores || {};
+            const classification = app.classification || {};
+
+            let detailsHtml = `
+                <div class="detail-section">
+                    <h3>Información Personal</h3>
+                    <p><span class="detail-label">Nombre:</span> ${app.personalData?.nombre || 'N/A'}</p>
+                    <p><span class="detail-label">Nombre Artístico:</span> ${app.personalData?.nombreArtistico || 'N/A'}</p>
+                    <p><span class="detail-label">Email:</span> ${app.personalData?.email || 'N/A'}</p>
+                    <p><span class="detail-label">WhatsApp:</span> ${app.personalData?.whatsapp || 'N/A'}</p>
+                    <p><span class="detail-label">Edad:</span> ${app.personalData?.edad || 'N/A'}</p>
+                    <p><span class="detail-label">País:</span> ${app.personalData?.pais || 'N/A'}</p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Evaluación Automática de IA</h3>
+                    <div class="scores-grid">
+                        <div class="score-item">
+                            <label>Artística</label>
+                            <div class="score-number">${(scores.artistico || 0).toFixed(1)}</div>
+                        </div>
+                        <div class="score-item">
+                            <label>Técnica</label>
+                            <div class="score-number">${(scores.tecnico || 0).toFixed(1)}</div>
+                        </div>
+                        <div class="score-item">
+                            <label>Humana</label>
+                            <div class="score-number">${(scores.humano || 0).toFixed(1)}</div>
+                        </div>
+                        <div class="score-item">
+                            <label>Organizativa</label>
+                            <div class="score-number">${(scores.organizativo || 0).toFixed(1)}</div>
+                        </div>
+                        <div class="score-item">
+                            <label>Comercial</label>
+                            <div class="score-number">${(scores.comercial || 0).toFixed(1)}</div>
+                        </div>
+                    </div>
+                    <hr style="margin: 15px 0; border: none; border-top: 2px solid #2563eb;">
+                    <p style="text-align: center; font-size: 1.2em; margin-top: 15px;">
+                        <strong>Puntaje Final:</strong> <span style="color: ${classification.color || '#999'}; font-size: 1.4em;">${(app.finalScore || 0).toFixed(2)}/5.0</span>
+                    </p>
+                    <p style="text-align: center; margin-top: 10px;">
+                        <strong>Clasificación:</strong> <span style="color: ${classification.color || '#999'};"><strong>${classification.label || 'N/A'}</strong></span>
+                    </p>
+                    <p style="text-align: center;">
+                        <strong>Modelo:</strong> <span style="color: ${classification.color || '#999'};"><strong>${classification.model || 'N/A'}</strong></span>
+                    </p>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-small btn-approve" onclick="updateStatus(${index}, 'approved')">Aprobar</button>
+                    <button class="btn-small btn-review" onclick="updateStatus(${index}, 'review')">En Revisión</button>
+                    <button class="btn-small btn-reject" onclick="updateStatus(${index}, 'rejected')">Rechazar</button>
+                    <button class="btn-small btn-export" onclick="exportSingleApplicationPDF(${app.id})">Exportar PDF</button>
+                </div>
+
+                ${renderResponsesSection(app)}
+
+                <div class="detail-section" style="margin-top: 20px;">
+                    <h3>Fecha de Solicitud</h3>
+                    <p>${app.timestamp || 'N/A'}</p>
+                    <p><span class="detail-label">ID Solicitud:</span> #${app.id}</p>
+                    <p><span class="detail-label">Estado Actual:</span> <span class="status-badge status-${app.status || 'pending'}">${getStatusLabel(app.status)}</span></p>
+                </div>
+            `;
+
+            document.getElementById('modalBody').innerHTML = detailsHtml;
+            document.getElementById('detailsModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        async function updateStatus(index, newStatus) {
+            const app = visibleApplications[index];
+            if (app) {
+                try {
+                    await apiRequest(`/aplicantes/${app.id}/estado`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ estado: newStatus })
+                    });
+                } catch (error) {
+                    app.status = newStatus;
+                    localStorage.setItem('pg_applications', JSON.stringify(currentApplications));
+                    alert('No se pudo actualizar en Neon. Cambio guardado localmente.');
+                }
+                closeModal();
+                loadApplications();
+                alert('Estado actualizado a: ' + getStatusLabel(newStatus));
+            }
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': 'Pendiente',
+                'review': 'En Revisión',
+                'approved': 'Aprobado',
+                'rejected': 'Rechazado'
+            };
+            return labels[status] || 'Desconocido';
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('modelFilter').value = '';
+            loadApplications();
+        }
+
+        function escapeCsvCell(value) {
+            if (value === null || value === undefined) return '""';
+            const text = Array.isArray(value) ? value.join(' | ') : String(value);
+            return `"${text.replace(/"/g, '""')}"`;
+        }
+
+        function buildApplicationsCsv(applications) {
+            const responseKeys = new Set();
+            applications.forEach((app) => {
+                Object.keys(app.responses || {}).forEach((key) => responseKeys.add(key));
+            });
+            const sortedResponseKeys = Array.from(responseKeys).sort();
+
+            const headers = [
+                'ID',
+                'Nombre',
+                'Nombre Artístico',
+                'Email',
+                'WhatsApp',
+                'Edad',
+                'País',
+                'Score Artístico',
+                'Score Técnico',
+                'Score Humano',
+                'Score Organizativo',
+                'Score Comercial',
+                'Puntaje Final',
+                'Modelo',
+                'Estado',
+                'Fecha',
+                ...sortedResponseKeys.map((key) => `Respuesta: ${key}`)
+            ];
+
+            let csv = `${headers.map(escapeCsvCell).join(',')}\n`;
+
+            applications.forEach((app) => {
+                const personal = app.personalData || {};
+                const scores = app.scores || {};
+                const responses = app.responses || {};
+                const baseValues = [
+                    app.id,
+                    personal.nombre,
+                    personal.nombreArtistico,
+                    personal.email,
+                    personal.whatsapp,
+                    personal.edad,
+                    personal.pais,
+                    scores.artistico,
+                    scores.tecnico,
+                    scores.humano,
+                    scores.organizativo,
+                    scores.comercial,
+                    app.finalScore,
+                    app.classification?.model || app.classification?.label,
+                    app.status,
+                    app.timestamp
+                ];
+                const responseValues = sortedResponseKeys.map((key) => responses[key] ?? '');
+                csv += `${[...baseValues, ...responseValues].map(escapeCsvCell).join(',')}\n`;
+            });
+
+            return csv;
+        }
+
+        function downloadCsvContent(csv, filename) {
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        async function downloadCsvFromApi(path, filename) {
+            const token = localStorage.getItem(FOUNDER_SESSION_KEY);
+            const response = await fetch(`${API_BASE_URL}${path}`, {
+                headers: {
+                    Authorization: `Bearer ${token || ''}`
+                }
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem(FOUNDER_SESSION_KEY);
+                window.location.href = '../index.html';
+                throw new Error('Sesión de fundador requerida');
+            }
+
+            if (!response.ok) {
+                throw new Error(`No se pudo exportar (${response.status})`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        async function exportData() {
+            if (currentApplications.length === 0) {
+                alert('No hay datos para exportar');
+                return;
+            }
+
+            const filename = `producers_go_solicitudes_${new Date().toISOString().split('T')[0]}.csv`;
+
+            try {
+                await downloadCsvFromApi('/exportar-csv', filename);
+            } catch (error) {
+                console.warn('Exportación local:', error);
+                downloadCsvContent(buildApplicationsCsv(currentApplications), filename);
+            }
+        }
+
+        function getModuloWeight(modulo) {
+            const weights = { 'Artístico': 0.25, 'Técnico': 0.20, 'Humano': 0.20, 'Organizativo': 0.20, 'Comercial': 0.15 };
+            return weights[modulo] ?? 0;
+        }
+
+        function getModuloScoreKey(modulo) {
+            const map = { 'Artístico': 'artistico', 'Técnico': 'tecnico', 'Humano': 'humano', 'Organizativo': 'organizativo', 'Comercial': 'comercial' };
+            return map[modulo];
+        }
+
+        function buildApplicationPdf(app) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+            const margin = 40;
+            let y = 50;
+
+            const personal = app.personalData || {};
+            const scores = app.scores || {};
+            const classification = app.classification || {};
+            const detalle = Array.isArray(app.evaluationDetails) ? app.evaluationDetails : null;
+            const modulos = ['Artístico', 'Técnico', 'Humano', 'Organizativo', 'Comercial'];
+
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('PRODUCERS GO — Informe de Evaluación de Admisión', margin, y);
+            y += 20;
+
+            doc.setFontSize(9);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Generado: ${new Date().toLocaleString('es-AR')}`, margin, y);
+            y += 18;
+
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('Datos del postulante', margin, y);
+            y += 6;
+            doc.autoTable({
+                startY: y,
+                margin: { left: margin, right: margin },
+                theme: 'plain',
+                styles: { fontSize: 10, cellPadding: 2 },
+                body: [
+                    ['ID', String(app.id || '-'), 'Estado', getStatusLabel(app.status)],
+                    ['Nombre', personal.nombre || '-', 'Nombre artístico', personal.nombreArtistico || '-'],
+                    ['Email', personal.email || '-', 'WhatsApp', personal.whatsapp || '-'],
+                    ['Edad', personal.edad || '-', 'País', personal.pais || '-'],
+                    ['Fecha de envío', app.timestamp || '-', '', '']
+                ],
+                columnStyles: { 0: { fontStyle: 'bold' }, 2: { fontStyle: 'bold' } }
+            });
+            y = doc.lastAutoTable.finalY + 16;
+
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('Resultado de la evaluación', margin, y);
+            y += 6;
+            doc.autoTable({
+                startY: y,
+                margin: { left: margin, right: margin },
+                head: [['Puntaje final', 'Clasificación', 'Modelo sugerido']],
+                body: [[`${Number(app.finalScore || 0).toFixed(2)} / 10`, classification.label || '-', classification.model || '-']],
+                styles: { fontSize: 10 }
+            });
+            y = doc.lastAutoTable.finalY + 16;
+
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('Puntaje por módulo', margin, y);
+            y += 6;
+            doc.autoTable({
+                startY: y,
+                margin: { left: margin, right: margin },
+                head: [['Módulo', 'Peso', 'Puntaje (0-10)', 'Aporte al puntaje final']],
+                body: modulos.map((m) => {
+                    const score = Number(scores[getModuloScoreKey(m)] || 0);
+                    const weight = getModuloWeight(m);
+                    return [m, `${Math.round(weight * 100)}%`, score.toFixed(2), (score * weight).toFixed(2)];
+                }),
+                styles: { fontSize: 10 }
+            });
+            y = doc.lastAutoTable.finalY + 18;
+
+            if (detalle && detalle.length > 0) {
+                modulos.forEach((m) => {
+                    const items = detalle.filter((d) => d.modulo === m);
+                    if (items.length === 0) return;
+
+                    if (y > 680) { doc.addPage(); y = 50; }
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(`Detalle — Módulo ${m}`, margin, y);
+                    y += 6;
+
+                    doc.autoTable({
+                        startY: y,
+                        margin: { left: margin, right: margin },
+                        head: [['Criterio', 'Respuesta dada', 'Puntos', 'Por qué este puntaje']],
+                        body: items.map((d) => [
+                            d.criterio,
+                            String(d.respuesta).slice(0, 220),
+                            `${d.puntos} / ${d.maximo}`,
+                            d.regla
+                        ]),
+                        styles: { fontSize: 8.5, cellPadding: 3, valign: 'top' },
+                        columnStyles: {
+                            0: { cellWidth: 95 },
+                            1: { cellWidth: 150 },
+                            2: { cellWidth: 45, halign: 'center' },
+                            3: { cellWidth: 150 }
+                        }
+                    });
+                    y = doc.lastAutoTable.finalY + 14;
+                });
+            } else {
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'italic');
+                doc.text('Esta solicitud fue enviada antes de habilitar el detalle de evaluación por criterio;', margin, y);
+                doc.text('solo se muestran los puntajes finales por módulo.', margin, y + 12);
+                y += 30;
+            }
+
+            const responses = app.responses || {};
+            const responseKeys = Object.keys(responses).sort();
+            if (responseKeys.length > 0) {
+                doc.addPage();
+                y = 50;
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text('Todas las respuestas del formulario', margin, y);
+                y += 6;
+                doc.autoTable({
+                    startY: y,
+                    margin: { left: margin, right: margin },
+                    head: [['Campo', 'Respuesta']],
+                    body: responseKeys.map((key) => [
+                        key,
+                        Array.isArray(responses[key]) ? responses[key].join(' | ') : String(responses[key] ?? '')
+                    ]),
+                    styles: { fontSize: 9, cellPadding: 3, valign: 'top' },
+                    columnStyles: { 0: { cellWidth: 140, fontStyle: 'bold' } }
+                });
+            }
+
+            return doc;
+        }
+
+        function exportSingleApplicationPDF(appId) {
+            const app = currentApplications.find((item) => item.id === appId);
+            if (!app) {
+                alert('No se encontró la solicitud para exportar');
+                return;
+            }
+            const safeName = String(app?.personalData?.nombreArtistico || app?.personalData?.nombre || 'aplicante')
+                .replace(/[^a-zA-Z0-9_-]+/g, '_')
+                .slice(0, 40);
+            const filename = `aplicante_${appId}_${safeName}.pdf`;
+
+            try {
+                const doc = buildApplicationPdf(app);
+                doc.save(filename);
+            } catch (error) {
+                console.error('Error generando PDF:', error);
+                alert('No se pudo generar el PDF: ' + error.message);
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailsModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
